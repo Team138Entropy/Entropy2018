@@ -1,5 +1,6 @@
 # Entropy2018
 *Entropy 2018 robot code*
+
 This is where the FRC team Entropy keeps the code for their 2018 robot.
 
 ## Standard commit formatting
