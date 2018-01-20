@@ -58,11 +58,19 @@ def processImage(img):
     mask1 = cv2.inRange(img1, lower_red, upper_red)
 
     mask = cv2.bitwise_or(mask,mask1)
-
+    kernel = np.ones((10,10), np.uint8)
     # mask off the grayscale image
     gray = img1[:,:,2]
     ret = cv2.bitwise_and(gray,gray, mask= mask)
+    ret = cv2.dilate(ret,kernel,iterations = 5)    
+    ret = cv2.bitwise_and(ret,gray)
+    #threshhold test
+    thresholdImage, ret = cv2.threshold(ret,127,255,cv2.THRESH_BINARY)
     cv2.imshow('ret',ret)
+    
+
+    
+    
     
     # sum in x and y looking the two vertical bars
     xsum = np.sum(ret,0)
@@ -82,7 +90,12 @@ def processImage(img):
             ycenter = ypeaks[0][0] + (ypeaks[yend][1]-ypeaks[0][0]) / 2
             targetFound = 1
             
-        
+    
+    #testing things
+    #grayContours = locateContours(ret,0,0)
+    #cv2.imshow()
+    
+    
     contours = locateContours(img,0,0)  
     if (targetFound == 1):
         drawCrosshair(img,xcenter,ycenter,True)
