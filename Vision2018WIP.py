@@ -40,32 +40,34 @@ def processImage(img):
     # filter by color and intensity
 
 #Colors++++++++++++++++++++++++++++++++++++++++++
-#blue
-#    lower_blue = np.array([70,100,50])
-#   upper_blue = np.array([100,255,255])
-#    mask = cv2.inRange(img1, lower_blue, upper_blue)
-#red
-    #lower_blue = np.array([110,50,50])
-    #upper_blue = np.array([130,255,255])
-    #mask = cv2.inRange(img1, lower_blue, upper_blue)
-    
-    lower_red = np.array([0,100,100])
-    upper_red = np.array([10,255,255])
-    mask = cv2.inRange(img1, lower_red, upper_red)
-    
-    lower_red = np.array([160,100,100])
-    upper_red = np.array([179,255,255])
-    mask1 = cv2.inRange(img1, lower_red, upper_red)
+#test red or blue
+    redStart = True
 
-    mask = cv2.bitwise_or(mask,mask1)
-    kernel = np.ones((10,10), np.uint8)
+#blue
+    if not (redStart):
+        lower_blue = np.array([99,100,100])
+        upper_blue = np.array([129,255,255])
+        mask = cv2.inRange(img1, lower_blue, upper_blue)
+#Red
+    if (redStart):
+        lower_red = np.array([0,100,100])
+        upper_red = np.array([10,255,255])
+        mask = cv2.inRange(img1, lower_red, upper_red)
+       
+        lower_red = np.array([160,100,100])
+        upper_red = np.array([179,255,255])
+        mask1 = cv2.inRange(img1, lower_red, upper_red)
+    
+        mask = cv2.bitwise_or(mask,mask1)
+    kernel = np.ones((1,3), np.uint8)
     # mask off the grayscale image
     gray = img1[:,:,2]
     ret = cv2.bitwise_and(gray,gray, mask= mask)
     ret = cv2.dilate(ret,kernel,iterations = 5)    
-    ret = cv2.bitwise_and(ret,gray)
+#    ret = cv2.bitwise_and(ret,gray)
     #threshhold test
     thresholdImage, ret = cv2.threshold(ret,127,255,cv2.THRESH_BINARY)
+
     cv2.imshow('ret',ret)
     
 
@@ -99,6 +101,7 @@ def processImage(img):
     contours = locateContours(img,0,0)  
     if (targetFound == 1):
         drawCrosshair(img,xcenter,ycenter,True)
+        
         
     if (findPeaks):
         plt.figure(1)
