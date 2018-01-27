@@ -121,5 +121,5 @@ public class Constants {
 			FieldCoordinates
 		};
 		
-		public static CoordinateSystem coordinateSystem = CoordinateSystem.RobotCoordinates;
+		public static CoordinateSystem coordinateSystem = CoordinateSystem.FieldCoordinates;
 }
