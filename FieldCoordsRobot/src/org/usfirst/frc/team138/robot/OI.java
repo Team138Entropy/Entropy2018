@@ -13,6 +13,7 @@ import org.usfirst.frc.team138.robot.commands.*;
 public final class OI {
 	
 	// Xbox Controller Map
+	static final int xboxController = 0;
 	// Xbox Buttons
 	static final int xboxA = 1;
 	static final int xboxB = 2;
@@ -39,6 +40,7 @@ public final class OI {
 	static final int xboxRightYAxis = 5;
 	
 	// Nyko Air Flow Controller Map
+	static final int nykoController = 1;
 	// Nyko buttons
 	static final int nykoButton1 = 1;
 	static final int nykoButton2 = 2;
@@ -60,26 +62,25 @@ public final class OI {
 	static final int nykoRightYAxis = 2;	// Z Axis on Driver Station
 	static final int nykoRightXAxis = 3;	// Rotate Axis on Driver Station
 	
-    static Joystick driverStick = new Joystick(0);
-    static Joystick operatorStick = new Joystick(1);
-    
-    // Operator Stick
-    static Button toggleGearRamButton 			= new JoystickButton(operatorStick, 1);
-    static Button toggleRopeGrabberButton 		= new JoystickButton(operatorStick, 2);
-    static Button chuteAcquireButton			= new JoystickButton(operatorStick, 3);
-    static Button floorAcquireButton	 		= new JoystickButton(operatorStick, 4);
-    static Button toggleWristButton 			= new JoystickButton(operatorStick, 5);
-    static Button toggleClawButton 			= new JoystickButton(operatorStick, 6);
-    static Button shootButton 					= new JoystickButton(operatorStick, 7);
-    static Button zeroTurn                     = new JoystickButton(operatorStick, 8);
-    static Button autoPositionShooterButton 	= new JoystickButton(operatorStick, 9);
-    static Button autoGearPlaceButton 			= new JoystickButton(operatorStick, 10);
-    static Button cancelAutoRoutinesButton 	= new JoystickButton(operatorStick, 11);
+    static Joystick driverStick = new Joystick(xboxController);
+    static Joystick operatorStick = new Joystick(nykoController);
     
     // Driver Stick
-    static Button driverAutoGearButton 		= new JoystickButton(driverStick, 8); // was 4
+    static Button sampleButton 		= new JoystickButton(driverStick, xboxA);
     
- //   static Button Align_0Deg					= new JoystickButton(driverStick,2);
+    // Operator Stick
+    static Button toggleGearRamButton 			= new JoystickButton(operatorStick, nykoButton1);
+    static Button toggleRopeGrabberButton 		= new JoystickButton(operatorStick, nykoButton2);
+    static Button chuteAcquireButton			= new JoystickButton(operatorStick, nykoButton3);
+    static Button floorAcquireButton	 		= new JoystickButton(operatorStick, nykoButton4);
+    static Button toggleWristButton 			= new JoystickButton(operatorStick, nykoLeftBumper);
+    static Button toggleClawButton 			= new JoystickButton(operatorStick, nykoRightBumper);
+    static Button shootButton 					= new JoystickButton(operatorStick, nykoLeftTrigger);
+    static Button zeroTurn                     = new JoystickButton(operatorStick, nykoRightTrigger);
+    static Button autoPositionShooterButton 	= new JoystickButton(operatorStick, nykoMiddle9);
+    static Button autoGearPlaceButton 			= new JoystickButton(operatorStick, nykoMiddle10);
+    static Button cancelAutoRoutinesButton 	= new JoystickButton(operatorStick, nykoMiddle11);
+    
     static double lastX=0;
     static double LastY=0;
     
@@ -108,25 +109,25 @@ public final class OI {
     
 	public static double getMoveSpeed()
 	{
-		return driverStick.getRawAxis(1);
+		return driverStick.getRawAxis(xboxLeftYAxis);
 	}
 	
 	public static double getRotateSpeed()
-	{ // Re-defined to be left/right of Left Hand joystick
-		return driverStick.getRawAxis(0); // was 4 (Right hand joystick)
+	{
+		return driverStick.getRawAxis(xboxLeftXAxis);
 	}
 	
 	public static double getClimbSpeed()
 	{
-		return operatorStick.getRawAxis(1);
+		return operatorStick.getRawAxis(nykoLeftYAxis);
 	}
 	
 	public static boolean isReverse() {
-		return driverStick.getRawButton(2);
+		return driverStick.getRawButton(xboxB);
 	}
 	
 	public static boolean isFullSpeed() {
-		return driverStick.getRawButton(1);
+		return driverStick.getRawButton(xboxA);
 	}
 	
 	
@@ -149,8 +150,8 @@ public final class OI {
 		
 		double z;
 
-		y=-driverStick.getRawAxis(1); // Inverted Y axis so "fwd" = +90 degrees
-		x=driverStick.getRawAxis(0);
+		y=-driverStick.getRawAxis(xboxLeftYAxis); // Inverted Y axis so "fwd" = +90 degrees
+		x=driverStick.getRawAxis(xboxLeftXAxis);
 		Magnitude=Math.sqrt(x*x+y*y);
 		// Apply deadband to avoid "creep" when joystick
 		// does not return "0" at center position.
@@ -190,7 +191,7 @@ public final class OI {
 	{
 		boolean zt;
 		// Execute a zero-turn (rotate about robot center) if zero-turn button is pressed
-		zt=driverStick.getRawButton(3) | driverStick.getRawButton(4);
+		zt=driverStick.getRawButton(xboxX) | driverStick.getRawButton(xboxY);
 		return zt;
 	}
 	
