@@ -114,4 +114,12 @@ public class Constants {
 		// headingErrof exceeds revRange, then the robot will start moving in reverse and the threshold
 		// between fwd/rev is changed to revHyst.  revHyst should always be less than revRange.
 		public static double revHyst = 125;
+		
+		public static enum CoordinateSystem
+		{
+			RobotCoordinates,
+			FieldCoordinates
+		};
+		
+		public static CoordinateSystem coordinateSystem = CoordinateSystem.RobotCoordinates;
 }

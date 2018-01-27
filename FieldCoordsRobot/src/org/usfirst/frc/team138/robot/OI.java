@@ -11,9 +11,59 @@ import org.usfirst.frc.team138.robot.commands.*;
  * interface to the commands and command groups that allow control of the robot.
  */
 public final class OI {
+	
+	// Xbox Controller Map
+	// Xbox Buttons
+	static final int xboxA = 1;
+	static final int xboxB = 2;
+	static final int xboxX = 3;
+	static final int xboxY = 4;
+	static final int xboxLeftBumper = 5;
+	static final int xboxRightBumper = 6;
+	static final int xboxLeftStick = 7;
+	static final int xboxRightStick = 8;
+	static final int xboxMenu = 9;
+	static final int xboxView = 10;
+	static final int xboxHome = 11;
+	static final int xboxDpadUp = 12;
+	static final int xboxDpadDown = 13;
+	static final int xboxDpadLeft = 14;
+	static final int xboxDpadRigt = 15;
+	
+	//Xbox axes
+	static final int xboxLeftXAxis = 0;
+	static final int xboxLeftYAxis = 1;
+	static final int xboxLeftTriggerAxis = 2;
+	static final int xboxRightTriggerAxis = 3;
+	static final int xboxRightXAxis = 4;
+	static final int xboxRightYAxis = 5;
+	
+	// Nyko Air Flow Controller Map
+	// Nyko buttons
+	static final int nykoButton1 = 1;
+	static final int nykoButton2 = 2;
+	static final int nykoButton3 = 3;
+	static final int nykoButton4 = 4;
+	static final int nykoLeftBumper = 5;
+	static final int nykoRightBumper = 6;
+	static final int nykoLeftTrigger = 7;
+	static final int nykoRightTrigger = 8;
+	static final int nykoMiddle9 = 9;
+	static final int nykoMiddle10 = 10;
+	static final int nykoMiddle11 = 11;
+	static final int nykoLeftStick = 12;
+	static final int nykoRightStick = 13;
+	
+	// Nyko axes
+	static final int nykoLeftXAxis = 0;		// X Axis on Driver Station
+	static final int nykoLeftYAxis = 1;		// Y Axis on Driver Station
+	static final int nykoRightYAxis = 2;	// Z Axis on Driver Station
+	static final int nykoRightXAxis = 3;	// Rotate Axis on Driver Station
+	
     static Joystick driverStick = new Joystick(0);
     static Joystick operatorStick = new Joystick(1);
     
+    // Operator Stick
     static Button toggleGearRamButton 			= new JoystickButton(operatorStick, 1);
     static Button toggleRopeGrabberButton 		= new JoystickButton(operatorStick, 2);
     static Button chuteAcquireButton			= new JoystickButton(operatorStick, 3);
@@ -26,6 +76,7 @@ public final class OI {
     static Button autoGearPlaceButton 			= new JoystickButton(operatorStick, 10);
     static Button cancelAutoRoutinesButton 	= new JoystickButton(operatorStick, 11);
     
+    // Driver Stick
     static Button driverAutoGearButton 		= new JoystickButton(driverStick, 8); // was 4
     
  //   static Button Align_0Deg					= new JoystickButton(driverStick,2);
@@ -68,19 +119,6 @@ public final class OI {
 	public static double getClimbSpeed()
 	{
 		return operatorStick.getRawAxis(1);
-	}
-	
-	public static boolean useFieldCoord() {
-		/*
-		 *  For operation with EXTREME 3D PRO joystick
-		 * Field coordinates is assumed by default.  
-		 * However, if operator depresses button 11, then joystick
-		 *  axes are interpreted in Robot coordinates 
-		 */
-		if (driverStick.getRawButton(11))
-			return false;
-		else
-			return true;
 	}
 	
 	public static boolean isReverse() {
