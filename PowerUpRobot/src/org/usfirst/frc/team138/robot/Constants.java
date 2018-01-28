@@ -1,0 +1,22 @@
+package org.usfirst.frc.team138.robot;
+/*
+ * Constant values used throughout robot code.
+ * In "C" this would be a header file, but alas, this is Java
+ */
+public class Constants {
+
+	// System Constants
+		
+		// Deadband applied to Joystick, when
+		// magnitude is less than deadBand, then set Magnitude to 0
+		public final static double joystickDeadband = 0.09;
+		
+		// Low pass filter on joystick heading - 
+		// Filter eqn:  heading(i+1) =joystickDir(i)*Alpha + (1-Alpha)*(heading(i)
+		// where Alpha = Ts*2*pi*Freq
+		//   Ts is sample period (20 mSec for FRC)
+		//   Freq is location of filter pole in Hz
+		public static double rotateAlpha = .02*6.28*1;
+		
+		
+}
