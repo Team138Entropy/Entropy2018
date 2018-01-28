@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team138.robot.subsystems.*;
 import org.usfirst.frc.team138.robot.commands.*;
 //import edu.wpi.first.wpilibj.Preferences;
-import org.usfirst.frc.team138.robot.OI;
 
 /**
  * This is Master branch.
@@ -32,12 +31,7 @@ public class Robot extends IterativeRobot {
     public static final Shooter shooter = new Shooter();
     
 	Preferences prefs = Preferences.getInstance();
-	// Field_Coord Controller gains
-	double Control_KP; // Proportional
-	double Control_KD; // Derivative
-	double Control_KI; // Integral
-
-    
+	
     // Commands
     AutonomousCommand autonomousCommand;
     
@@ -122,12 +116,6 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) {
         	autonomousCommand.cancel();
         }        
-		Constants.headingGain=prefs.getDouble("Rotate_KP", Constants.headingGain);
-		Constants.headingFdFwdBias=prefs.getDouble("Rotate_FF",Constants.headingFdFwdBias);
-		Constants.maxSlowMoveSpeed=prefs.getDouble("Slow MoveSpeed", Constants.maxSlowMoveSpeed);
-		Constants.maxRotateSpeed=prefs.getDouble("Max Rot Speed", Constants.maxRotateSpeed);
-		Constants.zeroTurnMaxSpeed=prefs.getDouble("Max ZeroTurn Speed", Constants.zeroTurnMaxSpeed);
-		Constants.zeroTurnGainFactor=prefs.getDouble("ZeroTurn Factor", Constants.zeroTurnGainFactor);
     }
 
     /**
@@ -137,20 +125,6 @@ public class Robot extends IterativeRobot {
         Scheduler.getInstance().run();
 //		LiveWindow.run();
         
-    	switch (OI.isNullBias()) {
-		case 0 :
-			Sensors.alignRobotHeading(0.0);
-			break;			
-		case 1 :
-			Sensors.alignRobotHeading(90.0);
-			break;
-		case 2 :
-			Sensors.alignRobotHeading(-90.0);
-			break;
-		case 3 :
-			Sensors.alignRobotHeading(180.0);
-			break;
-		}
 		
         Sensors.updateSmartDashboard();
         

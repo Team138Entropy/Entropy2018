@@ -194,27 +194,6 @@ public final class OI {
 		zt=driverStick.getRawButton(xboxX) | driverStick.getRawButton(xboxY);
 		return zt;
 	}
-	
-	public static int isNullBias()
-	{ // reset gyro Bias to ordinal directions based 
-		float x=driverStick.getPOV();
-		// on POV button
-		// return: 0=0Deg, 1=90, 2=-90; 3=180; -1=none
-		if (x<0)
-			return -1;
-		// Map POV coordinates to Field Coordinate directions
-		// Invert sign and apply offset
-		x=90-x; 
-		if (x > -45 & x < 45) //  "B" = 0 Degree
-			return 0;
-		if (x > 45 & x < 135) // "Y" = 90 Degree
-			return 1;
-		if ( x > -135 & x < -45) // "A" = -90 Degree
-			return 2;
-		if (x > -225 & x < -135) // "X" = +/-180 Degree
-			return 3;
-		return -1;
-	}
-    
-} // :D
+	    
+} // :D)))
 
