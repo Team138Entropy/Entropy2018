@@ -37,10 +37,6 @@ public class Sensors {
     	resetEncoders();
     	
 
-		// Nominal gyro bias, assumes robot is facing "forward" (+Y = 90 Degrees)
-		// at initialization
-		gyroBias=getRobotHeading()-90;
-
 	}
 	
 
@@ -57,31 +53,7 @@ public class Sensors {
 	public static void resetEncoders() {
 		leftEncoder.reset();
 		rightEncoder.reset();
-	}
-	
-	public static void alignRobotHeading (double Angle) {
-		gyroBias=gyroBias + Constants.gyroAlpha * (Utility.diffAngles(getRobotHeading(), Angle));
-	}
-
-	public static double getRobotHeading() {
-		// Return current robot heading in Field Coordinates
-		// and wrapped to +/- 180 degree range.
-		// "0" Degrees is to the right in Field Coordinates
-		double heading=Constants.gyroDir*gyro.getAngle() + Constants.gyroOffset - gyroBias;
-		// gyro accumulates angles over multiple rotations,
-		// heading needs to be wrapped to range +/- 180 in order
-		// to be compared to joystick heading
-		heading=Utility.angleWrap(heading);	
-		return heading;
-	}
-	
-	public static double getRobotHeadingRate() {
-		// Return current robot rate of rotation (
-		double rate=Constants.gyroDir * gyro.getRate();
-		return rate;
-	}
-	
-	
+	}	
 	
 	public static void updateSmartDashboard(){
 		double [] userCmd;
@@ -127,12 +99,6 @@ public class Sensors {
 		userCmd = OI.getFieldCommand();
 		SmartDashboard.putNumber("Cmd Angle:", userCmd[1]);
 		SmartDashboard.putNumber("Magn:", userCmd[0]);
-		// Robot heading (in Field Coordinates)
-		SmartDashboard.putNumber("Gyro Bias:", gyroBias);
-		SmartDashboard.putNumber("Robot Heading:", getRobotHeading());
-		SmartDashboard.putNumber("Rotation Rate:", getRobotHeadingRate());
 		
-		// 
-		SmartDashboard.putNumber("POV", OI.isNullBias());
 	}
 }
