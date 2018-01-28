@@ -1,7 +1,5 @@
 package org.usfirst.frc.team138.robot.commands;
 
-import edu.wpi.first.wpilibj.DriverStation;
-
 // BedfordBase branch started 2017-03-25 - jmcg
 // 1. Increase "advance to neutral zone" distance to 10 feet"
 // 2. Mirror "advance to neutral zone" for left starting position
@@ -13,80 +11,98 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutonomousCommand extends CommandGroup {
-	public AutonomousCommand(String team, String startPos, String autoMode, String gameData){
-		final String ourSwitch = gameData.valueOf(0);
-		final String scale = gameData.valueOf(1);
-		final String theirSwitch = gameData.valueOf(2);
-		
+//	private boolean doExtraDrive = true;
+	public AutonomousCommand(String team, String startPos, String autoMode){
 		// Test Mode
 		if (autoMode == "test")
 		{
+			//addSequential(new VisionCorrect(true, 4));
 			addSequential(new AutoDrive(5));
+			//addSequential(new VisionCorrect(true, 4));
 			addSequential(new AutoDrive(5));
+		//	addSequential(new VisionCorrect(true, 4));
 		}
 		
-		// This auto mode does the "proper action" depending on the starting position and gameData
-		if (autoMode == "auto")
+		// This auto mode places the gear on the peg depending on the starting position
+		if (autoMode == "gear")
 		{
-			if (startPos == "left") {
-				
-				if (gameData == "LLL") {
-					// Scale
+			if (startPos == "left")
+			{
+				if (team == "red")
+				{   // tested with competition robot on practice field
+					addSequential(new AutoDrive( 0.65, 90));
+					addSequential(new AutoDrive( 52.5 ));
+				//	addSequential(new VisionCorrect( true, 4));
+					addSequential(new AutoDrive( 0.65, 10));
 				}
-				
-				if (gameData == "RRR") {
-					// "Off" position
+				if (team == "blue")
+				{   // based on mirror of "red-right"
+					addSequential(new AutoDrive(0.65, 90));
+					addSequential(new AutoDrive(52.5));
+				//	addSequential(new VisionCorrect(true, 4));
+					addSequential(new AutoDrive(0.65, 10));
 				}
-				
-				if (gameData == "RLR") {
-					// Scale
-				}
-				
-				if (gameData == "LRL") {
-					// Switch
-				}
+				addSequential(new SetClawPosition(true));
+				addSequential(new PushGear(true));
+				addSequential(new Wait(0.6));
+				addSequential(new AutoDrive(-0.65, 20));
+				addSequential(new PushGear(false));
+				addSequential(new Wait(0.1));
+				addSequential(new SetClawPosition(false));
+				// drive to neutral zone after placement of peg (left)
+     			addSequential(new AutoDrive(-0.65, 20));
+     			addSequential(new AutoDrive(127.5));
+				addSequential(new AutoDrive(-0.65, 175));
 			}
-			
-			if (startPos == "middle") {
-				
-				if (gameData == "LLL") {
-					// Switch
-				}
-				
-				if (gameData == "RRR") {
-					// Switch
-				}
-				
-				if (gameData == "RLR") {
-					// Switch
-				}
-				
-				if (gameData == "LRL") {
-					// Switch
-				}
+			if (startPos == "middle")
+			{   // tested with competition robot on practice field
+				addSequential(new AutoDrive(0.65, 40));
+			//	addSequential(new VisionCorrect(true, 4));
+				addSequential(new AutoDrive(0.65, 20));
+				addSequential(new SetClawPosition(true));
+				addSequential(new PushGear(true));
+				addSequential(new Wait(0.6));
+				addSequential(new PushGear(false));
+				addSequential(new Wait(0.1));
+				addSequential(new PushGear(true));
+				addSequential(new Wait(0.6));
+				addSequential(new AutoDrive(-0.65, 15));
+				addSequential(new PushGear(false));
+				addSequential(new Wait(0.1));
+				addSequential(new SetClawPosition(false));
 			}
-			
-			if (startPos == "right") {
-				
-				if (gameData == "LLL") {
-					// "Off" position
-					
+			if (startPos == "right")
+			{
+				if (team == "red")
+				{   // tested with competition robot on practice field
+					addSequential(new AutoDrive(0.65, 90));
+					addSequential(new AutoDrive(-52.5));
+				//	addSequential(new VisionCorrect(true, 4));
+					addSequential(new AutoDrive(0.65, 10));
 				}
-				
-				if (gameData == "RRR") {
-					// Scale
-						
+				if (team == "blue")
+				{   // based on mirror of "red left"
+					addSequential(new AutoDrive(0.65, 90));
+					addSequential(new AutoDrive(-52.5));
+			//		addSequential(new VisionCorrect(true, 4));
+					addSequential(new AutoDrive(0.65, 10));
 				}
-				
-				if (gameData == "RLR") {
-					// Scale
+				addSequential(new SetClawPosition(true));
+				addSequential(new PushGear(true));
+				addSequential(new Wait(0.6));
+				addSequential(new PushGear(false));
+				addSequential(new Wait(0.1));
+				addSequential(new PushGear(true));
+				addSequential(new Wait(0.6));
+				addSequential(new AutoDrive(-0.65, 20));
+				addSequential(new PushGear(false));
+				addSequential(new Wait(0.1));
+				addSequential(new SetClawPosition(false));
+				// drive to neutral zone after placement of peg (right)
+     			addSequential(new AutoDrive(-0.65, 20));
+     			addSequential(new AutoDrive(-125));
+				addSequential(new AutoDrive(-0.65, 175));
 				}
-				
-				if (gameData == "LRL") {
-					// Switch
-				
-				}
-			}
 		}
 	}
 }
