@@ -1,5 +1,6 @@
 package org.usfirst.frc.team138.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -7,6 +8,10 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team138.robot.subsystems.*;
+import org.usfirst.frc138.Robot.commands.AutonomousCommandGroup;
+import org.usfirst.frc138.Robot.commands.DriveToTarget;
+import org.usfirst.frc138.Robot.commands.ElevateToTarget;
+import org.usfirst.frc138.Robot.commands.PlaceCube;
 import org.usfirst.frc.team138.robot.commands.*;
 //import edu.wpi.first.wpilibj.Preferences;
 import org.usfirst.frc.team138.robot.OI;
@@ -43,6 +48,7 @@ public class Robot extends IterativeRobot {
     
     // Global constants
     public static String mode; // "auto" or "teleop"
+    public static String gameData;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -69,7 +75,8 @@ public class Robot extends IterativeRobot {
 		
 		autoModeChooser = new SendableChooser<String>();
 		autoModeChooser.addObject("Nothing", "DNE");
-		autoModeChooser.addDefault("Place Gear", "gear");
+		autoModeChooser.addDefault("Automatic", "auto");
+		autoModeChooser.addObject("Manual", "manual");
 		autoModeChooser.addObject("Test" , "test");
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
 		
@@ -103,9 +110,11 @@ public class Robot extends IterativeRobot {
 	 */
     public void autonomousInit() {
     	mode = "auto";
+    	gameData = DriverStation.getInstance().getGameSpecificMessage();
         autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
         		startPosChooser.getSelected(),
-        		autoModeChooser.getSelected());
+        		autoModeChooser.getSelected(),
+        		gameData);
         autonomousCommand.start();
     }
 
