@@ -40,54 +40,86 @@ def processImage(img):
     # filter by color and intensity
 
 #Colors++++++++++++++++++++++++++++++++++++++++++
+#test red or blue
+    redStart = False
+    findScale = False
 #blue
-#    lower_blue = np.array([70,100,50])
-#   upper_blue = np.array([100,255,255])
-#    mask = cv2.inRange(img1, lower_blue, upper_blue)
-#red
-    #lower_blue = np.array([110,50,50])
-    #upper_blue = np.array([130,255,255])
-    #mask = cv2.inRange(img1, lower_blue, upper_blue)
+    if not (redStart):
+        lower_blue = np.array([99,100,100])
+        upper_blue = np.array([129,255,255])
+        mask = cv2.inRange(img1, lower_blue, upper_blue)
+#Red
+    if (redStart):
+        lower_red = np.array([0,100,100])
+        upper_red = np.array([10,255,255])
+        mask = cv2.inRange(img1, lower_red, upper_red)
+       
+        lower_red = np.array([160,100,100])
+        upper_red = np.array([179,255,255])
+        mask1 = cv2.inRange(img1, lower_red, upper_red)
     
-    lower_red = np.array([0,100,100])
-    upper_red = np.array([10,255,255])
-    mask = cv2.inRange(img1, lower_red, upper_red)
-    
-    lower_red = np.array([160,100,100])
-    upper_red = np.array([179,255,255])
-    mask1 = cv2.inRange(img1, lower_red, upper_red)
-
-    mask = cv2.bitwise_or(mask,mask1)
-
+        mask = cv2.bitwise_or(mask,mask1)
+    kernel = np.ones((7,7), np.uint8)
     # mask off the grayscale image
     gray = img1[:,:,2]
     ret = cv2.bitwise_and(gray,gray, mask= mask)
+    ret = cv2.dilate(ret,kernel,iterations = 5)    
+#    ret = cv2.bitwise_and(ret,gray)
+    #threshhold test
+    thresholdImage, ret = cv2.threshold(ret,127,255,cv2.THRESH_BINARY)
+    if (findScale):
+        edges = cv2.Canny(ret,50,150,apertureSize = 3)
+        minLineLength = 100
+        maxLineGap = 10
+        lines = cv2.HoughLinesP(edges,1,np.pi/180,100,minLineLength,maxLineGap)
+        for x1,y1,x2,y2 in lines[0]:
+            cv2.line(img,(x1,y1),(x2,y2),(0,255,255),2)
+
+
+#        cv2.imwrite('hough;ines3.jpg',img)
     cv2.imshow('ret',ret)
+    
+
+    
+    
     
     # sum in x and y looking the two vertical bars
     xsum = np.sum(ret,0)
     ysum = np.sum(ret,1)
     
-    findPeaks = False
+    lookforPeaks = True
     targetFound = 0
-    if (findPeaks):
+    if (lookforPeaks):
         xpeaks = findPeaks(xsum)
         ypeaks = findPeaks(ysum)
         print 'X=',xpeaks,'    Y=',ypeaks
         
         
-        if len(xpeaks) == 2 and len(ypeaks) > 0:
+
+        if len(xpeaks) == 1  and len(ypeaks) > 0:
+            xend = len(xpeaks)-1
+            xcenter = xpeaks[0][0] + (xpeaks[xend][1]-xpeaks[0][0]) / 2
+            yend = len(ypeaks)-1
+            ycenter = ypeaks[0][0] + (ypeaks[yend][1]-ypeaks[0][0]) / 2
+            targetFound = 1
+        elif len(xpeaks)==2 and len(ypeaks) >0:
+            xend = len(xpeaks)-1
             xcenter = xpeaks[0][1] + (xpeaks[1][0]-xpeaks[0][1]) / 2
             yend = len(ypeaks)-1
             ycenter = ypeaks[0][0] + (ypeaks[yend][1]-ypeaks[0][0]) / 2
             targetFound = 1
-            
-        
+    
+    #testing things
+    #grayContours = locateContours(ret,0,0)
+    #cv2.imshow()
+    
+    
     contours = locateContours(img,0,0)  
     if (targetFound == 1):
         drawCrosshair(img,xcenter,ycenter,True)
         
-    if (findPeaks):
+        
+    if (lookforPeaks):
         plt.figure(1)
         plt.subplot(2,1,1)
         plt.plot(xsum)
@@ -98,7 +130,7 @@ def processImage(img):
         
     cv2.imshow('Input',img)
     
-    if (findPeaks):
+    if (lookforPeaks):
         plt.show(10)
     
     return ret
