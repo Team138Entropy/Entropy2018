@@ -30,7 +30,33 @@ def drawCrosshair(img,x,y,match):
     for k in range(4):
         cv2.circle(img,(x,y),k*size/3,color,1)    
 
-nColors = 4    
+nColors = 4 
+def adaptiveThreshold(img,percentile):
+    """
+    Threshold an image by producting a histogram of the intensities
+    and then a cumulative array and setting the threshold at the
+    percentile value (fraction between 0 and 1.0)
+    """
+    sums,bins = np.histogram(img.ravel(),256)
+    cumsums = np.cumsum(sums)
+    threshold = 0
+    limit = cumsums[255] * percentile
+    for k in cumsums:
+        if k < limit:
+            threshold = threshold + 1
+        else:
+            break
+    ret,img1 = cv2.threshold(img,threshold,255,cv2.THRESH_BINARY)
+    return img1
+
+def cleanupImage(img,minSize):
+    """
+    cleanup an image removing low level noise
+    """
+    kernel = np.ones((minSize,minSize),np.uint8)
+    ret = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+    return ret
+    
 def processImage(img):
     
    
@@ -39,9 +65,10 @@ def processImage(img):
     
     # filter by color and intensity
 
+
 #Colors++++++++++++++++++++++++++++++++++++++++++
 #test red or blue
-    redStart = False
+    redStart = True
     findScale = False
 #blue
     if not (redStart):
@@ -60,13 +87,28 @@ def processImage(img):
     
         mask = cv2.bitwise_or(mask,mask1)
     kernel = np.ones((7,7), np.uint8)
+    mask = cv2.dilate(mask,kernel,iterations = 5)
     # mask off the grayscale image
     gray = img1[:,:,2]
     ret = cv2.bitwise_and(gray,gray, mask= mask)
-    ret = cv2.dilate(ret,kernel,iterations = 5)    
-#    ret = cv2.bitwise_and(ret,gray)
-    #threshhold test
-    thresholdImage, ret = cv2.threshold(ret,127,255,cv2.THRESH_BINARY)
+    thresholded = adaptiveThreshold(ret,0.95)
+    thresholded = cleanupImage(thresholded,11)    
+    lightContours = locateContours(thresholded,0,0)
+    
+
+#    whatsLeft=[]
+    points = []
+    for cnt in lightContours:
+        x,y,w,h = cv2.boundingRect(cnt)
+        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+        centerx = x+(w/2)
+        centery = y-(h/2)
+        
+        points = points+[[centerx,centery]]
+    fittedLine=cv2.fitLine(points, cv2.DIST_L2, 0, 0.01, 0.01)
+    
+
+
     if (findScale):
         edges = cv2.Canny(ret,50,150,apertureSize = 3)
         minLineLength = 100
@@ -78,16 +120,16 @@ def processImage(img):
 
 #        cv2.imwrite('hough;ines3.jpg',img)
     cv2.imshow('ret',ret)
-    
+    cv2.imshow('threshold',thresholded)
 
     
-    
+    ch = 0xFF & cv2.waitKey(1000) 
     
     # sum in x and y looking the two vertical bars
     xsum = np.sum(ret,0)
     ysum = np.sum(ret,1)
     
-    lookforPeaks = True
+    lookforPeaks = False
     targetFound = 0
     if (lookforPeaks):
         xpeaks = findPeaks(xsum)
@@ -237,7 +279,8 @@ if __name__ == '__main__':
     """
     print "OpenCV Version:",cv2.__version__
     
-    processDirectory("C:\\Users\\Team138\\Documents\\Team 138\\vision 2018\\FIRST PowerUp Field Pics\\FIRST PowerUp Field Pics")
+#    processDirectory("C:\\Users\\Team138\\Documents\\Team 138\\vision 2018\\FIRST PowerUp Field Pics\\FIRST PowerUp Field Pics")
+    processDirectory("C:/Users/Team138/Documents/Team 138/vision 2018/FIRST PowerUp Field Pics/Red Scale pics")
     #processDirectory("LED Boiler")
     #processDirectory("Red Boiler")
     #processDirectory("Blue Boiler")
