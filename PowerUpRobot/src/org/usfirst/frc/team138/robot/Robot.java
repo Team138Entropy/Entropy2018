@@ -8,10 +8,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team138.robot.subsystems.*;
-import org.usfirst.frc138.Robot.commands.AutonomousCommandGroup;
-import org.usfirst.frc138.Robot.commands.DriveToTarget;
-import org.usfirst.frc138.Robot.commands.ElevateToTarget;
-import org.usfirst.frc138.Robot.commands.PlaceCube;
 import org.usfirst.frc.team138.robot.commands.*;
 //import edu.wpi.first.wpilibj.Preferences;
 

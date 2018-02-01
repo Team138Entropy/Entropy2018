@@ -1,6 +1,8 @@
 package org.usfirst.frc.team138.robot;
 
 
+import com.ctre.phoenix.motorcontrol.SensorCollection;
+
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
@@ -15,8 +17,11 @@ public class Sensors {
 	
     static Joystick driverStick = new Joystick(0);
 	
-	static Encoder leftEncoder;
-	static Encoder rightEncoder;
+//	static Encoder leftEncoder;
+//	static Encoder rightEncoder;
+	
+	public static SensorCollection leftSensorCollection;
+	public static SensorCollection rightSensorCollection;
 	
 	static UsbCamera gearCamera;
 	static Relay cameraLight = new Relay(RobotMap.GEAR_CAMERA_LIGHT_PORT);
@@ -30,29 +35,26 @@ public class Sensors {
         gyro.calibrate();
         gyro.reset();
         
-        leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_PORT_A, RobotMap.LEFT_ENCODER_PORT_B);
-		rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_PORT_A, RobotMap.RIGHT_ENCODER_PORT_B);
-    	leftEncoder.setDistancePerPulse(0.124);
-    	rightEncoder.setDistancePerPulse(0.124);
+//        leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_PORT_A, RobotMap.LEFT_ENCODER_PORT_B);
+//		rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_PORT_A, RobotMap.RIGHT_ENCODER_PORT_B);
+		leftSensorCollection = Robot.drivetrain.frontLeftTalon.getSensorCollection();
+		rightSensorCollection = Robot.drivetrain.frontRightTalon.getSensorCollection();
+//    	leftEncoder.setDistancePerPulse(0.124);
+//    	rightEncoder.setDistancePerPulse(0.124);
     	resetEncoders();
-    	
-
 	}
 	
-
-	
-	
 	public static double getLeftDistance() {
-		return leftEncoder.getDistance();
+		return leftSensorCollection.getQuadraturePosition();
 	}
 	
 	public static double getRightDistance() {
-		return rightEncoder.getDistance();
+		return rightSensorCollection.getQuadraturePosition();
 	}
 	
 	public static void resetEncoders() {
-		leftEncoder.reset();
-		rightEncoder.reset();
+		leftSensorCollection.setQuadraturePosition(0, 0);
+		rightSensorCollection.setQuadraturePosition(0, 0);
 	}	
 	
 	public static void updateSmartDashboard(){
@@ -93,8 +95,8 @@ public class Sensors {
 		{
 			SmartDashboard.putString("Ram Position:", "Retracted");
 		}
-		SmartDashboard.putNumber("Left Encoder:", leftEncoder.getDistance());
-		SmartDashboard.putNumber("Right Encoder:", rightEncoder.getDistance());
+		SmartDashboard.putNumber("Left Encoder:", getLeftDistance());
+		SmartDashboard.putNumber("Right Encoder:", getRightDistance());
 		// User command (joystick)
 		userCmd = OI.getFieldCommand();
 		SmartDashboard.putNumber("Cmd Angle:", userCmd[1]);
