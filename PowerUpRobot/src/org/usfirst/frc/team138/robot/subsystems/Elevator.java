@@ -1,11 +1,16 @@
 package org.usfirst.frc.team138.robot.subsystems;
 
+import org.usfirst.frc.team138.robot.RobotMap;
+
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Elevator extends Subsystem{
 	protected void initDefaultCommand() {
 			
 	}
+	
+	Talon elevator = new Talon(RobotMap.ELEVATOR_PORT);
 	
 	public enum ElevatorTarget{
 		etAquire,

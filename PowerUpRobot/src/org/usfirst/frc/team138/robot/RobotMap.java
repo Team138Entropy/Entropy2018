@@ -24,6 +24,9 @@ public class RobotMap {
 	public final static double FUEL_ACQ_SPEED = -0.5;
 	public final static double FUEL_SHOOT_SPEED = 0.8;
 	
+	public final static int ELEVATOR_PORT = 0;
+	
+	
 	// GPIO
 	public final static int LEFT_ENCODER_PORT_A = 0;
 	public final static int LEFT_ENCODER_PORT_B = 1;
