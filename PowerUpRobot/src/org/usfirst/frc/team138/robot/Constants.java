@@ -18,5 +18,10 @@ public class Constants {
 		//   Freq is location of filter pole in Hz
 		public static double rotateAlpha = .02*6.28*1;
 		
+		//
+		// This is our encoder constant for distance per pulse
+		//
+		public static double distancePerPulse = 0.125;
+		
 		
 }
