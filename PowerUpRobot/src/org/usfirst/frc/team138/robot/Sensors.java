@@ -35,11 +35,11 @@ public class Sensors {
         gyro.calibrate();
         gyro.reset();
         
-//        leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_PORT_A, RobotMap.LEFT_ENCODER_PORT_B);
+//      leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_PORT_A, RobotMap.LEFT_ENCODER_PORT_B);
 //		rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_PORT_A, RobotMap.RIGHT_ENCODER_PORT_B);
 		leftSensorCollection = Robot.drivetrain.frontLeftTalon.getSensorCollection();
 		rightSensorCollection = Robot.drivetrain.frontRightTalon.getSensorCollection();
-//    	leftEncoder.setDistancePerPulse(0.124);
+//		leftEncoder.setDistancePerPulse(0.124);
 //    	rightEncoder.setDistancePerPulse(0.124);
     	resetEncoders();
 	}
