@@ -11,7 +11,7 @@ public class ClimbingMechanism extends Subsystem{
 	
 	// Define Climbing Parts Here
 	Talon climbingMotor = new Talon(RobotMap.ROPE_CLIMBING_WINCH_PORT);
-	Solenoid ropeGrasper = new Solenoid(RobotMap.ROPE_GRABBING_SOLENOID_PORT);
+	//Solenoid ropeGrasper = new Solenoid(RobotMap.ROPE_GRABBING_SOLENOID_PORT);
 	
 	boolean isOpen = true;
 
@@ -27,7 +27,7 @@ public class ClimbingMechanism extends Subsystem{
 	public void setGrasper(boolean open)
 	{
 		isOpen = open;
-		ropeGrasper.set(!open);
+	//	ropeGrasper.set(!open);
 	}
 	
 	public boolean getOpen()

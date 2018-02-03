@@ -12,6 +12,8 @@ public class RobotMap {
 	public final static int LEFT_MOTOR_CHANNEL_BACK = 3;
 	public final static int RIGHT_MOTOR_CHANNEL_FRONT = 4;
 	public final static int RIGHT_MOTOR_CHANNEL_BACK = 5;
+	public final static int CUBE_PWM_GRASPER_PORT = 6;
+
 	
 	// PWM
 	public final static int ROPE_CLIMBING_WINCH_PORT = 0;
@@ -40,12 +42,8 @@ public class RobotMap {
 	public final static int SHOOTER_ENCODER_PORT = 2;
 	
 	// Pneumatic Control Module
-	public final static int GEAR_GRIPPER_PORT = 0;
-	public final static int GEAR_WRIST_PORT = 1;
-	public final static int GEAR_CHUTE_GUARD_PORT = 2;
-	public final static int GEAR_RAM_PORT = 3;
-	public final static int SHOOTER_GATE_PORT = -1;
-	public final static int ROPE_GRABBING_SOLENOID_PORT = 4;
+	public final static int CUBE_SOLENOID_GRASPER_PORT = 0;
+	public final static int CUBE_SOLENOID_WRIST_PORT = 2;
 	
 	// Relay
 	public final static int GEAR_CAMERA_LIGHT_PORT = 0;

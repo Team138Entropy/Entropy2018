@@ -11,9 +11,9 @@ public class AutoGearPlace extends CommandGroup {
 		
 	//	addSequential(new VisionCorrect(true, 4));
 		//Robot stops driving forward when acoustic rangefinder is less than threshold
-		addSequential(new SetClawPosition(true));
-		addSequential(new PushGear());
-		addSequential(new PushGear());
-		addSequential(new AutoDrive(-0.5, 12));
+//		addSequential(new SetClawPosition(true));
+//		addSequential(new PushGear());
+//		addSequential(new PushGear());
+//		addSequential(new AutoDrive(-0.5, 12));
 	}
 }

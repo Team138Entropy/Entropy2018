@@ -52,41 +52,41 @@ public class Sensors {
 	public static void updateSmartDashboard(){
 		double [] userCmd;
 		
-		if (Robot.claw.clawIsOpen())
-		{
-			SmartDashboard.putString("Claw State:", "Open");
-		}
-		else
-		{
-			SmartDashboard.putString("Claw State:", "Closed");
-		}
-		
-		if (Robot.claw.wristIsUp())
-		{
-			SmartDashboard.putString("Wrist Position:", "Up");
-		}
-		else
-		{
-			SmartDashboard.putString("Wrist Position:", "Down");
-		}
-		
-		if (Robot.claw.guardIsUp())
-		{
-			SmartDashboard.putString("Guard Position:", "Up");
-		}
-		else
-		{
-			SmartDashboard.putString("Guard Position:", "Down");
-		}
-		
-		if (Robot.claw.ramExtended())
-		{
-			SmartDashboard.putString("Ram Position:", "Extended");
-		}
-		else
-		{
-			SmartDashboard.putString("Ram Position:", "Retracted");
-		}
+//		if (Robot.claw.clawIsOpen())
+//		{
+//			SmartDashboard.putString("Claw State:", "Open");
+//		}
+//		else
+//		{
+//			SmartDashboard.putString("Claw State:", "Closed");
+//		}
+//		
+//		if (Robot.claw.wristIsUp())
+//		{
+//			SmartDashboard.putString("Wrist Position:", "Up");
+//		}
+//		else
+//		{
+//			SmartDashboard.putString("Wrist Position:", "Down");
+//		}
+//		
+//		if (Robot.claw.guardIsUp())
+//		{
+//			SmartDashboard.putString("Guard Position:", "Up");
+//		}
+//		else
+//		{
+//			SmartDashboard.putString("Guard Position:", "Down");
+//		}
+//		
+//		if (Robot.claw.ramExtended())
+//		{
+//			SmartDashboard.putString("Ram Position:", "Extended");
+//		}
+//		else
+//		{
+//			SmartDashboard.putString("Ram Position:", "Retracted");
+//		}
 		SmartDashboard.putNumber("Left Encoder:", getLeftDistance());
 		SmartDashboard.putNumber("Right Encoder:", getRightDistance());
 		// User command (joystick)

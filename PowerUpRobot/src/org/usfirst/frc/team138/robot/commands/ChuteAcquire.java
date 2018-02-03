@@ -6,8 +6,8 @@ public class ChuteAcquire extends CommandGroup
 {
 	public ChuteAcquire()
 	{
-		addSequential(new SetWristPosition(true));
-		addSequential(new SetClawPosition(true));
+//		addSequential(new SetWristPosition(true));
+//		addSequential(new SetClawPosition(true));
 		//addSequential(new FindGearCloseClaw());
 	}
 }
