@@ -69,29 +69,15 @@ public final class OI {
     static Button sampleButton 		= new JoystickButton(driverStick, xboxA);
     
     // Operator Stick
-    static Button toggleGearRamButton 			= new JoystickButton(operatorStick, nykoButton1);
-    static Button toggleRopeGrabberButton 		= new JoystickButton(operatorStick, nykoButton2);
-    static Button chuteAcquireButton			= new JoystickButton(operatorStick, nykoButton3);
-    static Button floorAcquireButton	 		= new JoystickButton(operatorStick, nykoButton4);
-    static Button toggleWristButton 			= new JoystickButton(operatorStick, nykoLeftBumper);
-    static Button toggleClawButton 			= new JoystickButton(operatorStick, nykoRightBumper);
-    static Button shootButton 					= new JoystickButton(operatorStick, nykoLeftTrigger);
-    static Button zeroTurn                     = new JoystickButton(operatorStick, nykoRightTrigger);
-    static Button autoPositionShooterButton 	= new JoystickButton(operatorStick, nykoMiddle9);
-    static Button autoGearPlaceButton 			= new JoystickButton(operatorStick, nykoMiddle10);
-    static Button cancelAutoRoutinesButton 	= new JoystickButton(operatorStick, nykoMiddle11);
+    static Button elevateToAcquireButton = new JoystickButton(operatorStick, nykoButton1);
+    static Button elevateToSwitchButton = new JoystickButton(operatorStick, nykoButton2);
+    static Button elevateToScaleButton = new JoystickButton(operatorStick, nykoButton3);
     
     static double lastX=0;
     static double LastY=0;
     
     public OI(){
-    	
-    }
-    
-    public static boolean autoRoutinesCancelled()
-    {
-    	System.out.println("cancelled auto routines");
-    	return cancelAutoRoutinesButton.get();
+    	elevateToAcquireButton.wh
     }
     
 	public static double getMoveSpeed()
