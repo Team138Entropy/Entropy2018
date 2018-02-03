@@ -34,9 +34,9 @@ public class AutonomousCommand extends CommandGroup {
 				if (gameData == "LLL") {
 					// Scale
 					
-					addsequential(new AutoDrive( 0.8, Constants.leftAngleThirty, Constants.distanceLeftScale));
-					addsequential(new AutoDrive(Constants.rightAngleTwenty));
-					addsequential(new Wait(Constants.oneSecond));
+					addSequential(new AutoDrive( 0.8, Constants.leftAngleTwenty, Constants.distanceLeftScale));
+					addSequential(new AutoDrive(Constants.rightAngleTwenty));
+					addSequential(new Wait(Constants.oneSecond));
 					/* 
 					 * 
 					 * Drive forward veering slightly left
@@ -53,7 +53,7 @@ public class AutonomousCommand extends CommandGroup {
 				if (gameData == "RRR") {
 					// Drive forward ~11 feet
 					
-					addsequential(new AutoDrive( 0.8, 132));
+					addSequential(new AutoDrive( 0.8, 132));
 					
 				}
 				
@@ -145,7 +145,7 @@ public class AutonomousCommand extends CommandGroup {
 				if (gameData == "LLL") {
 					// Drive forward ~11 ft
 					
-					addsequential(new AutoDrive(0.8, 132);
+					addSequential(new AutoDrive(0.8, 132));
 					
 				}
 				
