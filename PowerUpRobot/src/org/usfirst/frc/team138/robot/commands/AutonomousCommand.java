@@ -1,6 +1,7 @@
 package org.usfirst.frc.team138.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import org.usfirst.frc.team138.robot.Constants;
 
 // BedfordBase branch started 2017-03-25 - jmcg
 // 1. Increase "advance to neutral zone" distance to 10 feet"
@@ -32,18 +33,43 @@ public class AutonomousCommand extends CommandGroup {
 				
 				if (gameData == "LLL") {
 					// Scale
+					
+					addsequential(new AutoDrive( 0.8, Constants.leftAngleThirty, Constants.distanceLeftScale));
+					addsequential(new AutoDrive(Constants.rightAngleTwenty));
+					addsequential(new Wait(Constants.oneSecond));
+					/* 
+					 * 
+					 * Drive forward veering slightly left
+					 * Face right
+					 * Wait
+					 * Raise arm to highest position
+					 * Wait
+					 * Release cube
+					 * 
+					 */
+					
 				}
 				
 				if (gameData == "RRR") {
-					// "Off" position
-				}
-				
-				if (gameData == "RLR") {
-					// Scale
+					// Drive forward ~11 feet
+					
+					addsequential(new AutoDrive( 0.8, 132));
+					
 				}
 				
 				if (gameData == "LRL") {
 					// Switch
+					
+					/*
+					 * 
+					 * Drive forward veering slightly left
+					 * Wait
+					 * Raise arm to lowest position
+					 * Wait
+					 * Release cube
+					 * 
+					 */
+					
 				}
 			}
 			
@@ -51,39 +77,125 @@ public class AutonomousCommand extends CommandGroup {
 				
 				if (gameData == "LLL") {
 					// Switch
+					
+					/*
+					 *
+					 * Drive forward veering farther left
+					 * Turn right
+					 * Wait
+					 * Raise arm to lowest position
+					 * Wait
+					 * Release cube
+					 * 
+					 */
+					
 				}
 				
 				if (gameData == "RRR") {
 					// Switch
+					
+					/*
+					 *
+					 * Drive forward veering farther right
+					 * Turn left
+					 * Wait
+					 * Raise arm to lowest position
+					 * Wait
+					 * Release cube
+					 * 
+					 */
+					
 				}
 				
 				if (gameData == "RLR") {
 					// Switch
+					
+					/*
+					 *
+					 * Drive forward veering farther right
+					 * Turn left
+					 * Wait
+					 * Raise arm to lowest position
+					 * Wait
+					 * Release cube
+					 * 
+					 */
+					
 				}
 				
 				if (gameData == "LRL") {
 					// Switch
+					
+					/*
+					 *
+					 * Drive forward veering farther left
+					 * Turn right
+					 * Wait
+					 * Raise arm to lowest position
+					 * Wait
+					 * Release cube
+					 * 
+					 */
+					
 				}
 			}
 			
 			if (startPos == "right") {
 				
 				if (gameData == "LLL") {
-					// "Off" position
+					// Drive forward ~11 ft
+					
+					addsequential(new AutoDrive(0.8, 132);
 					
 				}
 				
 				if (gameData == "RRR") {
 					// Scale
+					
+					/*
+					 *
+					 * Drive forward veering slightly right
+					 * Turn left
+					 * Wait
+					 * Raise arm to highest position
+					 * Wait
+					 * Release cube
+					 * 
+					 */
 						
 				}
 				
 				if (gameData == "RLR") {
 					// Scale
+					
+					/*
+					 *
+					 * Drive forward veering farther left
+					 * Turn right
+					 * Drive forward
+					 * Turn right
+					 * Wait
+					 * Raise arm to highest position
+					 * Wait
+					 * Release cube
+					 * 
+					 */
+					
 				}
 				
 				if (gameData == "LRL") {
 					// Switch
+					
+					/*
+					 *
+					 * Drive forward veering farther left
+					 * Turn right
+					 * Wait
+					 * Raise arm to lowest position
+					 * Wait
+					 * Release cube
+					 * 
+					 */
 				
 				}
 			}
