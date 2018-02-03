@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 //import edu.wpi.first.wpilibj.Servo;
@@ -16,9 +15,6 @@ public class Sensors {
 	public static ADXRS450_Gyro gyro; 
 	
     static Joystick driverStick = new Joystick(0);
-	
-//	static Encoder leftEncoder;
-//	static Encoder rightEncoder;
 	
 	public static SensorCollection leftSensorCollection;
 	public static SensorCollection rightSensorCollection;
@@ -35,12 +31,8 @@ public class Sensors {
         gyro.calibrate();
         gyro.reset();
         
-//      leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_PORT_A, RobotMap.LEFT_ENCODER_PORT_B);
-//		rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_PORT_A, RobotMap.RIGHT_ENCODER_PORT_B);
 		leftSensorCollection = Robot.drivetrain.frontLeftTalon.getSensorCollection();
 		rightSensorCollection = Robot.drivetrain.frontRightTalon.getSensorCollection();
-//		leftEncoder.setDistancePerPulse(0.124);
-//    	rightEncoder.setDistancePerPulse(0.124);
     	resetEncoders();
 	}
 	
