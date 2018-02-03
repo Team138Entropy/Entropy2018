@@ -30,6 +30,7 @@ public class Robot extends IterativeRobot {
     public static final ClimbingMechanism climbingMechanism = new ClimbingMechanism();
     public static final Claw claw = new Claw();
     public static final Shooter shooter = new Shooter();
+    public static final Elevator elevator = new Elevator();
     
 	Preferences prefs = Preferences.getInstance();
 	
