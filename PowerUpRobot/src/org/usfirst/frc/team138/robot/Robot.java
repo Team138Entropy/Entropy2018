@@ -27,7 +27,7 @@ public class Robot extends IterativeRobot {
         
     // Subsystems
     public static final Drivetrain drivetrain = new Drivetrain();
-    public static final Elevator elevator = new Elevator();
+//    public static final Elevator elevator = new Elevator();
     
 	Preferences prefs = Preferences.getInstance();
 	
@@ -67,10 +67,7 @@ public class Robot extends IterativeRobot {
 		autoModeChooser.addObject("Manual", "manual");
 		autoModeChooser.addObject("Test" , "test");
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
-		
-		
-		
-		
+			
 
     }
 	

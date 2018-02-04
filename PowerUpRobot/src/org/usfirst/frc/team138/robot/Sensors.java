@@ -25,37 +25,22 @@ public class Sensors {
 	public static double gyroBias=0;
 	
 	public static void initialize() {
-        gyro = new ADXRS450_Gyro();
-        gyro.calibrate();
-        gyro.reset();
         
-		leftSensorCollection = Robot.drivetrain.frontLeftTalon.getSensorCollection();
-		rightSensorCollection = Robot.drivetrain.frontRightTalon.getSensorCollection();
-    	resetEncoders();
 	}
 	
 	public static double getLeftDistance() {
-		return leftSensorCollection.getQuadraturePosition();
+		return 0; // leftSensorCollection.getQuadraturePosition();
 	}
 	
 	public static double getRightDistance() {
-		return rightSensorCollection.getQuadraturePosition();
+		return 0; //rightSensorCollection.getQuadraturePosition();
 	}
 	
 	public static void resetEncoders() {
-		leftSensorCollection.setQuadraturePosition(0, 0);
-		rightSensorCollection.setQuadraturePosition(0, 0);
 	}	
 	
 	public static void updateSmartDashboard(){
-		double [] userCmd;
 				
-		SmartDashboard.putNumber("Left Encoder:", getLeftDistance());
-		SmartDashboard.putNumber("Right Encoder:", getRightDistance());
-		// User command (joystick)
-		userCmd = OI.getFieldCommand();
-		SmartDashboard.putNumber("Cmd Angle:", userCmd[1]);
-		SmartDashboard.putNumber("Magn:", userCmd[0]);
 		
 	}
 }

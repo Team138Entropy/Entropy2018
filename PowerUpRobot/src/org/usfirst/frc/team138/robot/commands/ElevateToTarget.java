@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class ElevateToTarget extends Command {
 	
 	public ElevateToTarget(String target){
-		Robot.elevator.Elevate(Robot.elevator.ConvertToTarget(target));
+//		Robot.elevator.Elevate(Robot.elevator.ConvertToTarget(target));
 	}
 	
 
