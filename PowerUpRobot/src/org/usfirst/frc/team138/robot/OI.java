@@ -85,19 +85,6 @@ public final class OI {
     static double LastY=0;
     
     public OI(){
-    	toggleGearRamButton.whileHeld(new PushGear());
-    	chuteAcquireButton.whenPressed(new ChuteAcquire());
-    	//floorAcquireButton.whenPressed(new FloorAcquire());
-    	toggleWristButton.whenPressed(new SetWristPosition());
-    	toggleClawButton.whenPressed(new SetClawPosition());
-    	toggleRopeGrabberButton.whenPressed(new GraspRope());
-    	//autoPositionShooterButton.whenPressed(new VisionCorrect(false, 4));
-    	//autoGearPlaceButton.whenPressed(new VisionCorrect2Step(4));
-  //  	driverAutoGearButton.whenPressed(new VisionCorrect(true, 4));
-    	
-    	// Buttons to Align gyro with Cardinal directions
-    //	Align_0Deg.whileHeld( new Align_Gyro(0));
-    	
     	
     }
     

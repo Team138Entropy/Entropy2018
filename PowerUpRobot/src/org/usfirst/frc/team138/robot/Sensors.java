@@ -7,7 +7,6 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Relay;
 //import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -20,7 +19,6 @@ public class Sensors {
 	public static SensorCollection rightSensorCollection;
 	
 	static UsbCamera gearCamera;
-	static Relay cameraLight = new Relay(RobotMap.GEAR_CAMERA_LIGHT_PORT);
 	static UsbCamera groundCamera;
 	//public static Entropy2017Targeting cameraProcessor;
 	
@@ -51,42 +49,7 @@ public class Sensors {
 	
 	public static void updateSmartDashboard(){
 		double [] userCmd;
-		
-//		if (Robot.claw.clawIsOpen())
-//		{
-//			SmartDashboard.putString("Claw State:", "Open");
-//		}
-//		else
-//		{
-//			SmartDashboard.putString("Claw State:", "Closed");
-//		}
-//		
-//		if (Robot.claw.wristIsUp())
-//		{
-//			SmartDashboard.putString("Wrist Position:", "Up");
-//		}
-//		else
-//		{
-//			SmartDashboard.putString("Wrist Position:", "Down");
-//		}
-//		
-//		if (Robot.claw.guardIsUp())
-//		{
-//			SmartDashboard.putString("Guard Position:", "Up");
-//		}
-//		else
-//		{
-//			SmartDashboard.putString("Guard Position:", "Down");
-//		}
-//		
-//		if (Robot.claw.ramExtended())
-//		{
-//			SmartDashboard.putString("Ram Position:", "Extended");
-//		}
-//		else
-//		{
-//			SmartDashboard.putString("Ram Position:", "Retracted");
-//		}
+				
 		SmartDashboard.putNumber("Left Encoder:", getLeftDistance());
 		SmartDashboard.putNumber("Right Encoder:", getRightDistance());
 		// User command (joystick)
