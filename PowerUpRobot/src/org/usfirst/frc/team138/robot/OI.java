@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 //import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team138.robot.commands.*;
+import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -77,7 +78,9 @@ public final class OI {
     static double LastY=0;
     
     public OI(){
-    	elevateToAcquireButton.wh
+    	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.etAquire));
+    	elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.etSwitch));
+    	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.etScale));
     }
     
 	public static double getMoveSpeed()
