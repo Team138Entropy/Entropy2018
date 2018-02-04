@@ -23,5 +23,9 @@ public class Constants {
 		//
 		public static double distancePerPulse = 0.125;
 		
-		
+			// Set direction between command speed and actual drive direction
+	//public final static double leftDriveDirection=1;
+	//public final static double rightDriveDirection=1;
+	public final static double rotateDriveDirection=-1;
+
 }
