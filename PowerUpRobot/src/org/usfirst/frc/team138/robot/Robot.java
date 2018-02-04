@@ -27,7 +27,7 @@ public class Robot extends IterativeRobot {
         
     // Subsystems
     public static final Drivetrain drivetrain = new Drivetrain();
-//    public static final Elevator elevator = new Elevator();
+    public static final Elevator elevator = new Elevator();
     
 	Preferences prefs = Preferences.getInstance();
 	
@@ -114,8 +114,9 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
     	mode = "teleop";
         if (autonomousCommand != null) {
-        	autonomousCommand.cancel();
+        	autonomousCommand.cancel();        	
         }        
+    	Sensors.resetEncoders();
     }
 
     /**

@@ -25,17 +25,17 @@ public class Drivetrain extends Subsystem{
 
 
 	protected void initDefaultCommand() {
-		frontLeftTalon.setInverted(true);
+/*		frontLeftTalon.setInverted(true);
 		backLeftTalon.setInverted(true);
 		frontRightTalon.setInverted(true);
 		backRightTalon.setInverted(true);
-
+*/
 		setDefaultCommand(new TeleopDrive());
 	}
 
 	public void drive(double moveSpeed, double rotateSpeed)
 	{
-		drivetrain.arcadeDrive(moveSpeed, rotateSpeed*Constants.rotateDriveDirection);
+		drivetrain.arcadeDrive(moveSpeed, rotateSpeed);
 	}
 
 	public void driveTank(double leftSpeed, double rightSpeed) 
@@ -49,7 +49,7 @@ public class Drivetrain extends Subsystem{
 		//rotateSpeed = -rotateSpeed;
 		// Filter input speeds
 		moveSpeed = applyDeadZone(moveSpeed);
-		rotateSpeed = applyDeadZone(rotateSpeed)*Constants.rotateDriveDirection;
+		rotateSpeed = applyDeadZone(rotateSpeed);
 
 		// Motor Speeds on both the left and right sides
 		double leftMotorSpeed  = getLeftMotorSpeed(moveSpeed, rotateSpeed);
