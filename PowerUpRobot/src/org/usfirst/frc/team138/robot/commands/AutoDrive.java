@@ -67,7 +67,7 @@ public class AutoDrive extends Command implements PIDOutput{
 	 * @param angle Angle, in degrees, to turn to. Negative angles turn left, positive angles turn right
 	 * @param offsetInches Number of inches the robot is off center of the target
 	 */
-	public AutoDrive(double speed, double angle, double offsetInches)
+	public AutoDrive(double speed, double angle, double offsetCentimeters)
 	{
 		requires(Robot.drivetrain);
 		rotateInPlace = false;
@@ -75,7 +75,7 @@ public class AutoDrive extends Command implements PIDOutput{
 		targetAngle = angle;
 		driveSpeed = speed;
 		// Arc length
-		driveDistance = 2 * Math.PI * angle / 360 * offsetInches / Math.sin(angle);
+		driveDistance = 2 * Math.PI * angle / 360 * offsetCentimeters / Math.sin(angle);
 		
 	}
 
