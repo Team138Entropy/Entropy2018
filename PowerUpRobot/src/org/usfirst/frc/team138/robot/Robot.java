@@ -68,10 +68,7 @@ public class Robot extends IterativeRobot {
 		autoModeChooser.addObject("Manual", "manual");
 		autoModeChooser.addObject("Test" , "test");
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
-		
-		
-		
-		
+			
 
     }
 	
@@ -118,8 +115,9 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
     	mode = "teleop";
         if (autonomousCommand != null) {
-        	autonomousCommand.cancel();
+        	autonomousCommand.cancel();        	
         }        
+    	Sensors.resetEncoders();
     }
 
     /**

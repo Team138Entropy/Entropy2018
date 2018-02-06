@@ -14,17 +14,11 @@ public class RobotMap {
 	public final static int RIGHT_MOTOR_CHANNEL_BACK    = 5;
 	public final static int LEFT_CUBE_CAN_GRASPER_PORT  = 6;
 	public final static int RIGHT_CUBE_CAN_GRASPER_PORT = 7;
-
+  
+	public final static int ELEVATOR_PORT = 2;
 	
-	// PWM
-	public final static int ELEVATOR_PORT = 0;
-	
-	
-	// GPIO
-	public final static int LEFT_ENCODER_PORT_A = 0;
-	public final static int LEFT_ENCODER_PORT_B = 1;
-	public final static int RIGHT_ENCODER_PORT_A = 3;
-	public final static int RIGHT_ENCODER_PORT_B = 2;
+//	public final static int LEFT_ENCODER_PORT = LEFT_MOTOR_CHANNEL_FRONT;
+//	public final static int RIGHT_ENCODER_PORT = RIGHT_MOTOR_CHANNEL_FRONT;
 	
 	// Analog Input
 	
