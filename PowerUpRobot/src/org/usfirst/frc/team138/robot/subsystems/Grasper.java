@@ -15,13 +15,13 @@ public class Grasper extends Subsystem{
 	
 	Compressor compressor = new Compressor();
 	
-	Solenoid leftGrasperSolenoid = new Solenoid(RobotMap.CUBE_SOLENOID_GRASPER_PORT);
-	Solenoid rightGrasperSolenoid = new Solenoid(RobotMap.CUBE_SOLENOID_GRASPER_PORT);
-	Solenoid primaryWristSolenoid = new Solenoid(RobotMap.CUBE_SOLENOID_WRIST_PORT);
-	Solenoid secondaryWristSolenoid = new Solenoid(RobotMap.CUBE_SOLENOID_WRIST_PORT);
+	Solenoid leftGrasperSolenoid = new Solenoid(RobotMap.LEFT_CUBE_SOLENOID_GRASPER_PORT);
+	Solenoid rightGrasperSolenoid = new Solenoid(RobotMap.RIGHT_CUBE_SOLENOID_GRASPER_PORT);
+	Solenoid primaryWristSolenoid = new Solenoid(RobotMap.LEFT_CUBE_SOLENOID_WRIST_PORT);
+	Solenoid secondaryWristSolenoid = new Solenoid(RobotMap.RIGHT_CUBE_SOLENOID_WRIST_PORT);
 	
-	public WPI_TalonSRX leftRollerTalon = new WPI_TalonSRX(RobotMap.CUBE_PWM_GRASPER_PORT);
-	public WPI_TalonSRX rightRollerTalon = new WPI_TalonSRX(RobotMap.CUBE_PWM_GRASPER_PORT);
+	public WPI_TalonSRX leftRollerTalon = new WPI_TalonSRX(RobotMap.LEFT_CUBE_CAN_GRASPER_PORT);
+	public WPI_TalonSRX rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
 	
 	// Master
 	SpeedControllerGroup leftSpeedController = new SpeedControllerGroup(leftRollerTalon);
