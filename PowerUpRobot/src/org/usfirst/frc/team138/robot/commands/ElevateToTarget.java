@@ -26,17 +26,21 @@ public class ElevateToTarget extends Command {
 	}
 
 	protected void execute() {
-		
+		Robot.elevator.Execute();
 	}
 
 	protected boolean isFinished() {
-		return isTimedOut();
+		return Robot.elevator.IsMoveComplete();
 	}
 
 	protected void end() {
+		Robot.elevator.CancelMove();
+		
 	}
 
 	protected void interrupted() {
+		
+		Robot.elevator.CancelMove();
 	}
 
 }

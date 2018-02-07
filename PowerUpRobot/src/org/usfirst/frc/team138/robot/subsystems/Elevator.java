@@ -62,7 +62,7 @@ public class Elevator extends Subsystem{
 		
 	}
 	
-	
+	// Sets up the move
 	public ElevatorTarget ConvertToTarget(String target) {
 		ElevatorTarget elevatorTarget;
 		
@@ -117,24 +117,37 @@ public class Elevator extends Subsystem{
 		_isMovingToTarget = true;
 	}
 	
+	// Execute to move
 	public void Execute() {
-		_currentPosition = _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
-		
-		// Monitor distance to Goal
-		_elevatorMotor.config_kI(kElevatorPIDLoopIndex, _liftKi, 0);
-		if (Math.abs(_targetPosition - _currentPosition) < kInPositionTolerance) {
-			_isMovingToTarget = false;		
+		if (_isMovingToTarget) {
+			_currentPosition = _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
+			
+			// Monitor distance to Goal
+			_elevatorMotor.config_kI(kElevatorPIDLoopIndex, _liftKi, 0);
+			if (Math.abs(_targetPosition - _currentPosition) < kInPositionTolerance) {
+				_isMovingToTarget = false;		
+			}
+			double pwm = _elevatorMotor.getMotorOutputPercent();
+			SmartDashboard.putNumber("Position", _currentPosition);     
+			SmartDashboard.putNumber("Voltage", _elevatorMotor.getMotorOutputVoltage());
+			SmartDashboard.putNumber("Velocity", _elevatorMotor.getSelectedSensorVelocity(0));
+			if (Math.abs(pwm) > .05)
+				SmartDashboard.putNumber("Current", _elevatorMotor.getOutputCurrent() / pwm);
+			else
+				SmartDashboard.putNumber("Current", _elevatorMotor.getOutputCurrent());
+	
+			SmartDashboard.putBoolean("Lower Limit SW", _lowerLimitSwitch.get());
+			SmartDashboard.putBoolean("Upper Limit SW", _upperLimitSwitch.get());
 		}
-		double pwm = _elevatorMotor.getMotorOutputPercent();
-		SmartDashboard.putNumber("Position", _currentPosition);     
-		SmartDashboard.putNumber("Voltage", _elevatorMotor.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Velocity", _elevatorMotor.getSelectedSensorVelocity(0));
-		if (Math.abs(pwm)>.05)
-			SmartDashboard.putNumber("Current", _elevatorMotor.getOutputCurrent() / pwm);
-		else
-			SmartDashboard.putNumber("Current", _elevatorMotor.getOutputCurrent());
-
-		SmartDashboard.putBoolean("Lower Limit SW", _lowerLimitSwitch.get());
-		SmartDashboard.putBoolean("Upper Limit SW", _upperLimitSwitch.get());
+	}
+	// Interface to let command know it's done
+	public boolean IsMoveComplete() {
+		
+		return !_isMovingToTarget;
+	}
+	
+	public void CancelMove() {
+		
+		_targetPosition = _currentPosition;
 	}
 }
