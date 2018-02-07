@@ -46,6 +46,8 @@ public class Robot extends IterativeRobot {
     	// Interface
 		Sensors.initialize();
 
+		elevator.ElevatorInit();
+		
 		// Smart Dashboard Initialization
 		Sensors.updateSmartDashboard();
 		SmartDashboard.putData(Scheduler.getInstance());
