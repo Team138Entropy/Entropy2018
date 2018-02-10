@@ -1,21 +1,9 @@
 ---Robot actions
- - Increase speed by 5 ft/s (1s)
+ - Increase speed by 3 ft/s (1s)
  - Drive forward based on current speed (1s)
- - Decrease speed by 5 ft/s (1s)
- - Power brake over 2.5ft * (speed / 5) (1s)
+ - Decrease speed by 3 ft/s (1s)
+ - Power brake over 1ft * (speed / 3) (1s)
  - Turn 90 degrees with arc based on speed (1s)
  - turn on the spot when not moving (1s)
  - Pick up cube (1s)
- - Drop cube (1s asymmetrical)
- - Change elevator position (1s asymmetrical)
- 
----Normal play procedure
- 1.30s of planning time to decide starting positions
- 2.Determine GameState
- 3.Individually create auto plans
- 4.Execute autonomous
- 5.Begin teleoperated
- 
----Teleop period procedurev
- 1.All drivers decide individually within 5 seconds as to what their action is
- 2.All actions are performed at the same time
+ - Drop cube (1s)
