@@ -12,8 +12,8 @@ public class RobotMap {
 	public final static int LEFT_MOTOR_CHANNEL_BACK     = 3;
 	public final static int RIGHT_MOTOR_CHANNEL_FRONT   = 4;
 	public final static int RIGHT_MOTOR_CHANNEL_BACK    = 5;
-	public final static int LEFT_CUBE_CAN_GRASPER_PORT  = 6;
-	public final static int RIGHT_CUBE_CAN_GRASPER_PORT = 7;
+	public final static int LEFT_CUBE_CAN_GRASPER_PORT  = 6; //TODO: Configure correct CAN Port
+	public final static int RIGHT_CUBE_CAN_GRASPER_PORT = 7; //TODO: Configure correct CAN Port
   
 	public final static int ELEVATOR_PORT = 2;
 	
@@ -23,10 +23,9 @@ public class RobotMap {
 	// Analog Input
 	
 	// Pneumatic Control Module
-	public final static int LEFT_CUBE_SOLENOID_GRASPER_PORT  = 0;
-	public final static int RIGHT_CUBE_SOLENOID_GRASPER_PORT = 1;
-	public final static int LEFT_CUBE_SOLENOID_WRIST_PORT    = 2;
-	public final static int RIGHT_CUBE_SOLENOID_WRIST_PORT   = 3;
+	public final static int SOLENOID_GRASPER_PORT  = 0;
+	public final static int SOLENOID_WRIST_PORT    = 2;
+
 
 	
 	// Relay

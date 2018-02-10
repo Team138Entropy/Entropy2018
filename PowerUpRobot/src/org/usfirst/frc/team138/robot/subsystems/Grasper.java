@@ -1,10 +1,10 @@
 package org.usfirst.frc.team138.robot.subsystems;
 
+import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -13,82 +13,78 @@ public class Grasper extends Subsystem{
 	
 	// These are some class variables
 	
-	Compressor compressor = new Compressor();
+	private Solenoid _grasperSolenoid = new Solenoid(RobotMap.SOLENOID_GRASPER_PORT);
+	private Solenoid _wristSolenoid = new Solenoid(RobotMap.SOLENOID_WRIST_PORT);
 	
-	Solenoid leftGrasperSolenoid = new Solenoid(RobotMap.LEFT_CUBE_SOLENOID_GRASPER_PORT);
-	Solenoid rightGrasperSolenoid = new Solenoid(RobotMap.RIGHT_CUBE_SOLENOID_GRASPER_PORT);
-	Solenoid primaryWristSolenoid = new Solenoid(RobotMap.LEFT_CUBE_SOLENOID_WRIST_PORT);
-	Solenoid secondaryWristSolenoid = new Solenoid(RobotMap.RIGHT_CUBE_SOLENOID_WRIST_PORT);
-	
-	public WPI_TalonSRX leftRollerTalon = new WPI_TalonSRX(RobotMap.LEFT_CUBE_CAN_GRASPER_PORT);
-	public WPI_TalonSRX rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
+	private WPI_TalonSRX _leftRollerTalon = new WPI_TalonSRX(RobotMap.LEFT_CUBE_CAN_GRASPER_PORT);
+	private WPI_TalonSRX _rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
 	
 	// Master
-	SpeedControllerGroup leftSpeedController = new SpeedControllerGroup(leftRollerTalon);
-	// Slave
-	SpeedControllerGroup rightSpeedController = new SpeedControllerGroup(rightRollerTalon);
-	
-	boolean grasperIsOpen = false;
-	boolean wristIsUp = true;
-	
-	private static final double aquireSpeed = 0.9;
-	private static final double deploySpeed = -0.7;
+	 SpeedControllerGroup _rollerSpeedController = new SpeedControllerGroup(_leftRollerTalon, _rightRollerTalon);
 	
 	protected void initDefaultCommand() {
-		rightSpeedController.setInverted(!leftSpeedController.getInverted());
+	
 	}
 	
-	public void stopCompressor()
-	{
-		compressor.stop();
-	}
+	public void Initialize() {
+    	_rightRollerTalon.setInverted(true);
+    }
 	
-	public void startCompressor()
-	{
-		compressor.start();
+	private void openGrasper() {
+    	_grasperSolenoid.set(Constants.grasperSolenoidActiveOpen);
+    }
+    
+    private void closeGrasper() {
+    	_grasperSolenoid.set(!Constants.grasperSolenoidActiveOpen);
+    }
+    
+    public boolean grasperIsOpen() {
+		return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
 	}
-	
-	public void wristUp(){
-		primaryWristSolenoid.set(false);
-		secondaryWristSolenoid.set(false);
-		wristIsUp = true;
-	}
-	
-	public void wristDown(){
-		primaryWristSolenoid.set(true);
-		secondaryWristSolenoid.set(true);
-		wristIsUp = false;
-	}
+    
+    private void raiseWrist() {
+    	_wristSolenoid.set(Constants.wristSolenoidActiveRaised);
+    }
+    
+    private void lowerWrist() {
+    	_wristSolenoid.set(!Constants.wristSolenoidActiveRaised);
+    	
+    }
 	
 	public boolean wristIsUp() {
-		return wristIsUp;
+		return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
 	}
 	
-	public void acquireRollers() {
-		leftSpeedController.set(aquireSpeed);
-		rightSpeedController.set(aquireSpeed);		
+	private void acquireRollers() {
+		_rollerSpeedController.set(Constants.aquireSpeed);
+
 	}
 	
-	public void deployRollers() {
-		leftSpeedController.set(deploySpeed);
-		rightSpeedController.set(deploySpeed);
+	private void deployRollers() {
+		_rollerSpeedController.set(Constants.deploySpeed);
 	}
 	
-	
-	public void closegrasper(){
-		leftGrasperSolenoid.set(false);
-		rightGrasperSolenoid.set(false);
-		grasperIsOpen = false;
+	private void stopRollers() {
+		_rollerSpeedController.set(0);
+	}
+	public void StartAcquire() {
+		closeGrasper();
+		acquireRollers();
+		
 	}
 	
-	public void opengrasper(){
-		leftGrasperSolenoid.set(true);
-		rightGrasperSolenoid.set(true);
-		grasperIsOpen = true;
-	}
-	
-	public boolean grasperIsOpen() {
-		return grasperIsOpen;
+	public void CompleteAcquire() {
+		stopRollers();
+		raiseWrist();
 	}
 
+	public void StartRelease() {
+		lowerWrist();
+		deployRollers();
+	}
+	
+	public void CompleteRelease() {
+		stopRollers();
+		openGrasper();
+	}
 }

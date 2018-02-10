@@ -73,6 +73,8 @@ public final class OI {
     static Button elevateToAcquireButton = new JoystickButton(operatorStick, nykoButton1);
     static Button elevateToSwitchButton = new JoystickButton(operatorStick, nykoButton2);
     static Button elevateToScaleButton = new JoystickButton(operatorStick, nykoButton3);
+    static Button acquireButton = new JoystickButton(operatorStick, nykoLeftTrigger);
+    static Button releaseButton = new JoystickButton(operatorStick, nykoRightTrigger);
     
     static double lastX=0;
     static double LastY=0;
@@ -81,7 +83,12 @@ public final class OI {
     	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.etAquire));
     	elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.etSwitch));
     	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.etScale));
+    	acquireButton.whenPressed(new StartAcquire());
+    	acquireButton.whenPressed(new CompleteAcquire());
+    	releaseButton.whenPressed(new StartRelease());
+    	releaseButton.whenPressed(new CompleteRelease());
     }
+    
     
 	public static double getMoveSpeed()
 	{
