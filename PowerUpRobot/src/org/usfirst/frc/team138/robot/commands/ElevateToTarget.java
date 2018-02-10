@@ -11,17 +11,17 @@ public class ElevateToTarget extends Command {
 	
 	public ElevateToTarget(String target){
 		requires(Robot.elevator);
-		elevatorTarget = Robot.elevator.ConvertToTarget(target);		
-	}
+		elevatorTarget = Robot.elevator.ConvertToTarget(target);
+		}
 	
 	public ElevateToTarget(ElevatorTarget target)
 	{
 		requires(Robot.elevator);
-		elevatorTarget = target;		
+		elevatorTarget = target;
 	}
 	
 
-	protected void initialize() {		
+	protected void initialize() {
 		Robot.elevator.Elevate(elevatorTarget);
 	}
 

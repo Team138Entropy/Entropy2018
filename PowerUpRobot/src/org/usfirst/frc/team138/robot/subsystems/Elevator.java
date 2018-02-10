@@ -3,24 +3,25 @@ package org.usfirst.frc.team138.robot.subsystems;
 import org.usfirst.frc.team138.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends Subsystem{
 
-	private WPI_TalonSRX _elevatorMotor = new WPI_TalonSRX(RobotMap.ELEVATOR_PORT);
+	public WPI_TalonSRX _elevatorMotor = new WPI_TalonSRX(RobotMap.ELEVATOR_PORT);
+	private WPI_TalonSRX _slaveMotor = new WPI_TalonSRX(9);
 	
-	private DigitalInput _lowerLimitSwitch = new DigitalInput(0);
-	private DigitalInput _upperLimitSwitch = new DigitalInput(1);
+	public DigitalInput _lowerLimitSwitch = new DigitalInput(0);
+	public DigitalInput _upperLimitSwitch = new DigitalInput(1);
 	
 	// Servo Loop Gains
 	double _liftKf = 1.65;
 	double _liftKp = 20;
 	double _liftKi = 0;
-	double _liftKd = 0;
+	double _liftKd = 250;
 	
 	private static final int kInPositionTolerance = 100;
 	
@@ -50,12 +51,16 @@ public class Elevator extends Subsystem{
 		_elevatorMotor.configNominalOutputReverse(-0.1, kElevatorTimeoutMs);
 		_elevatorMotor.configPeakOutputForward(1, kElevatorTimeoutMs);
 		_elevatorMotor.configPeakOutputReverse(-1, kElevatorTimeoutMs);
+		
+		_elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kElevatorPIDLoopIndex, kElevatorTimeoutMs);
+		_elevatorMotor.setSensorPhase(true);
+		
 		/* set the allowable closed-loop error,
 		 * Closed-Loop output will be neutral within this range.
 		 * See Table in Section 17.2.1 for native units per rotation. 
 		 */
 		_elevatorMotor.configAllowableClosedloopError(0, kElevatorPIDLoopIndex, kElevatorTimeoutMs); /* always servo */
-
+		_slaveMotor.follow(_elevatorMotor);
 	}
 	
 	protected void initDefaultCommand() {
@@ -86,13 +91,13 @@ public class Elevator extends Subsystem{
 	public void Elevate (ElevatorTarget target) {
 		switch (target) {
 		case etAquire:
-			_targetPosition = 10; // Random values TODO: Add actual values
+			_targetPosition = 1000; // Random values TODO: Add actual values
 			break;
 		case etSwitch:
-			_targetPosition = 630; // Random values TODO: Add actual values
+			_targetPosition = 2000; // Random values TODO: Add actual values
 			break;
 		case etScale:
-			_targetPosition = 72; // Random values TODO: Add actual values
+			_targetPosition = 3000; // Random values TODO: Add actual values
 			break;
 		default:
 			// Error 
@@ -117,27 +122,20 @@ public class Elevator extends Subsystem{
 		_isMovingToTarget = true;
 	}
 	
+	public double GetElevatorPosition() {
+		 return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
+	}
+	
 	// Execute to move
 	public void Execute() {
 		if (_isMovingToTarget) {
-			_currentPosition = _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
-			
+			_currentPosition = GetElevatorPosition();
 			// Monitor distance to Goal
 			_elevatorMotor.config_kI(kElevatorPIDLoopIndex, _liftKi, 0);
 			if (Math.abs(_targetPosition - _currentPosition) < kInPositionTolerance) {
-				_isMovingToTarget = false;		
+				_isMovingToTarget = false;
 			}
-			double pwm = _elevatorMotor.getMotorOutputPercent();
-			SmartDashboard.putNumber("Position", _currentPosition);     
-			SmartDashboard.putNumber("Voltage", _elevatorMotor.getMotorOutputVoltage());
-			SmartDashboard.putNumber("Velocity", _elevatorMotor.getSelectedSensorVelocity(0));
-			if (Math.abs(pwm) > .05)
-				SmartDashboard.putNumber("Current", _elevatorMotor.getOutputCurrent() / pwm);
-			else
-				SmartDashboard.putNumber("Current", _elevatorMotor.getOutputCurrent());
-	
-			SmartDashboard.putBoolean("Lower Limit SW", _lowerLimitSwitch.get());
-			SmartDashboard.putBoolean("Upper Limit SW", _upperLimitSwitch.get());
+			// double pwm = _elevatorMotor.getMotorOutputPercent();
 		}
 	}
 	// Interface to let command know it's done

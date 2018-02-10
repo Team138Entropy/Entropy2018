@@ -29,6 +29,8 @@ public class Robot extends IterativeRobot {
     public static final Drivetrain drivetrain = new Drivetrain();
     public static final Elevator elevator = new Elevator();
     
+    public static final OI oi = new OI();
+    
 	Preferences prefs = Preferences.getInstance();
 	
     // Commands
@@ -129,7 +131,9 @@ public class Robot extends IterativeRobot {
 //		LiveWindow.run();
         
 		
-        Sensors.updateSmartDashboard();
+       Sensors.updateSmartDashboard();
+       
+//        SmartDashboard.putNumber("Counter:", count++);
         
     }
     

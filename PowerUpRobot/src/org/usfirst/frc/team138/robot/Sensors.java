@@ -3,8 +3,6 @@ package org.usfirst.frc.team138.robot;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
-import org.usfirst.frc.team138.robot.subsystems.Drivetrain;
-
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
@@ -52,6 +50,11 @@ public class Sensors {
 	public static void updateSmartDashboard(){
 		SmartDashboard.putNumber("Left Pos", getLeftDistance());
 		SmartDashboard.putNumber("Right Pos", getRightDistance());
+		SmartDashboard.putNumber("Position", Robot.elevator._elevatorMotor.getSelectedSensorPosition(0));     
+		SmartDashboard.putNumber("Voltage", Robot.elevator._elevatorMotor.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Velocity", Robot.elevator._elevatorMotor.getSelectedSensorVelocity(0));
+		SmartDashboard.putBoolean("Lower Limit SW", Robot.elevator._lowerLimitSwitch.get());
+		SmartDashboard.putBoolean("Upper Limit SW", Robot.elevator._upperLimitSwitch.get());
 
 				
 		
