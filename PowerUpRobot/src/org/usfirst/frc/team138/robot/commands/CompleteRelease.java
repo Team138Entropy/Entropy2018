@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class CompleteRelease extends Command {
 
     public CompleteRelease() {
-       requires(Robot.grasper);
+    	requires(Robot.grasper);
     }
 
     // Called just before this Command runs the first time

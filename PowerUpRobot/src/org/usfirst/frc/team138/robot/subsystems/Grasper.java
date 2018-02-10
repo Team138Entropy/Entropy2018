@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Grasper extends Subsystem{
 	
@@ -68,23 +69,28 @@ public class Grasper extends Subsystem{
 		_rollerSpeedController.set(0);
 	}
 	public void StartAcquire() {
+		SmartDashboard.putString("Acquire Release","Start Acquire");
 		closeGrasper();
-		acquireRollers();
-		
+		acquireRollers(); 
 	}
 	
 	public void CompleteAcquire() {
+		SmartDashboard.putString("Acquire Release", "Complete Acquire");
 		stopRollers();
 		raiseWrist();
 	}
 
 	public void StartRelease() {
+		SmartDashboard.putString("Acquire Release","Start Release");
 		lowerWrist();
 		deployRollers();
+		
 	}
 	
 	public void CompleteRelease() {
+		SmartDashboard.putString("Acquire Release","Complete Release");
 		stopRollers();
 		openGrasper();
+		
 	}
 }

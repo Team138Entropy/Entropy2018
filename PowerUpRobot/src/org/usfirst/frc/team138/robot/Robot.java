@@ -29,8 +29,10 @@ public class Robot extends IterativeRobot {
     public static final Drivetrain drivetrain = new Drivetrain();
     public static final Grasper grasper = new Grasper();
     public static final Elevator elevator = new Elevator();
-    
-	Preferences prefs = Preferences.getInstance();
+
+    public static final OI oi = new OI();
+	
+    Preferences prefs = Preferences.getInstance();
 	
     // Commands
     AutonomousCommand autonomousCommand;
