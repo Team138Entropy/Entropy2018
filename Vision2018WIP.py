@@ -92,73 +92,102 @@ def processImage(img):
     gray = img1[:,:,2]
     ret = cv2.bitwise_and(gray,gray, mask= mask)
     thresholded = adaptiveThreshold(ret,0.95)
-    thresholded = cleanupImage(thresholded,11)    
+    thresholded = cleanupImage(thresholded,9)    
     lightContours = locateContours(thresholded,0,0)
     
+    
+#    cnt = lightContours[0]
+    patchwork = lightContours[0]
+    for cnt in lightContours:
+        patchwork = np.concatenate((patchwork,cnt))
+    patchwork = np.asarray(patchwork)
+    [vx,vy,x,y] = cv2.fitLine(patchwork,cv2.DIST_L2,0,1.0,0.99)
+    firstx = 490
+    lastx = 0
+    for piece in patchwork:
+       tidBit = piece[0]
+       if tidBit[0]<firstx:
+           firstx = tidBit[0]
+       if tidBit[0]>lastx:
+           lastx = tidBit[0]
+    
+    lefty = int((-x*vy/vx) + y)
+    righty = int(((gray.shape[1]-x)*vy/vx)+y)
+    
+    foundWidth = lastx-firstx
+#    rightx = 
+#    leftx
+#    cv2.line(thresholded,(gray.shape[1]-1,righty),(0,lefty),255,2)
+#    cv2.line(thresholded,(lastx,righty),(firstx,lefty),255,2)
+
+
+
+  
+#BOOK MARK, XY IS THE MIDDLE OF THE FITTED LINE
+
 
 #    whatsLeft=[]
-    points = []
-    for cnt in lightContours:
-        x,y,w,h = cv2.boundingRect(cnt)
-        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-        centerx = x+(w/2)
-        centery = y-(h/2)
-        
-        points = points+[[centerx,centery]]
-    fittedLine=cv2.fitLine(points, cv2.DIST_L2, 0, 0.01, 0.01)
+#    points = np.array([])
+#    for cnt in lightContours:
+#        x,y,w,h = cv2.boundingRect(cnt)
+#        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+#        centerx = x+(w/2)
+#        centery = y-(h/2)
+#        points = np.concatenate((points, [centerx, centery]))
+#    fittedLine = cv2.fitLine(points, cv2.DIST_L2, 0, 0.01, 0.01)
     
-
-
-    if (findScale):
-        edges = cv2.Canny(ret,50,150,apertureSize = 3)
-        minLineLength = 100
-        maxLineGap = 10
-        lines = cv2.HoughLinesP(edges,1,np.pi/180,100,minLineLength,maxLineGap)
-        for x1,y1,x2,y2 in lines[0]:
-            cv2.line(img,(x1,y1),(x2,y2),(0,255,255),2)
 
 
 #        cv2.imwrite('hough;ines3.jpg',img)
     cv2.imshow('ret',ret)
-    cv2.imshow('threshold',thresholded)
+#    cv2.imshow('threshold',thresholded)
 
-    
-    ch = 0xFF & cv2.waitKey(1000) 
+
+    ch = 0xFF & cv2.waitKey(100) 
     
     # sum in x and y looking the two vertical bars
-    xsum = np.sum(ret,0)
-    ysum = np.sum(ret,1)
-    
-    lookforPeaks = False
+    xsum = np.sum(thresholded,0)
+    ysum = np.sum(thresholded,1)
+# turned to thresholded from "ret: 
+    cv2.line(thresholded,(lastx,righty),(firstx,lefty),255,2)
+    cv2.imshow('threshold',thresholded)
+    lookforPeaks = True
     targetFound = 0
     if (lookforPeaks):
         xpeaks = findPeaks(xsum)
         ypeaks = findPeaks(ysum)
         print 'X=',xpeaks,'    Y=',ypeaks
         
+        aveWidth = foundWidth/(len(xpeaks)-1)
+        print(aveWidth)
+    
+    
         
 
-        if len(xpeaks) == 1  and len(ypeaks) > 0:
-            xend = len(xpeaks)-1
-            xcenter = xpeaks[0][0] + (xpeaks[xend][1]-xpeaks[0][0]) / 2
-            yend = len(ypeaks)-1
-            ycenter = ypeaks[0][0] + (ypeaks[yend][1]-ypeaks[0][0]) / 2
-            targetFound = 1
-        elif len(xpeaks)==2 and len(ypeaks) >0:
-            xend = len(xpeaks)-1
-            xcenter = xpeaks[0][1] + (xpeaks[1][0]-xpeaks[0][1]) / 2
-            yend = len(ypeaks)-1
-            ycenter = ypeaks[0][0] + (ypeaks[yend][1]-ypeaks[0][0]) / 2
-            targetFound = 1
+#        if len(xpeaks) == 1  and len(ypeaks) > 0:
+#            xend = len(xpeaks)-1
+#            xcenter = xpeaks[0][0] + (xpeaks[xend][1]-xpeaks[0][0]) / 2
+#            yend = len(ypeaks)-1
+#            ycenter = ypeaks[0][0] + (ypeaks[yend][1]-ypeaks[0][0]) / 2
+#            targetFound = 1
+#        elif len(xpeaks)==2 and len(ypeaks) >0:
+#            xend = len(xpeaks)-1
+#            xcenter = xpeaks[0][1] + (xpeaks[1][0]-xpeaks[0][1]) / 2
+#            yend = len(ypeaks)-1
+#            ycenter = ypeaks[0][0] + (ypeaks[yend][1]-ypeaks[0][0]) / 2
+#            targetFound = 1
     
     #testing things
     #grayContours = locateContours(ret,0,0)
     #cv2.imshow()
     
     
-    contours = locateContours(img,0,0)  
-    if (targetFound == 1):
-        drawCrosshair(img,xcenter,ycenter,True)
+#    contours = locateContours(img,0,0) 
+    
+    
+    
+#    if (targetFound == 1):
+#        drawCrosshair(img,xcenter,ycenter,True)
         
         
     if (lookforPeaks):
@@ -179,8 +208,13 @@ def processImage(img):
     
     
 
+def distanceToCamera(knownWidth, perWidth):
     
-
+    return (knownWidth*722.5)/perWidth
+    #camera resolution is 640/480
+    #distance: 17in, width: 16in, pixels: 680
+    #F=(680*17)/16 = 722.5
+    
 def thresholdImage(img):
     pass
 
@@ -197,7 +231,7 @@ def findPeaks(arr):
     maxVal = max(arr)
     for k in range(len(arr)):
         if looking:
-            if arr[k] > maxVal / 2:
+            if arr[k] > maxVal / 2.8:
                 looking = False
                 start = k
         else:
