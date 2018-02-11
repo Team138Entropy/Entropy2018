@@ -5,7 +5,9 @@ import org.usfirst.frc.team138.robot.commands.TeleopDrive;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.RobotMap;
 
 public class Drivetrain extends Subsystem{
@@ -21,9 +23,13 @@ public class Drivetrain extends Subsystem{
 
 	DifferentialDrive drivetrain = new DifferentialDrive(left, right);
 
-	protected void initDefaultCommand() {		
 
-
+	protected void initDefaultCommand() {
+/*		frontLeftTalon.setInverted(true);
+		backLeftTalon.setInverted(true);
+		frontRightTalon.setInverted(true);
+		backRightTalon.setInverted(true);
+*/
 		setDefaultCommand(new TeleopDrive());
 	}
 
@@ -49,7 +55,11 @@ public class Drivetrain extends Subsystem{
 		double leftMotorSpeed  = getLeftMotorSpeed(moveSpeed, rotateSpeed);
 		double rightMotorSpeed = getRightMotorSpeed(moveSpeed, rotateSpeed);
 
-		drivetrain.arcadeDrive(leftMotorSpeed, rightMotorSpeed);
+		SmartDashboard.putNumber("LeftSpeed:", leftMotorSpeed);
+		SmartDashboard.putNumber("RightSpeed:", rightMotorSpeed);
+
+
+		drivetrain.tankDrive(leftMotorSpeed, rightMotorSpeed);
 	}
 
 	double getLeftMotorSpeed(double moveSpeed, double rotateSpeed)
