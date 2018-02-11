@@ -12,21 +12,20 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Elevator extends Subsystem{
 
 	public WPI_TalonSRX _elevatorMotor = new WPI_TalonSRX(RobotMap.ELEVATOR_PORT);
-	private WPI_TalonSRX _slaveMotor = new WPI_TalonSRX(9);
 	
 	public DigitalInput _lowerLimitSwitch = new DigitalInput(0);
 	public DigitalInput _upperLimitSwitch = new DigitalInput(1);
 	
 	// Servo Loop Gains
-	double _liftKf = 1.65;
-	double _liftKp = 20;
+	double _liftKf = 0.2;
+	double _liftKp = 0.5;
 	double _liftKi = 0;
-	double _liftKd = 250;
+	double _liftKd = 5;
 	
-	private static final int kInPositionTolerance = 100;
+	private double stopDistance;
 	
-	int _cruiseVelocity = 400;
-	int _acceleration = 800; 
+	double _cruiseVelocity = 40;
+	double _acceleration = 80; 
 	
 	// Talon SRX/ Victor SPX will support multiple (cascaded) PID loops
 	// For now we just want the primary one.
@@ -53,14 +52,14 @@ public class Elevator extends Subsystem{
 		_elevatorMotor.configPeakOutputReverse(-1, kElevatorTimeoutMs);
 		
 		_elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kElevatorPIDLoopIndex, kElevatorTimeoutMs);
-		_elevatorMotor.setSensorPhase(true);
+		_elevatorMotor.setSensorPhase(false);
 		
 		/* set the allowable closed-loop error,
 		 * Closed-Loop output will be neutral within this range.
 		 * See Table in Section 17.2.1 for native units per rotation. 
 		 */
 		_elevatorMotor.configAllowableClosedloopError(0, kElevatorPIDLoopIndex, kElevatorTimeoutMs); /* always servo */
-		_slaveMotor.follow(_elevatorMotor);
+
 	}
 	
 	protected void initDefaultCommand() {
@@ -114,10 +113,19 @@ public class Elevator extends Subsystem{
 		_elevatorMotor.config_IntegralZone(0, 200, kElevatorTimeoutMs);
 
 		// Set cruise velocity and acceleration
-		_elevatorMotor.configMotionCruiseVelocity(_cruiseVelocity, kElevatorTimeoutMs);
-		_elevatorMotor.configMotionAcceleration(_acceleration, kElevatorTimeoutMs);
+		_elevatorMotor.configMotionCruiseVelocity((int) _cruiseVelocity, kElevatorTimeoutMs);
+		_elevatorMotor.configMotionAcceleration((int) _acceleration, kElevatorTimeoutMs);
 		
-		_elevatorMotor.set(ControlMode.MotionMagic, _targetPosition);
+		//_elevatorMotor.set(ControlMode.MotionMagic, _targetPosition);
+		_currentPosition = GetElevatorPosition();
+		stopDistance = _cruiseVelocity * _cruiseVelocity / _acceleration;
+		
+		if (_targetPosition > _currentPosition) {
+			_elevatorMotor.set(ControlMode.PercentOutput , _cruiseVelocity / 100);
+		}
+		else {
+			_elevatorMotor.set(ControlMode.PercentOutput , -_cruiseVelocity / 100);
+		}
 		
 		_isMovingToTarget = true;
 	}
@@ -131,8 +139,8 @@ public class Elevator extends Subsystem{
 		if (_isMovingToTarget) {
 			_currentPosition = GetElevatorPosition();
 			// Monitor distance to Goal
-			_elevatorMotor.config_kI(kElevatorPIDLoopIndex, _liftKi, 0);
-			if (Math.abs(_targetPosition - _currentPosition) < kInPositionTolerance) {
+			if (Math.abs(_targetPosition - _currentPosition) < stopDistance) {
+				_elevatorMotor.set(ControlMode.MotionMagic, _targetPosition);
 				_isMovingToTarget = false;
 			}
 			// double pwm = _elevatorMotor.getMotorOutputPercent();
