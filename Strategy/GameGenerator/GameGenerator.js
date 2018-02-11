@@ -11,6 +11,8 @@ function GameRobot () {
 
 var positions = [];
 
+var finalPrint = "";
+
 function buildRobot (name, drive, cSwitch, cScale, cClimb, pos) {
     var newRobot = new GameRobot();
     newRobot.robotName = name;
@@ -85,7 +87,7 @@ function printRobot (robot) {
 		stringToPrint = stringToPrint + " and can't climb.";
 	}
 	
-	alert(stringToPrint);
+	finalPrint = finalPrint +  stringToPrint + "\n\n"
 }
 
 function setPositions () {
@@ -122,38 +124,44 @@ function setPositions () {
   }
 }
 
-// Randomly assigns the positions
-setPositions();
+function generateRobots() {
+	// Randomly assigns the positions
+	setPositions();
 
-// Creates blue team
-var teamRobot = buildRobot("2018EntropyRobot", "3/6", true, true, true, positions[0]);
-var blue1Bot = randomizeRobot("Alpha", positions[1]);
-var blue2Bot = randomizeRobot("Beta", positions[2]);
+	// Creates blue team
+	var teamRobot = buildRobot("2018EntropyRobot", "3/6", true, true, true, positions[0]);
+	var blue1Bot = randomizeRobot("Alpha", positions[1]);
+	var blue2Bot = randomizeRobot("Beta", positions[2]);
 
-// Creates red team
-var red1Bot = randomizeRobot("Gamma", positions[3]);
-var red2Bot = randomizeRobot("Delta", positions[4]);
-var red3Bot = randomizeRobot("Epsilon", positions[5]);
+	// Creates red team
+	var red1Bot = randomizeRobot("Gamma", positions[3]);
+	var red2Bot = randomizeRobot("Delta", positions[4]);
+	var red3Bot = randomizeRobot("Epsilon", positions[5]);
 
-// Print our random robots
-printRobot(teamRobot);
-printRobot(blue1Bot);
-printRobot(blue2Bot);
-printRobot(red1Bot);
-printRobot(red2Bot);
-printRobot(red3Bot);
+	// Print our random robots
+	printRobot(teamRobot);
+	printRobot(blue1Bot);
+	printRobot(blue2Bot);
+	printRobot(red1Bot);
+	printRobot(red2Bot);
+	printRobot(red3Bot);
 
-var gameInt = Math.floor(Math.random() * 4);
-var gameString = "";
+	var gameInt = Math.floor(Math.random() * 4);
+	var gameString = "";
 
-if (gameInt === 0) {
-    gameString = "RRR";
-} else if (gameInt == 1) {
-    gameString = "LLL";
-} else if (gameInt == 2) {
-    gameString = "RLR";
-} else if (gameInt == 3) {
-    gameString = "LRL";
+	if (gameInt === 0) {
+		gameString = "RRR";
+	} else if (gameInt == 1) {
+		gameString = "LLL";
+	} else if (gameInt == 2) {
+		gameString = "RLR";
+	} else if (gameInt == 3) {
+		gameString = "LRL";
+	}
+
+	var stringString = "The game state is " + gameString;
+	finalPrint = finalPrint + stringString;
+
+	document.getElementById("output").value = finalPrint;
+	finalPrint = "";
 }
-
-alert("The game state is " + gameString);
