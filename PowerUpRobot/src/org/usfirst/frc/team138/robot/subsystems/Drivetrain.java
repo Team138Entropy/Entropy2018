@@ -58,8 +58,14 @@ public class Drivetrain extends Subsystem{
 		SmartDashboard.putNumber("LeftSpeed:", leftMotorSpeed);
 		SmartDashboard.putNumber("RightSpeed:", rightMotorSpeed);
 
+		double scaleFactor = SmartDashboard.getNumber("ScaleFactor", 1.0);
 
-		drivetrain.tankDrive(leftMotorSpeed, rightMotorSpeed);
+		if (scaleFactor > 1.0)
+		{
+			scaleFactor = 1.0;
+		}
+				
+		drivetrain.tankDrive(leftMotorSpeed * scaleFactor, rightMotorSpeed * scaleFactor);
 	}
 
 	double getLeftMotorSpeed(double moveSpeed, double rotateSpeed)
