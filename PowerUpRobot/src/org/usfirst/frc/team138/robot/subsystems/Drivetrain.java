@@ -58,6 +58,7 @@ public class Drivetrain extends Subsystem{
 		SmartDashboard.putNumber("LeftSpeed:", leftMotorSpeed);
 		SmartDashboard.putNumber("RightSpeed:", rightMotorSpeed);
 
+		SmartDashboard.putNumber("ScaleFactor", 1.0);
 		double scaleFactor = SmartDashboard.getNumber("ScaleFactor", 1.0);
 
 		if (scaleFactor > 1.0)
