@@ -124,6 +124,11 @@ function setPositions () {
   }
 }
 
+function clearResults() {
+	document.getElementById("output").style.fontStyle = "italic";
+	document.getElementById("output").value = "Information for a randommly generated match setup will appear here";
+}
+
 function generateRobots() {
 	// Randomly assigns the positions
 	setPositions();
@@ -162,6 +167,7 @@ function generateRobots() {
 	var stringString = "The game state is " + gameString;
 	finalPrint = finalPrint + stringString;
 
+	document.getElementById("output").style.fontStyle = "normal";
 	document.getElementById("output").value = finalPrint;
 	finalPrint = "";
 }
