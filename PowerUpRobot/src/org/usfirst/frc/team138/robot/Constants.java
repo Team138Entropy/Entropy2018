@@ -29,10 +29,10 @@ public class Constants {
 		public final static double leftAngleTwenty = -20.0;
 		
 		// Distances
-		public final static double distanceFiveCentimeters = 5.0;
+		public final static double distanceTenCentimeters = 10.0;
 		public final static double distanceThreeMeters = 300.0;
 		
-		public final static double distanceLeftScale = distanceThreeMeters + distanceFiveCentimeters;
+		public final static double distanceLeftScale = distanceThreeMeters + distanceTenCentimeters;
 
 		// Durations
 		public final static double oneSecond    = 1.0;
