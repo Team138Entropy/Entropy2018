@@ -114,7 +114,7 @@ public final class OI {
 	}
 	
 	public static boolean isFullSpeed() {
-		return driverStick.getRawButton(xboxA);
+		return driverStick.getRawAxis(xboxRightTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
 	}
 	
 	

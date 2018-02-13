@@ -12,6 +12,9 @@ public class Constants {
 		// magnitude is less than deadBand, then set Magnitude to 0
 		public final static double joystickDeadband = 0.09;
 		
+		// Threshold beyond which high speed mode is enabled for trigger
+		public final static double highSpeedModeTriggerThreshold = 0.3;
+		
 		// Low pass filter on joystick heading - 
 		// Filter eqn:  heading(i+1) =joystickDir(i)*Alpha + (1-Alpha)*(heading(i)
 		// where Alpha = Ts*2*pi*Freq
