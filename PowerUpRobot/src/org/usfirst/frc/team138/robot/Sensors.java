@@ -3,7 +3,6 @@ package org.usfirst.frc.team138.robot;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
-import org.usfirst.frc.team138.robot.subsystems.Drivetrain;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
