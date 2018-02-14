@@ -1,5 +1,4 @@
 package org.usfirst.frc.team138.robot;
-import java.math.*;
 /*
  * Constant values used throughout robot code.
  * In "C" this would be a header file, but alas, this is Java
@@ -24,14 +23,17 @@ public class Constants {
 		//
 		
 		// Angles
-		public final static double rightAngleTwenty = 20.0;
-		public final static double leftAngleTwenty = -20.0;
+		public final static double rightAngleThirty = 30.0;
+		public final static double leftAngleThirty = -30.0;
 		
 		// Distances
 		public final static double distanceTenCentimeters = 10.0;
 		public final static double distanceThreeMeters = 300.0;
+		public final static double distanceSixMeters = 600.0;
 		
-		public final static double distanceLeftScale = distanceThreeMeters + distanceTenCentimeters;
+		public final static double distanceLeftSwitch = distanceThreeMeters + distanceTenCentimeters;
+		public final static double distanceRightSwitch = distanceSixMeters;
+		public final static double distanceBaseLine = 135.0;
 
 		// Durations
 		public final static double oneSecond    = 1.0;
