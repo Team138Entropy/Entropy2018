@@ -1,13 +1,16 @@
 package org.usfirst.frc.team138.robot.commands;
 
 import org.usfirst.frc.team138.robot.Constants;
+import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutonomousCommand extends CommandGroup {
+	
 	public AutonomousCommand(String team, String startPos, String autoMode, String gameData) {
-		final String ourSwitch = String.valueOf(0);
-		final String scale = String.valueOf(1);
+		
+		String sameSide;
+		String oppositeSide;
 		
 		// Test Mode
 		if (autoMode == "test")
@@ -21,100 +24,150 @@ public class AutonomousCommand extends CommandGroup {
 		{
 			if (startPos == "left") {
 				
-				if (gameData == "LLL") {
-					// Scale on left
-					addSequential(new AutoDrive(0.8, Constants.distanceLeftSwitch));
-					addSequential(new AutoDrive(0.8, 1000)); // TODO: Add real distance
-					addSequential(new AutoDrive(Constants.rightAngleThirty));
-					addSequential(new ElevateToTarget(scale));
-					addSequential(new Wait(Constants.threeSeconds));
-					// "Release cube" addSequential(new ());
+				sameSide = "left";
+				oppositeSide = "right";
+				
+				if (gameData == "LLL" || gameData == "RLR") {
+					depositCubeScale(startPos, sameSide);
 				}
 				
 				if (gameData == "RRR") {
-					// "Off" position
-					addSequential(new AutoDrive(0.8, Constants.distanceBaseLine));
-				}
-				
-				if (gameData == "RLR") {
-					// Scale on left
-					addSequential(new AutoDrive(0.8, Constants.distanceRightSwitch));
-					addSequential(new AutoDrive(0.8, 1000)); // TODO: Add real distance
-					addSequential(new AutoDrive(Constants.leftAngleThirty));
-					addSequential(new ElevateToTarget(scale));
-					addSequential(new Wait(Constants.threeSeconds));
-					// "Release cube" addSequential(new ());
+					crossAutoLine();
 				}
 				
 				if (gameData == "LRL") {
-					// Switch on left
-					addSequential(new AutoDrive(0.8, Constants.distanceRightSwitch));
-					addSequential(new AutoDrive(Constants.leftAngleThirty));
-					addSequential(new ElevateToTarget(ourSwitch));
-					addSequential(new Wait(Constants.threeSeconds));
-					// "Release cube" addSequential(new ());
+					depositCubeSwitch(startPos, sameSide);
 				}
 			}
 			
 			if (startPos == "middle") {
 				
-				if (gameData == "LLL") {
-					// Switch
+				if (gameData == "LLL" || gameData == "LRL") {
+					// Left Switch
 					
 				}
 				
-				if (gameData == "RRR") {
-					// Switch
+				if (gameData == "RRR" || gameData == "RLR") {
+					// Right Switch
 					
 				}
 				
-				if (gameData == "RLR") {
-					// Switch
-					
-				}
-				
-				if (gameData == "LRL") {
-					// Switch
-					
-				}
 			}
 			
 			if (startPos == "right") {
 				
+				sameSide = "right";
+				oppositeSide = "left";
+				
 				if (gameData == "LLL") {
-					// "Off" position
-					addSequential(new AutoDrive(0.8, Constants.distanceBaseLine));
+					crossAutoLine();
 				}
 				
-				if (gameData == "RRR") {
-					// Scale on right
-					addSequential(new AutoDrive(0.8, Constants.distanceRightSwitch));
-					addSequential(new AutoDrive(Constants.leftAngleThirty));
-					addSequential(new AutoDrive(0.8, 1000)); // TODO: Add real distance
-					addSequential(new ElevateToTarget(scale));
-					addSequential(new Wait(Constants.threeSeconds));
-					// "Release cube" addSequential(new ());
+				if (gameData == "RRR" || gameData == "LRL") {
+					depositCubeScale(startPos, sameSide);
 				}
 				
 				if (gameData == "RLR") {
-					// Scale on left
-					addSequential(new AutoDrive(0.8, Constants.distanceRightSwitch));
-					addSequential(new AutoDrive(Constants.leftAngleThirty));
-					addSequential(new AutoDrive(0.8, 1000)); // TODO: Add real distance
-					addSequential(new ElevateToTarget(scale));
-					addSequential(new Wait(Constants.threeSeconds));
-					// "Release cube" addSequential(new ());
-				}
-				
-				if (gameData == "LRL") {
-					// Switch on left
-					addSequential(new AutoDrive(0.8, Constants.distanceRightSwitch));
-					addSequential(new AutoDrive(Constants.leftAngleThirty));
-					addSequential(new ElevateToTarget(ourSwitch));
-					addSequential(new Wait(Constants.threeSeconds));
-					// "Release cube" addSequential(new ());
+					depositCubeSwitch(startPos, sameSide);
 				}
 			}
+		}
+	}
+
+	private void crossAutoLine() {
+		// "Off" position
+		addSequential(new AutoDrive(0.8, Constants.distanceBaseLine));
+	}
+
+	private void depositCubeScale (String startingPosition, String side)
+	{
+		if (side == "left") 
+		{
+			depositCubeLeftScale(startingPosition);
+		}
+		else
+		{
+			depositCubeRightScale(startingPosition);
+		}
+	}
+	
+	private void depositCubeLeftScale(String startingPosition)
+	{
+		if (startingPosition == "left") {
+			// Scale on left
+			addSequential(new AutoDrive(0.8, Constants.distanceScale));
+			addSequential(new AutoDrive(90.0));
+			// Use vision to drive to scale?
+			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
+			// "Release cube" addSequential(new ());
+		}
+		else if (startingPosition == "right")
+		{
+			// Not yet
+		}
+	}
+	
+	private void depositCubeRightScale(String startingPosition)
+	{
+		if (startingPosition == "right") {
+			// Scale on right
+			addSequential(new AutoDrive(0.8, Constants.distanceScale));
+			addSequential(new AutoDrive(-90.0));
+			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
+			// "Release cube" addSequential(new ());
+		}
+		else if (startingPosition == "left")
+		{
+			// Not yet
+		}
+	}
+	
+	private void depositCubeSwitch (String startingPosition, String side)
+	{
+		if (side == "left") 
+		{
+			depositCubeLeftSwitch(startingPosition);
+		}
+		else
+		{
+			depositCubeRightSwitch(startingPosition);
+		}
+	}
+	
+	private void depositCubeLeftSwitch(String startingPosition)
+	{
+		if (startingPosition == "left") {
+			// Switch on left
+			addSequential(new AutoDrive(0.8, Constants.distanceSwitch));
+			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
+			// "Release cube" addSequential(new ());
+		}
+		else if (startingPosition == "right")
+		{
+			
+		}
+		else
+		{
+			
+		}
+	}
+	
+	private void depositCubeRightSwitch(String startingPosition)
+	{
+		if (startingPosition == "right") {
+			// Switch on right
+			addSequential(new AutoDrive(0.8, Constants.distanceScale));
+			addSequential(new AutoDrive(-90.0));
+			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
+			// "Release cube" addSequential(new ());
+		}
+		else if (startingPosition == "left")
+		{
+			
+		}
+		else
+		{
+			
 		}
 	}
 }

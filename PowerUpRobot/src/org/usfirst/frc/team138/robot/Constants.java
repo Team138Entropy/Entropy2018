@@ -22,30 +22,9 @@ public class Constants {
 		// These are autonomous constants useful for the autonomous commands
 		//
 		
-		// Angles
-		public final static double rightAngleThirty = 30.0;
-		public final static double leftAngleThirty = -30.0;
-		
-		// Distances
-		public final static double distanceTenCentimeters = 10.0;
-		public final static double distanceThreeMeters = 300.0;
-		public final static double distanceSixMeters = 600.0;
-		
-		public final static double distanceLeftSwitch = distanceThreeMeters + distanceTenCentimeters;
-		public final static double distanceRightSwitch = distanceSixMeters;
-		public final static double distanceBaseLine = 135.0;
-
-		// Durations
-		public final static double oneSecond    = 1.0;
-		public final static double twoSeconds   = 2.0;
-		public final static double threeSeconds = 3.0;
-		public final static double fourSeconds  = 4.0;
-		public final static double fiveSeconds  = 5.0;
-		public final static double sixSeconds   = 6.0;
-		public final static double sevenSeconds = 7.0;  
-		public final static double eightSeconds = 8.0;
-		public final static double nineSeconds  = 9.0;
-		public final static double tenSeconds   = 10.0;
+		public final static double distanceSwitch = 310.0;	// 3.1 meters
+		public final static double distanceScale = 600.0;	// 6 meters
+		public final static double distanceBaseLine = 135.0;	// 1.35 meters
 		
 		// This is our encoder constant for distance (in METERS) per  encoder pulse
 		// 6" Wheels, 15:45 chain drive; 256 encoder counts per drive sprocket rotation
