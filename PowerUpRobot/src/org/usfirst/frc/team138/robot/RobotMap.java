@@ -8,12 +8,12 @@ package org.usfirst.frc.team138.robot;
 public class RobotMap {
 	
 	// CAN Bus Assignments
-	public final static int LEFT_MOTOR_CHANNEL_FRONT    = 2;
-	public final static int LEFT_MOTOR_CHANNEL_BACK     = 3;
-	public final static int RIGHT_MOTOR_CHANNEL_FRONT   = 4;
-	public final static int RIGHT_MOTOR_CHANNEL_BACK    = 5;
-	public final static int LEFT_CUBE_CAN_GRASPER_PORT  = 6; //TODO: Configure correct CAN Port
-	public final static int RIGHT_CUBE_CAN_GRASPER_PORT = 7; //TODO: Configure correct CAN Port
+	public final static int LEFT_MOTOR_CHANNEL_FRONT    = 7;
+	public final static int LEFT_MOTOR_CHANNEL_BACK     = 8;
+	public final static int RIGHT_MOTOR_CHANNEL_FRONT   = 5;
+	public final static int RIGHT_MOTOR_CHANNEL_BACK    = 6;
+	public final static int LEFT_CUBE_CAN_GRASPER_PORT  = 3;
+	public final static int RIGHT_CUBE_CAN_GRASPER_PORT = 4;
   
 	public final static int ELEVATOR_PORT = 2;
 	

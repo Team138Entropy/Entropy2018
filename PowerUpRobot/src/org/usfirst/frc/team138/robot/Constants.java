@@ -57,7 +57,8 @@ public class Constants {
 		public final static boolean grasperSolenoidActiveOpen = true;
 		public final static boolean wristSolenoidActiveRaised = true;
 		public final static double acquisitionWheelsPercent = 50.0;
-		public final static double aquireSpeed = 0.9;
+		public final static double aquireSpeed = 0.75;
 		public final static double deploySpeed = -0.7;
+		public final static double holdSpeed = 0.3;
 
 }

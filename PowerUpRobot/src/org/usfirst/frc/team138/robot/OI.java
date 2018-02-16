@@ -75,6 +75,8 @@ public final class OI {
     static Button elevateToScaleButton = new JoystickButton(operatorStick, nykoButton3);
     static Button acquireButton = new JoystickButton(operatorStick, nykoLeftTrigger);
     static Button releaseButton = new JoystickButton(operatorStick, nykoRightTrigger);
+    static Button openGrasperButton = new JoystickButton(operatorStick, nykoLeftBumper);
+    static Button closeGrasperButton = new JoystickButton(operatorStick, nykoRightBumper);
     
     static double lastX=0;
     static double LastY=0;
@@ -87,6 +89,8 @@ public final class OI {
     	acquireButton.whenReleased(new CompleteAcquire());
     	releaseButton.whenPressed(new StartRelease());
     	releaseButton.whenReleased(new CompleteRelease());
+    	openGrasperButton.whenPressed(new OpenGrasper());
+    	closeGrasperButton.whenPressed(new CloseGrasper());
     }
     
     
