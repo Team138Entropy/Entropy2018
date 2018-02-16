@@ -126,7 +126,7 @@ class PythonTest:
         lightContours = PythonTest.locateContours(thresholded,0,0)
         
         
-    #    cnt = lightContours[0]
+        #cnt = lightContours[0]
         patchwork = lightContours[0]
         for cnt in lightContours:
             patchwork = np.concatenate((patchwork,cnt))
@@ -179,7 +179,7 @@ class PythonTest:
         xsum = np.sum(thresholded,0)
         ysum = np.sum(thresholded,1)
     # turned to thresholded from "ret: 
-        cv2.line(thresholded,(lastx,righty),(firstx,lefty),255,2)
+        cv2.line(img,(lastx,righty),(firstx,lefty),255,2)
     #    cv2.imshow('threshold',thresholded)
         lookforPeaks = True
         targetFound = 0
@@ -229,12 +229,12 @@ class PythonTest:
             #plt.subplot(2,1,2)
             #plt.plot(ysum)
             
-        cv2.imshow('Input',img)
+        #cv2.imshow('Input',img)
         
         #if (lookforPeaks):
             #plt.show(10)
         
-        outframe.sendCvBGR(thresholded)
+        outframe.sendCvBGR(img)
 
     def removeDupContours(inContours):
         """
@@ -254,7 +254,7 @@ class PythonTest:
                 lastx,lasty,lastw,lasth = cv2.boundingRect(last)
         return ret 
         
-    def locateContours(img,xoffset,yoffset):
+    def locateContours(imageInput,xoffset,yoffset):
         """
         locate contours and apply a simple set of metrics
         to validate the contour is a target. The result is a
@@ -263,7 +263,7 @@ class PythonTest:
         """
         debugPrint = False
          #Find contours and sort largest to smallest
-        edged = cv2.Canny(img, 30, 200)
+        edged = cv2.Canny(imageInput, 30, 200)
         img1, contours, hierarchy = cv2.findContours(edged.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         contours = sorted(contours, key = cv2.contourArea, reverse = True)[:75]
 
