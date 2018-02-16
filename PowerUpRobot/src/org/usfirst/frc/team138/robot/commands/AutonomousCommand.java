@@ -44,12 +44,12 @@ public class AutonomousCommand extends CommandGroup {
 				
 				if (gameData == "LLL" || gameData == "LRL") {
 					// Left Switch
-					
+					depositCubeSwitch(startPos, "left");
 				}
 				
 				if (gameData == "RRR" || gameData == "RLR") {
 					// Right Switch
-					
+					depositCubeSwitch(startPos, "right");
 				}
 				
 			}
@@ -144,11 +144,17 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else if (startingPosition == "right")
 		{
-			
+			// Nothing here, this is a very very bad idea
 		}
 		else
 		{
-			
+			// Center start
+			addSequential(new AutoDrive(0.8, 92));
+			addSequential(new AutoDrive(-50.0));
+			addSequential(new AutoDrive(0.8, 427.0));
+			addSequential(new AutoDrive(140.0));
+			addSequential(new AutoDrive(0.8, 183.88));
+			// "Release cube" addSequential(new ());
 		}
 	}
 	
@@ -163,11 +169,17 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else if (startingPosition == "left")
 		{
-			
+			// Nothing here, this is a very very bad idea
 		}
 		else
 		{
-			
+			// Center start
+			addSequential(new AutoDrive(0.8, 92));
+			addSequential(new AutoDrive(55.0));
+			addSequential(new AutoDrive(0.8, 427.0));
+			addSequential(new AutoDrive(-145.0));
+			addSequential(new AutoDrive(0.8, 137));
+			// "Release cube" addSequential(new ());
 		}
 	}
 }
