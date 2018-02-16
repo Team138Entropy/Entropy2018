@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends Subsystem{
 
@@ -18,14 +19,14 @@ public class Elevator extends Subsystem{
 	
 	// Servo Loop Gains
 	double _liftKf = 0.2;
-	double _liftKp = 0.5;
+	double _liftKp = 1;
 	double _liftKi = 0;
 	double _liftKd = 5;
 	
 	private double stopDistance;
 	
-	double _cruiseVelocity = 40;
-	double _acceleration = 80; 
+	double _cruiseVelocity = 75;
+	double _acceleration = 40; 
 	
 	// Talon SRX/ Victor SPX will support multiple (cascaded) PID loops
 	// For now we just want the primary one.
@@ -35,7 +36,7 @@ public class Elevator extends Subsystem{
 	public static final int kElevatorTimeoutMs = 10;
 	
 	public enum ElevatorTarget{
-		etAquire,
+		etAcquire,
 		etSwitch,
 		etScale
 	}
@@ -46,8 +47,8 @@ public class Elevator extends Subsystem{
 	
 	public void ElevatorInit() {
 		/* set the peak and nominal outputs, 12V means full */
-		_elevatorMotor.configNominalOutputForward(0.1, kElevatorTimeoutMs);
-		_elevatorMotor.configNominalOutputReverse(-0.1, kElevatorTimeoutMs);
+		_elevatorMotor.configNominalOutputForward(0, kElevatorTimeoutMs);
+		_elevatorMotor.configNominalOutputReverse(0, kElevatorTimeoutMs);
 		_elevatorMotor.configPeakOutputForward(1, kElevatorTimeoutMs);
 		_elevatorMotor.configPeakOutputReverse(-1, kElevatorTimeoutMs);
 		
@@ -60,49 +61,7 @@ public class Elevator extends Subsystem{
 		 */
 		_elevatorMotor.configAllowableClosedloopError(0, kElevatorPIDLoopIndex, kElevatorTimeoutMs); /* always servo */
 
-	}
-	
-	protected void initDefaultCommand() {
-		
-	}
-	
-	// Sets up the move
-	public ElevatorTarget ConvertToTarget(String target) {
-		ElevatorTarget elevatorTarget;
-		
-		switch (target) {
-		case "Aquire":
-			elevatorTarget = ElevatorTarget.etAquire;
-			break;
-		case "Switch":
-			elevatorTarget = ElevatorTarget.etSwitch;
-			break;
-		case "Scale":
-			elevatorTarget = ElevatorTarget.etScale;
-			break;
-		default:
-			elevatorTarget = ElevatorTarget.etAquire;
-			break;
-		}
-		return elevatorTarget;
-	}
-	
-	public void Elevate (ElevatorTarget target) {
-		switch (target) {
-		case etAquire:
-			_targetPosition = 1000; // Random values TODO: Add actual values
-			break;
-		case etSwitch:
-			_targetPosition = 2000; // Random values TODO: Add actual values
-			break;
-		case etScale:
-			_targetPosition = 3000; // Random values TODO: Add actual values
-			break;
-		default:
-			// Error 
-			break;
-			
-		}
+		stopDistance = _cruiseVelocity * _cruiseVelocity / _acceleration;
 		
 		_elevatorMotor.config_kF(kElevatorPIDLoopIndex, _liftKf, kElevatorTimeoutMs);
 		_elevatorMotor.config_kP(kElevatorPIDLoopIndex, _liftKp, kElevatorTimeoutMs);
@@ -115,10 +74,51 @@ public class Elevator extends Subsystem{
 		// Set cruise velocity and acceleration
 		_elevatorMotor.configMotionCruiseVelocity((int) _cruiseVelocity, kElevatorTimeoutMs);
 		_elevatorMotor.configMotionAcceleration((int) _acceleration, kElevatorTimeoutMs);
+	}
+	
+	protected void initDefaultCommand() {
 		
-		//_elevatorMotor.set(ControlMode.MotionMagic, _targetPosition);
+	}
+	
+	// Sets up the move
+	public ElevatorTarget ConvertToTarget(String target) {
+		ElevatorTarget elevatorTarget;
+		
+		switch (target) {
+		case "Aquire":
+			elevatorTarget = ElevatorTarget.etAcquire;
+			break;
+		case "Switch":
+			elevatorTarget = ElevatorTarget.etSwitch;
+			break;
+		case "Scale":
+			elevatorTarget = ElevatorTarget.etScale;
+			break;
+		default:
+			elevatorTarget = ElevatorTarget.etAcquire;
+			break;
+		}
+		return elevatorTarget;
+	}
+	
+	public void Elevate (ElevatorTarget target) {
+		switch (target) {
+		case etAcquire:
+			_targetPosition = 0; // Random values TODO: Add actual values
+			break;
+		case etSwitch:
+			_targetPosition = 750; // Random values TODO: Add actual values
+			break;
+		case etScale:
+			_targetPosition = 1500; // Random values TODO: Add actual values
+			break;
+		default:
+			// Error 
+			break;
+			
+		}
+		
 		_currentPosition = GetElevatorPosition();
-		stopDistance = _cruiseVelocity * _cruiseVelocity / _acceleration;
 		
 		if (_targetPosition > _currentPosition) {
 			_elevatorMotor.set(ControlMode.PercentOutput , _cruiseVelocity / 100);
@@ -136,16 +136,18 @@ public class Elevator extends Subsystem{
 	
 	// Execute to move
 	public void Execute() {
+		_currentPosition = GetElevatorPosition();
+		SmartDashboard.putNumber("Current Positon", _currentPosition);
+		
 		if (_isMovingToTarget) {
-			_currentPosition = GetElevatorPosition();
 			// Monitor distance to Goal
 			if (Math.abs(_targetPosition - _currentPosition) < stopDistance) {
 				_elevatorMotor.set(ControlMode.MotionMagic, _targetPosition);
 				_isMovingToTarget = false;
 			}
-			// double pwm = _elevatorMotor.getMotorOutputPercent();
 		}
 	}
+	
 	// Interface to let command know it's done
 	public boolean IsMoveComplete() {
 		

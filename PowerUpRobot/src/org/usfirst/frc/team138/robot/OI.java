@@ -72,7 +72,7 @@ public final class OI {
     // Operator Stick
     static Button elevateToAcquireButton = new JoystickButton(operatorStick, nykoButton1);
     static Button elevateToSwitchButton = new JoystickButton(operatorStick, nykoButton2);
-    static Button elevateToScaleButton = new JoystickButton(operatorStick, nykoButton3);
+    static Button elevateToScaleButton = new JoystickButton(operatorStick, nykoButton4);
     static Button acquireButton = new JoystickButton(operatorStick, nykoLeftTrigger);
     static Button releaseButton = new JoystickButton(operatorStick, nykoRightTrigger);
     static Button openGrasperButton = new JoystickButton(operatorStick, nykoLeftBumper);
@@ -82,7 +82,7 @@ public final class OI {
     static double LastY=0;
     
     public OI(){
-    	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.etAquire));
+    	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.etAcquire));
     	elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.etSwitch));
     	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.etScale));
     	acquireButton.whenPressed(new StartAcquire());
