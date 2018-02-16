@@ -1,5 +1,4 @@
 package org.usfirst.frc.team138.robot;
-// import java.math.*;
 /*
  * Constant values used throughout robot code.
  * In "C" this would be a header file, but alas, this is Java
@@ -12,14 +11,41 @@ public class Constants {
 		// magnitude is less than deadBand, then set Magnitude to 0
 		public final static double joystickDeadband = 0.09;
 		
+		
+		
 		// Low pass filter on joystick heading - 
 		// Filter eqn:  heading(i+1) =joystickDir(i)*Alpha + (1-Alpha)*(heading(i)
 		// where Alpha = Ts*2*pi*Freq
 		//   Ts is sample period (20 mSec for FRC)
 		//   Freq is location of filter pole in Hz
 		public static double rotateAlpha = .02*6.28*1;
-		
+
 		//
+		// These are autonomous constants useful for the autonomous commands
+		//
+		
+		// Angles
+		public final static double rightAngleTwenty = 20.0;
+		public final static double leftAngleTwenty = -20.0;
+		
+		// Distances
+		public final static double distanceFiveCentimeters = 5.0;
+		public final static double distanceThreeMeters = 300.0;
+		
+		public final static double distanceLeftScale = distanceThreeMeters + distanceFiveCentimeters;
+
+		// Durations
+		public final static double oneSecond    = 1.0;
+		public final static double twoSeconds   = 2.0;
+		public final static double threeSeconds = 3.0;
+		public final static double fourSeconds  = 4.0;
+		public final static double fiveSeconds  = 5.0;
+		public final static double sixSeconds   = 6.0;
+		public final static double sevenSeconds = 7.0;  
+		public final static double eightSeconds = 8.0;
+		public final static double nineSeconds  = 9.0;
+		public final static double tenSeconds   = 10.0;
+		
 		// This is our encoder constant for distance (in METERS) per  encoder pulse
 		// 6" Wheels, 15:45 chain drive; 256 encoder counts per drive sprocket rotation
 		public static double MetersPerPulse = Math.PI*6*.0254*15/45/256;
@@ -27,5 +53,12 @@ public class Constants {
 		public static int LeftDriveEncoderPolarity = -1;
 		public static int RightDriveEncoderPolarity = 1;
 		
+		//Cube Grasper
+		public final static boolean grasperSolenoidActiveOpen = true;
+		public final static boolean wristSolenoidActiveRaised = true;
+		public final static double acquisitionWheelsPercent = 50.0;
+		public final static double aquireSpeed = 0.75;
+		public final static double deploySpeed = -0.7;
+		public final static double holdSpeed = 0.3;
 
 }

@@ -1,5 +1,6 @@
 package org.usfirst.frc.team138.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
@@ -26,12 +27,14 @@ public class Robot extends IterativeRobot {
     SendableChooser<String> autoModeChooser;
         
     // Subsystems
+    public static final Compressor compressor = new Compressor();
     public static final Drivetrain drivetrain = new Drivetrain();
+    public static final Grasper grasper = new Grasper();
     public static final Elevator elevator = new Elevator();
-    
+
     public static final OI oi = new OI();
-    
-	Preferences prefs = Preferences.getInstance();
+	
+    Preferences prefs = Preferences.getInstance();
 	
     // Commands
     AutonomousCommand autonomousCommand;
@@ -46,10 +49,10 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	// Interface
+    	compressor.start();
 		Sensors.initialize();
+		grasper.initialize();
 
-		elevator.ElevatorInit();
-		
 		// Smart Dashboard Initialization
 		Sensors.updateSmartDashboard();
 		SmartDashboard.putData(Scheduler.getInstance());
@@ -131,9 +134,7 @@ public class Robot extends IterativeRobot {
 //		LiveWindow.run();
         
 		
-       Sensors.updateSmartDashboard();
-       
-//        SmartDashboard.putNumber("Counter:", count++);
+        Sensors.updateSmartDashboard();
         
     }
     
