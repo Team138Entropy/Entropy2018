@@ -2,3 +2,5 @@
 .recommenders
 build
 /PowerUpRobot/dist
+.classpath
+.project
