@@ -40,7 +40,7 @@ public class Elevator extends Subsystem{
 	
 	public void Elevate (ElevatorTarget target) {
 		switch (target) {
-		case etAquire:
+		case etAquire:			
 			break;
 		case etSwitch:
 			break;
