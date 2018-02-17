@@ -99,7 +99,7 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new AutoDrive(90.0));
 			// Use vision to drive to scale?
 			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
-			// "Release cube" addSequential(new ());
+			addSequential(new StartRelease());
 		}
 		else if (startingPosition == "right")
 		{
@@ -114,7 +114,7 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new AutoDrive(0.8, Constants.distanceScale));
 			addSequential(new AutoDrive(-90.0));
 			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
-			// "Release cube" addSequential(new ());
+			addSequential(new StartRelease());
 		}
 		else if (startingPosition == "left")
 		{
@@ -140,7 +140,7 @@ public class AutonomousCommand extends CommandGroup {
 			// Switch on left
 			addSequential(new AutoDrive(0.8, Constants.distanceSwitch));
 			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
-			// "Release cube" addSequential(new ());
+			addSequential(new StartRelease());
 		}
 		else if (startingPosition == "right")
 		{
@@ -154,7 +154,7 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new AutoDrive(0.8, 427.0));
 			addSequential(new AutoDrive(140.0));
 			addSequential(new AutoDrive(0.8, 183.88));
-			// "Release cube" addSequential(new ());
+			addSequential(new StartRelease());
 		}
 	}
 	
@@ -165,7 +165,7 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new AutoDrive(0.8, Constants.distanceScale));
 			addSequential(new AutoDrive(-90.0));
 			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
-			// "Release cube" addSequential(new ());
+			addSequential(new StartRelease());
 		}
 		else if (startingPosition == "left")
 		{
@@ -179,7 +179,7 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new AutoDrive(0.8, 427.0));
 			addSequential(new AutoDrive(-145.0));
 			addSequential(new AutoDrive(0.8, 137));
-			// "Release cube" addSequential(new ());
+			addSequential(new StartRelease());
 		}
 	}
 }
