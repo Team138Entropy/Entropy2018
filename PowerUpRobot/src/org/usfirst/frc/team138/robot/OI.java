@@ -109,6 +109,11 @@ public final class OI {
 		return operatorStick.getRawAxis(nykoLeftYAxis);
 	}
 	
+	public static int getDpad()
+	{
+		return operatorStick.getPOV();
+	}
+	
 	public static boolean isReverse() {
 		return driverStick.getRawButton(xboxB);
 	}
