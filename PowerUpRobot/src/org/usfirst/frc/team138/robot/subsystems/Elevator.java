@@ -24,8 +24,6 @@ public class Elevator extends Subsystem{
 	double _liftKi = 0;
 	double _liftKd = 5;
 	
-	private double stopDistance;
-	
 	double _cruiseVelocity = 75;
 	double _acceleration = 40; 
 	
@@ -42,13 +40,15 @@ public class Elevator extends Subsystem{
 		etScale
 	}
 	
-	private boolean _isMovingToTarget = false;
+	private int _direction = 0;		// 0: not moving to target, -1 or 1 moving to target in that direction
 	
 	private double _targetPosition = 0.0;
 	private double _currentPosition = 0.0;
 	
 	public void ElevatorInit() {
-		_isMovingToTarget = false;
+		// initial direction is 0, since elevator is not moving
+		_direction = 0;
+		
 		/* set the peak and nominal outputs, 12V means full */
 		_elevatorMotor.configNominalOutputForward(0, kElevatorTimeoutMs);
 		_elevatorMotor.configNominalOutputReverse(0, kElevatorTimeoutMs);
@@ -63,8 +63,6 @@ public class Elevator extends Subsystem{
 		 * See Table in Section 17.2.1 for native units per rotation. 
 		 */
 		_elevatorMotor.configAllowableClosedloopError(0, kElevatorPIDLoopIndex, kElevatorTimeoutMs); /* always servo */
-
-		stopDistance = 0.5 * _cruiseVelocity * _cruiseVelocity / _acceleration;
 		
 		_elevatorMotor.config_kF(kElevatorPIDLoopIndex, _liftKf, kElevatorTimeoutMs);
 		_elevatorMotor.config_kP(kElevatorPIDLoopIndex, _liftKp, kElevatorTimeoutMs);
@@ -129,13 +127,13 @@ public class Elevator extends Subsystem{
 		_currentPosition = GetElevatorPosition();
 		
 		if (_targetPosition > _currentPosition) {
-			_elevatorMotor.set(ControlMode.PercentOutput , _cruiseVelocity / 100);
+			_direction = 1;
 		}
 		else {
-			_elevatorMotor.set(ControlMode.PercentOutput , -_cruiseVelocity / 100);
+			_direction = -1;
 		}
 		
-		_isMovingToTarget = true;
+		_elevatorMotor.set(ControlMode.PercentOutput , _direction *_cruiseVelocity / 100);
 	}
 	
 	public double GetElevatorPosition() {
@@ -146,11 +144,13 @@ public class Elevator extends Subsystem{
 	public void Execute() {
 		_currentPosition = GetElevatorPosition();
 		
-		if (_isMovingToTarget) {
+		if (_direction != 0) {
 			// Monitor distance to Goal
-			if (Math.abs(_targetPosition - _currentPosition) < stopDistance) {
+			if ( (_direction > 0 && (_currentPosition > _targetPosition) ||
+			     (_direction < 0 && (_currentPosition < _targetPosition) )))
+			{
 				_elevatorMotor.set(ControlMode.MotionMagic, _targetPosition);
-				_isMovingToTarget = false;
+				_direction = 0;
 			}
 		}
 	}
@@ -159,8 +159,7 @@ public class Elevator extends Subsystem{
 	{
 		SmartDashboard.putNumber("Current Positon", GetElevatorPosition());
 		SmartDashboard.putNumber("Target Positon", _targetPosition);
-		SmartDashboard.putNumber("Stop Distance", stopDistance);
-		SmartDashboard.putBoolean("Is Moving to Target", _isMovingToTarget);
+		SmartDashboard.putNumber("Direction", _direction);
 	}
 	
 	public void StopHoming()
@@ -172,7 +171,7 @@ public class Elevator extends Subsystem{
 	// Interface to let command know it's done
 	public boolean IsMoveComplete() {
 		
-		return !_isMovingToTarget;
+		return (_direction == 0);
 	}
 	
 	public void CancelMove() {
@@ -183,6 +182,6 @@ public class Elevator extends Subsystem{
 	public void StopMoving()
 	{
 		_elevatorMotor.set(ControlMode.PercentOutput, 0);
-		_isMovingToTarget = false;
+		_direction = 0;
 	}
 }
