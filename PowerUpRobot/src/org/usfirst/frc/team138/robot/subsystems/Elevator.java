@@ -2,6 +2,7 @@ package org.usfirst.frc.team138.robot.subsystems;
 
 import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.RobotMap;
+import org.usfirst.frc.team138.robot.commands.JogElevator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -45,6 +46,9 @@ public class Elevator extends Subsystem{
 	private double _targetPosition = 0.0;
 	private double _currentPosition = 0.0;
 	
+	private String _currentCommand = "None";
+	private int _currentJogDirection = 0;
+	
 	public void ElevatorInit() {
 		// initial direction is 0, since elevator is not moving
 		_direction = 0;
@@ -78,7 +82,7 @@ public class Elevator extends Subsystem{
 	}
 	
 	protected void initDefaultCommand() {
-		
+		setDefaultCommand(new JogElevator());
 	}
 	
 	// Sets up the move
@@ -104,15 +108,19 @@ public class Elevator extends Subsystem{
 	
 	public void JogElevator(int jogDirection, double jogSpeed)
 	{
+		_currentCommand = "Jog";
+		_currentJogDirection = jogDirection;
 		_elevatorMotor.set(ControlMode.PercentOutput, jogSpeed * jogDirection);
 	}
 	
 	public void HomeElevator()
 	{
+		_currentCommand = "Home";
 		_elevatorMotor.set(ControlMode.PercentOutput, Constants.elevatorHomingSpeed);
 	}
 	
 	public void Elevate (ElevatorTarget target) {
+		_currentCommand = "Elevate";
 		switch (target) {
 		case etAcquire:
 			_targetPosition = 0;
@@ -162,9 +170,11 @@ public class Elevator extends Subsystem{
 	
 	public void updateSmartDashboard()
 	{
-		SmartDashboard.putNumber("Current Positon", GetElevatorPosition());
-		SmartDashboard.putNumber("Target Positon", _targetPosition);
+		SmartDashboard.putNumber("Current Position", GetElevatorPosition());
+		SmartDashboard.putNumber("Target Position", _targetPosition);
 		SmartDashboard.putNumber("Direction", _direction);
+		SmartDashboard.putString("Current Command", _currentCommand);
+		SmartDashboard.putNumber("Jog Direction", _currentJogDirection);
 	}
 	
 	public void StopHoming()
@@ -180,12 +190,13 @@ public class Elevator extends Subsystem{
 	}
 	
 	public void CancelMove() {
-		
+		_currentCommand = "None";
 		_targetPosition = _currentPosition;
 	}
 	
 	public void StopMoving()
 	{
+		_currentCommand = "None";
 		_elevatorMotor.set(ControlMode.PercentOutput, 0);
 		_direction = 0;
 	}
