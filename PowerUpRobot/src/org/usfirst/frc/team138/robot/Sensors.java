@@ -51,6 +51,11 @@ public class Sensors {
 	public static void updateSmartDashboard(){
 		SmartDashboard.putNumber("Left Pos", getLeftDistance());
 		SmartDashboard.putNumber("Right Pos", getRightDistance());
+		SmartDashboard.putNumber("Position", Robot.elevator._elevatorMotor.getSelectedSensorPosition(0));     
+		SmartDashboard.putNumber("Voltage", Robot.elevator._elevatorMotor.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Velocity", Robot.elevator._elevatorMotor.getSelectedSensorVelocity(0));
+		SmartDashboard.putBoolean("Lower Limit SW", Robot.elevator._lowerLimitSwitch.get());
+		SmartDashboard.putBoolean("Upper Limit SW", Robot.elevator._upperLimitSwitch.get());
 
 				
 		

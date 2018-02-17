@@ -8,9 +8,16 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team138.robot.RobotMap;
+import org.usfirst.frc.team138.robot.OI;
+
 
 public class Drivetrain extends Subsystem{
 	private static double CONTROLLER_DEAD_ZONE = 0.09;
+	private static double min_speed,max_speed;
+	private static double speed_range;
+	private double lastSpeed=0;
+	private static double maxSpeedChange=1/20.0;
+	
 
 	public WPI_TalonSRX frontLeftTalon = new WPI_TalonSRX(RobotMap.LEFT_MOTOR_CHANNEL_FRONT);
 	WPI_TalonSRX backLeftTalon = new WPI_TalonSRX(RobotMap.LEFT_MOTOR_CHANNEL_BACK);
@@ -29,6 +36,7 @@ public class Drivetrain extends Subsystem{
 		frontRightTalon.setInverted(true);
 		backRightTalon.setInverted(true);
 */
+		SmartDashboard.putNumber("ScaleFactor", 1.0);
 		setDefaultCommand(new TeleopDrive());
 	}
 
@@ -45,19 +53,44 @@ public class Drivetrain extends Subsystem{
 	public void driveWithTable(double moveSpeed, double rotateSpeed)
 	{
 
+		min_speed=Math.abs(DriveTable.Drive_Matrix_2017[14][0]);
+		max_speed=1.0;
+		double scale=0.5;
+		speed_range=max_speed-min_speed;
+		SmartDashboard.putNumber("MinSpeed:", min_speed);
+
 		//rotateSpeed = -rotateSpeed;
 		// Filter input speeds
-		moveSpeed = applyDeadZone(moveSpeed);
+		moveSpeed=lastSpeed+limitValue(moveSpeed-lastSpeed,-maxSpeedChange,maxSpeedChange);
+		lastSpeed=moveSpeed;
+		
+		SmartDashboard.putNumber("lastSpeed:", lastSpeed);
+	
+
+		if (OI.isFullSpeed())
+			moveSpeed = applyDeadZone(moveSpeed);
+		else
+			moveSpeed = .5*applyDeadZone(moveSpeed);
+			
 		rotateSpeed = applyDeadZone(rotateSpeed);
 
 		// Motor Speeds on both the left and right sides
 		double leftMotorSpeed  = getLeftMotorSpeed(moveSpeed, rotateSpeed);
 		double rightMotorSpeed = getRightMotorSpeed(moveSpeed, rotateSpeed);
-
+		scale=1.0;
+		if (leftMotorSpeed>0)
+			leftMotorSpeed=min_speed+scale*(leftMotorSpeed-min_speed);
+		else
+			leftMotorSpeed=-min_speed+scale*(leftMotorSpeed+min_speed);
+		
+		if (rightMotorSpeed>0)
+			rightMotorSpeed=min_speed+scale*(rightMotorSpeed-min_speed);
+		else
+			rightMotorSpeed=-min_speed+scale*(rightMotorSpeed+min_speed);
+			
 		SmartDashboard.putNumber("LeftSpeed:", leftMotorSpeed);
 		SmartDashboard.putNumber("RightSpeed:", rightMotorSpeed);
-
-
+		
 		drivetrain.tankDrive(leftMotorSpeed, rightMotorSpeed);
 	}
 
