@@ -54,7 +54,6 @@ public class Constants {
 		public static int RightDriveEncoderPolarity = 1;
 		
 		// Elevator
-		public final static boolean elevatorLimitSwitchActiveEngaged = false;
 		public final static double elevatorHomingSpeed = -0.2;
 		public final static double elevatorJogSpeed = 0.3;
 		

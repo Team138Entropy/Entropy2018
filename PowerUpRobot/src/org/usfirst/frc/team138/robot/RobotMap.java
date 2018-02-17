@@ -17,11 +17,6 @@ public class RobotMap {
   
 	public final static int ELEVATOR_PORT = 2;
 	public final static int WINCH_PORT = 1;
-	public final static int RIGHT_INTAKE_PORT = 3;
-	public final static int LEFT_INTAKE_PORT = 4;
-	
-//	public final static int LEFT_ENCODER_PORT = LEFT_MOTOR_CHANNEL_FRONT;
-//	public final static int RIGHT_ENCODER_PORT = RIGHT_MOTOR_CHANNEL_FRONT;
 	
 	// Analog Input
 	
