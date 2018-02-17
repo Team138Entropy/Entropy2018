@@ -56,6 +56,7 @@ public class Constants {
 		// Elevator
 		public final static boolean elevatorLimitSwitchActiveEngaged = false;
 		public final static double elevatorHomingSpeed = -0.2;
+		public final static double elevatorJogSpeed = 0.3;
 		
 		//Cube Grasper
 		public final static boolean grasperSolenoidActiveOpen = true;

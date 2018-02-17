@@ -102,6 +102,11 @@ public class Elevator extends Subsystem{
 		return elevatorTarget;
 	}
 	
+	public void JogElevator(int jogDirection, double jogSpeed)
+	{
+		_elevatorMotor.set(ControlMode.PercentOutput, jogSpeed * jogDirection);
+	}
+	
 	public void HomeElevator()
 	{
 		_elevatorMotor.set(ControlMode.PercentOutput, Constants.elevatorHomingSpeed);
@@ -110,13 +115,13 @@ public class Elevator extends Subsystem{
 	public void Elevate (ElevatorTarget target) {
 		switch (target) {
 		case etAcquire:
-			_targetPosition = 0; // Random values TODO: Add actual values
+			_targetPosition = 0;
 			break;
 		case etSwitch:
-			_targetPosition = 500; // Random values TODO: Add actual values
+			_targetPosition = 1100; 
 			break;
 		case etScale:
-			_targetPosition = 1500; // Random values TODO: Add actual values
+			_targetPosition = 3000; 
 			break;
 		default:
 			// Error 
