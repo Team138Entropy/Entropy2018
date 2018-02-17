@@ -107,7 +107,7 @@ public final class OI {
 	
 	public static double getRotateSpeed()
 	{
-		return driverStick.getRawAxis(xboxLeftXAxis);
+		return driverStick.getRawAxis(xboxRightXAxis);
 	}
 	
 	public static double getClimbSpeed()
@@ -120,7 +120,7 @@ public final class OI {
 	}
 	
 	public static boolean isFullSpeed() {
-		return driverStick.getRawButton(xboxA);
+		return driverStick.getRawAxis(xboxRightTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
 	}
 	
 	
