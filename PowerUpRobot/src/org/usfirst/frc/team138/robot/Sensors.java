@@ -32,6 +32,7 @@ public class Sensors {
 		Robot.drivetrain.frontRightTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		
 		Camera0 = CameraServer.getInstance().startAutomaticCapture("Camera0", 0);
+		// JeVois camera selects which script to run based on VideoMode
 		Camera0.setVideoMode(PixelFormat.kYUYV, 640, 480, 15);
 
 		Camera1 = CameraServer.getInstance().startAutomaticCapture("Camera1", 1);
