@@ -1,5 +1,6 @@
 package org.usfirst.frc.team138.robot.subsystems;
 
+import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -40,12 +41,14 @@ public class Elevator extends Subsystem{
 		etSwitch,
 		etScale
 	}
+	
 	private boolean _isMovingToTarget = false;
 	
 	private double _targetPosition = 0.0;
 	private double _currentPosition = 0.0;
 	
 	public void ElevatorInit() {
+		_isMovingToTarget = false;
 		/* set the peak and nominal outputs, 12V means full */
 		_elevatorMotor.configNominalOutputForward(0, kElevatorTimeoutMs);
 		_elevatorMotor.configNominalOutputReverse(0, kElevatorTimeoutMs);
@@ -61,7 +64,7 @@ public class Elevator extends Subsystem{
 		 */
 		_elevatorMotor.configAllowableClosedloopError(0, kElevatorPIDLoopIndex, kElevatorTimeoutMs); /* always servo */
 
-		stopDistance = _cruiseVelocity * _cruiseVelocity / _acceleration;
+		stopDistance = 0.5 * _cruiseVelocity * _cruiseVelocity / _acceleration;
 		
 		_elevatorMotor.config_kF(kElevatorPIDLoopIndex, _liftKf, kElevatorTimeoutMs);
 		_elevatorMotor.config_kP(kElevatorPIDLoopIndex, _liftKp, kElevatorTimeoutMs);
@@ -101,13 +104,18 @@ public class Elevator extends Subsystem{
 		return elevatorTarget;
 	}
 	
+	public void HomeElevator()
+	{
+		_elevatorMotor.set(ControlMode.PercentOutput, Constants.elevatorHomingSpeed);
+	}
+	
 	public void Elevate (ElevatorTarget target) {
 		switch (target) {
 		case etAcquire:
 			_targetPosition = 0; // Random values TODO: Add actual values
 			break;
 		case etSwitch:
-			_targetPosition = 750; // Random values TODO: Add actual values
+			_targetPosition = 500; // Random values TODO: Add actual values
 			break;
 		case etScale:
 			_targetPosition = 1500; // Random values TODO: Add actual values
@@ -137,7 +145,6 @@ public class Elevator extends Subsystem{
 	// Execute to move
 	public void Execute() {
 		_currentPosition = GetElevatorPosition();
-		SmartDashboard.putNumber("Current Positon", _currentPosition);
 		
 		if (_isMovingToTarget) {
 			// Monitor distance to Goal
@@ -146,6 +153,20 @@ public class Elevator extends Subsystem{
 				_isMovingToTarget = false;
 			}
 		}
+	}
+	
+	public void updateSmartDashboard()
+	{
+		SmartDashboard.putNumber("Current Positon", GetElevatorPosition());
+		SmartDashboard.putNumber("Target Positon", _targetPosition);
+		SmartDashboard.putNumber("Stop Distance", stopDistance);
+		SmartDashboard.putBoolean("Is Moving to Target", _isMovingToTarget);
+	}
+	
+	public void StopHoming()
+	{
+		_elevatorMotor.set(ControlMode.PercentOutput, 0);
+		_elevatorMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 	
 	// Interface to let command know it's done
@@ -157,5 +178,11 @@ public class Elevator extends Subsystem{
 	public void CancelMove() {
 		
 		_targetPosition = _currentPosition;
+	}
+	
+	public void StopMoving()
+	{
+		_elevatorMotor.set(ControlMode.PercentOutput, 0);
+		_isMovingToTarget = false;
 	}
 }

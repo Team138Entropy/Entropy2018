@@ -77,6 +77,7 @@ public final class OI {
     static Button releaseButton = new JoystickButton(operatorStick, nykoRightTrigger);
     static Button openGrasperButton = new JoystickButton(operatorStick, nykoLeftBumper);
     static Button closeGrasperButton = new JoystickButton(operatorStick, nykoRightBumper);
+    static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
     
     static double lastX=0;
     static double LastY=0;
@@ -91,6 +92,7 @@ public final class OI {
     	releaseButton.whenReleased(new CompleteRelease());
     	openGrasperButton.whenPressed(new OpenGrasper());
     	closeGrasperButton.whenPressed(new CloseGrasper());
+    	homeElevatorButton.whileHeld(new HomeElevator());
     }
     
     
