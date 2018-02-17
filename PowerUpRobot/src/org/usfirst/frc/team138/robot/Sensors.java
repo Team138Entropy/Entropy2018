@@ -5,6 +5,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode.PixelFormat;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 
@@ -20,17 +22,21 @@ public class Sensors {
 	public static SensorCollection leftSensorCollection;
 	public static SensorCollection rightSensorCollection;
 	
-	static UsbCamera gearCamera;
-	static UsbCamera groundCamera;
-	//public static Entropy2017Targeting cameraProcessor;
+	static UsbCamera Camera0;
+	static UsbCamera Camera1;
 	
 	public static double gyroBias=0;
 	
 	public static void initialize() {
 		Robot.drivetrain.frontLeftTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		Robot.drivetrain.frontRightTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		
+		Camera0 = CameraServer.getInstance().startAutomaticCapture("Camera0", 0);
+		Camera0.setVideoMode(PixelFormat.kYUYV, 640, 480, 15);
 
-        
+		Camera1 = CameraServer.getInstance().startAutomaticCapture("Camera1", 1);
+		Camera1.setVideoMode(PixelFormat.kYUYV, 640, 480, 15);
+
 	}
 	
 	public static double getLeftDistance() {
