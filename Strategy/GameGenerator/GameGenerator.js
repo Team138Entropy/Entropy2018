@@ -13,6 +13,8 @@ var positions = [];
 
 var finalPrint = "";
 
+var robots = [];
+
 function buildRobot (name, drive, cSwitch, cScale, cClimb, pos) {
     var newRobot = new GameRobot();
     newRobot.robotName = name;
@@ -142,14 +144,36 @@ function generateRobots() {
 	var red1Bot = randomizeRobot("Gamma", positions[3]);
 	var red2Bot = randomizeRobot("Delta", positions[4]);
 	var red3Bot = randomizeRobot("Epsilon", positions[5]);
+	
+	robots = [];
+	
+	robots.push(teamRobot);
+	robots.push(blue1Bot);
+	robots.push(blue2Bot);
+	
+	robots.push(red1Bot);
+	robots.push(red2Bot);
+	robots.push(red3Bot);
 
 	// Print our random robots
-	printRobot(teamRobot);
-	printRobot(blue1Bot);
-	printRobot(blue2Bot);
-	printRobot(red1Bot);
-	printRobot(red2Bot);
-	printRobot(red3Bot);
+	if (document.getElementById("sortSelector").checked == true) {
+		for (i = 1; i < 7; i++) { // Loop through the six possible positions
+			for (p = 0; p < 6; p++) { // Loop through all six robots
+				var robot = robots[p];
+				if (robot.position == i) { // If the looped robot's position matches the position we're checking for...
+					printRobot(robot);
+					break;
+				}
+			}
+		}
+	} else {
+		printRobot(teamRobot);
+		printRobot(blue1Bot);
+		printRobot(blue2Bot);
+		printRobot(red1Bot);
+		printRobot(red2Bot);
+		printRobot(red3Bot);
+	}
 
 	var gameInt = Math.floor(Math.random() * 4);
 	var gameString = "";
