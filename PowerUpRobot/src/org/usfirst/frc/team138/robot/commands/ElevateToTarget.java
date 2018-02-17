@@ -11,32 +11,36 @@ public class ElevateToTarget extends Command {
 	
 	public ElevateToTarget(String target){
 		requires(Robot.elevator);
-		elevatorTarget = Robot.elevator.ConvertToTarget(target);		
-	}
+		elevatorTarget = Robot.elevator.ConvertToTarget(target);
+		}
 	
 	public ElevateToTarget(ElevatorTarget target)
 	{
 		requires(Robot.elevator);
-		elevatorTarget = target;		
+		elevatorTarget = target;
 	}
 	
 
-	protected void initialize() {		
+	protected void initialize() {
 		Robot.elevator.Elevate(elevatorTarget);
 	}
 
 	protected void execute() {
-		
+		Robot.elevator.Execute();
 	}
 
 	protected boolean isFinished() {
-		return isTimedOut();
+		return Robot.elevator.IsMoveComplete();
 	}
 
 	protected void end() {
+		Robot.elevator.CancelMove();
+		
 	}
 
 	protected void interrupted() {
+		
+		Robot.elevator.CancelMove();
 	}
 
 }

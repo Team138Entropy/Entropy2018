@@ -52,6 +52,7 @@ public class Robot extends IterativeRobot {
     	compressor.start();
 		Sensors.initialize();
 		grasper.initialize();
+		elevator.ElevatorInit();
 
 		// Smart Dashboard Initialization
 		Sensors.updateSmartDashboard();
@@ -124,6 +125,8 @@ public class Robot extends IterativeRobot {
         	autonomousCommand.cancel();        	
         }        
     	Sensors.resetEncoders();
+    	elevator.StopMoving();
+    	
     }
 
     /**
@@ -135,7 +138,7 @@ public class Robot extends IterativeRobot {
         
 		
         Sensors.updateSmartDashboard();
-        
+        elevator.updateSmartDashboard();
     }
     
     /**

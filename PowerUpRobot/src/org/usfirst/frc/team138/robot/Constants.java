@@ -53,6 +53,10 @@ public class Constants {
 		public static int LeftDriveEncoderPolarity = -1;
 		public static int RightDriveEncoderPolarity = 1;
 		
+		// Elevator
+		public final static double elevatorHomingSpeed = -0.2;
+		public final static double elevatorJogSpeed = 0.3;
+		
 		//Cube Grasper
 		public final static boolean grasperSolenoidActiveOpen = true;
 		public final static boolean wristSolenoidActiveRaised = true;
