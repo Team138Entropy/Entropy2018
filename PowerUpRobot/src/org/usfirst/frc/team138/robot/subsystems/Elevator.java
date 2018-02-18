@@ -40,7 +40,11 @@ public class Elevator extends Subsystem{
 		etSwitch,
 		etScale
 	}
-	
+	private enum ScaleIndex{
+		siNotSelected,
+		siLower,
+		siUpper
+	}
 	private int _direction = 0;		// 0: not moving to target, -1 or 1 moving to target in that direction
 	
 	private double _targetPosition = 0.0;
@@ -48,6 +52,7 @@ public class Elevator extends Subsystem{
 	
 	private String _currentCommand = "None";
 	private int _currentJogDirection = 0;
+	private ScaleIndex _currentScaleIndex = ScaleIndex.siNotSelected;
 	
 	public void ElevatorInit() {
 		// initial direction is 0, since elevator is not moving
@@ -123,13 +128,28 @@ public class Elevator extends Subsystem{
 		_currentCommand = "Elevate";
 		switch (target) {
 		case etAcquire:
+			_currentCommand = "ElevateAcquire";
+			_currentScaleIndex = ScaleIndex.siNotSelected;
 			_targetPosition = 0;
 			break;
 		case etSwitch:
+			_currentCommand = "ElevateSwitch";
+			_currentScaleIndex = ScaleIndex.siNotSelected;
 			_targetPosition = 1100; 
 			break;
 		case etScale:
-			_targetPosition = 3000; 
+			if ( _currentScaleIndex == ScaleIndex.siNotSelected)
+			{
+				_currentCommand = "ElevateLowerScale";
+				_currentScaleIndex = ScaleIndex.siLower;
+				_targetPosition = 2500;
+			}
+			else 
+			{
+				_currentCommand = "ElevateUpperScale";
+				_currentScaleIndex = ScaleIndex.siUpper;
+				_targetPosition = 3000;
+			}
 			break;
 		default:
 			// Error 
@@ -185,7 +205,6 @@ public class Elevator extends Subsystem{
 	
 	// Interface to let command know it's done
 	public boolean IsMoveComplete() {
-		
 		return (_direction == 0);
 	}
 	
