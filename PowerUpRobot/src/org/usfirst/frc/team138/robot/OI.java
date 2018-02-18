@@ -78,8 +78,7 @@ public final class OI {
     static Button openGrasperButton = new JoystickButton(operatorStick, nykoLeftBumper);
     static Button closeGrasperButton = new JoystickButton(operatorStick, nykoRightBumper);
     static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
-    static Button raiseElevatorButton = new JoystickButton(operatorStick, nykoMiddle10);
-    static Button lowerElevatorButton = new JoystickButton(operatorStick, nykoMiddle9);
+    static Button cancelElevatorMoveButton = new JoystickButton(operatorStick, nykoRightStick);
     
     static double lastX=0;
     static double LastY=0;
@@ -95,8 +94,7 @@ public final class OI {
     	openGrasperButton.whenPressed(new OpenGrasper());
     	closeGrasperButton.whenPressed(new CloseGrasper());
     	homeElevatorButton.whileHeld(new HomeElevator());
-    	raiseElevatorButton.whileHeld(new JogElevator(1));
-    	lowerElevatorButton.whileHeld(new JogElevator(-1));
+    	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
     }
     
     
@@ -113,6 +111,25 @@ public final class OI {
 	public static double getClimbSpeed()
 	{
 		return operatorStick.getRawAxis(nykoLeftYAxis);
+	}
+	
+	// Return the jog direction: 1 for up, -1 for down
+	public static int getJogDirection()
+	{
+		// POV hat returns 0 for up
+		if (operatorStick.getPOV() == 0)
+		{
+			return 1;
+		}
+		// POV hat returns 180 for down
+		else if (operatorStick.getPOV() == 180)
+		{
+			return -1;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 	
 	public static boolean isReverse() {
