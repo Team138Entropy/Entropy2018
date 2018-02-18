@@ -20,14 +20,7 @@ public class TeleopDrive extends Command{
 	}
 
 	protected void execute() {
-		if (Constants.useClosedLoopDrivetrain)
-		{
-			Robot.drivetrain.driveCloseLoopControl(OI.getMoveSpeed(), OI.getRotateSpeed());
-		}
-		else
-		{
-			Robot.drivetrain.driveWithTable(OI.getMoveSpeed(), OI.getRotateSpeed());
-		}	
+		Robot.drivetrain.drive(OI.getMoveSpeed(), OI.getRotateSpeed());
 	}
 
 	protected boolean isFinished() {

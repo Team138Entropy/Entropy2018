@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team138.robot.RobotMap;
 import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.OI;
+import org.usfirst.frc.team138.robot.Robot;
 
 
 public class Drivetrain extends Subsystem{
@@ -40,12 +41,6 @@ public class Drivetrain extends Subsystem{
 	public WPI_TalonSRX frontRightTalon = new WPI_TalonSRX(RobotMap.RIGHT_MOTOR_CHANNEL_FRONT);
 	WPI_TalonSRX backRightTalon = new WPI_TalonSRX(RobotMap.RIGHT_MOTOR_CHANNEL_BACK);
 	
-	//SpeedControllerGroup _right = new SpeedControllerGroup(frontRightTalon, backRightTalon);
-	//SpeedControllerGroup _left = new SpeedControllerGroup(frontLeftTalon, backLeftTalon);
-
-	//DifferentialDrive drivetrain = new DifferentialDrive(_left, _right);
-
-
 	protected void initDefaultCommand() {
 		SmartDashboard.putNumber("ScaleFactor", 1.0);
 		setDefaultCommand(new TeleopDrive());
@@ -84,14 +79,16 @@ public class Drivetrain extends Subsystem{
 	
 	public void drive(double moveSpeed, double rotateSpeed)
 	{
-		//drivetrain.arcadeDrive(moveSpeed, rotateSpeed);
+		if (Constants.useClosedLoopDrivetrain)
+		{
+			Robot.drivetrain.driveCloseLoopControl(OI.getMoveSpeed(), OI.getRotateSpeed());
+		}
+		else
+		{
+			Robot.drivetrain.driveWithTable(OI.getMoveSpeed(), OI.getRotateSpeed());
+		}	
 	}
 
-	public void driveTank(double leftSpeed, double rightSpeed) 
-	{
-		//drivetrain.tankDrive(leftSpeed, rightSpeed);
-	}
-	
 	public void driveCloseLoopControl(double moveSpeed, double rotateSpeed)
 	{
 		double left  = 0;
@@ -190,6 +187,8 @@ public class Drivetrain extends Subsystem{
 		SmartDashboard.putNumber("RightSpeed:", rightMotorSpeed);
 		
 		//drivetrain.tankDrive(leftMotorSpeed, rightMotorSpeed);
+		frontLeftTalon.set(ControlMode.Velocity, leftMotorSpeed);
+		frontRightTalon.set(ControlMode.Velocity, rightMotorSpeed);
 	}
 
 	double getLeftMotorSpeed(double moveSpeed, double rotateSpeed)
