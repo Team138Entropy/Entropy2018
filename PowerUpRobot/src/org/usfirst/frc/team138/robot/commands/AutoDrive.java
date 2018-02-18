@@ -3,6 +3,7 @@ package org.usfirst.frc.team138.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.Sensors;
+import org.usfirst.frc.team138.robot.Constants;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PIDController;
@@ -61,6 +62,16 @@ public class AutoDrive extends Command implements PIDOutput{
 		turnController = new PIDController(kPRotate, kI, kD, Sensors.gyro, this);
 	}
 	
+	
+	private double leftDistance() {
+		// Return leftDistance from left encoder in centimeters
+		return Constants.Meters2CM*Sensors.getLeftDistance();
+	}
+	private double rightDistance() {
+		// Return rightDistance from right encoder in centimeters
+		return Constants.Meters2CM*Sensors.getRightDistance();
+	}
+
 	/**
 	 * Drives the robot the specified number of inches to the side while rotating to the angle specified !!TESTING!!
 	 * @param speed The speed, from -1.0 to 1.0, the robot will drive. Negative speeds go backwards
@@ -120,7 +131,7 @@ public class AutoDrive extends Command implements PIDOutput{
 			}
 			else
 			{
-				result = (Math.abs(Sensors.getLeftDistance()) >= driveDistance) || (Math.abs(Sensors.getRightDistance()) >= driveDistance);
+				result = (Math.abs(leftDistance()) >= driveDistance) || (Math.abs(rightDistance()) >= driveDistance);
 			}
 			if (result)
 			{
@@ -132,12 +143,12 @@ public class AutoDrive extends Command implements PIDOutput{
 				if (arcTurn)
 				{
 					turnController.setSetpoint(targetAngle * 
-							(Math.abs(Sensors.getLeftDistance()) + Math.abs(Sensors.getRightDistance())) / 2
+							(Math.abs(leftDistance()) + Math.abs(rightDistance())) / 2
 							/ driveDistance);
 				}
 				Robot.drivetrain.drive(driveSpeed, rotateToAngleRate);
 				
-				if (lastRightDistance == Sensors.getRightDistance() || lastLeftDistance == Sensors.getLeftDistance()) 
+				if (lastRightDistance == rightDistance() || lastLeftDistance == leftDistance()) 
 				{
 					if (stallCounter == 25) 
 					{
@@ -155,8 +166,8 @@ public class AutoDrive extends Command implements PIDOutput{
 				{
 					stallCounter = 0;
 				}	
-				lastRightDistance = Sensors.getRightDistance();
-				lastLeftDistance = Sensors.getLeftDistance();
+				lastRightDistance = rightDistance();
+				lastLeftDistance = leftDistance();
 				
 				SmartDashboard.putNumber("Rotate to Angle Rate", rotateToAngleRate);
 			}

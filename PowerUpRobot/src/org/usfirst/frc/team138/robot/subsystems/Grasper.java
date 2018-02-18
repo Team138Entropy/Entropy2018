@@ -48,8 +48,7 @@ public class Grasper extends Subsystem{
     }
     
     private void lowerWrist() {
-    	_wristSolenoid.set(!Constants.wristSolenoidActiveRaised);
-    	
+    	_wristSolenoid.set(!Constants.wristSolenoidActiveRaised);	
     }
 	
 	public boolean wristIsUp() {
