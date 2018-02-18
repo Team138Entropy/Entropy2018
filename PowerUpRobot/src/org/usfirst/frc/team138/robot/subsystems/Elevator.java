@@ -126,7 +126,7 @@ public class Elevator extends Subsystem{
 			_targetPosition = 0;
 			break;
 		case etSwitch:
-			_targetPosition = 1100; 
+			_targetPosition = 1500; 
 			break;
 		case etScale:
 			_targetPosition = 3000; 

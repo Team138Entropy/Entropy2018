@@ -47,12 +47,31 @@ public class Constants {
 		public final static double nineSeconds  = 9.0;
 		public final static double tenSeconds   = 10.0;
 		
+		
+		// Drivetrain
+		public final static boolean useClosedLoopDrivetrain = true;
+
+		public final static double ClosedLoopCruiseVelocity = 1; // meters / second
+		public final static double ClosedLoopSlowFactor = 0.4; // slowFactor * CV
+		public final static double ClosedLoopSlowRotateFactor = 0.5;
+		
+		// Wheel spacing ~0.5 Meters;  For zero Turn, each wheel travels
+		// on a circle of circumference of pi*0.5 or 1.57 Meters.
+		// For 180 Degree turn in 1 second (180 Degrees/sec), each
+		// wheel travels 1/2 Circumference of .785 Meters in 1 second
+		public final static double ClosedLoopTurnSpeed = 0.785; // Meters/sec
+		
+		public final static double MaxSpeedChange = 1 * 0.025; // full-speed/sec * .025 seconds
+		public final static double MaxSlowSpeedChange = 1 * 0.025;
+		public final static double CloseLoopJoystickDeadband = 0.1;
+		
 		// This is our encoder constant for distance (in METERS) per  encoder pulse
 		// 6" Wheels, 15:45 chain drive; 256 encoder counts per drive sprocket rotation
-		public static double MetersPerPulse = Math.PI*6*.0254*15/45/256;
+		public final static double MetersPerPulse = Math.PI*6*.0254*15/45/256;
+		public final static double SecondsTo100Milliseconds = 0.1;
 		
-		public static int LeftDriveEncoderPolarity = -1;
-		public static int RightDriveEncoderPolarity = 1;
+		public final static int LeftDriveEncoderPolarity = -1;
+		public final static int RightDriveEncoderPolarity = 1;
 		
 		// Elevator
 		public final static double elevatorHomingSpeed = -0.2;

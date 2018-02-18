@@ -2,12 +2,17 @@ package org.usfirst.frc.team138.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team138.robot.commands.TeleopDrive;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team138.robot.RobotMap;
+import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.OI;
 
 
@@ -17,37 +22,130 @@ public class Drivetrain extends Subsystem{
 	private static double speed_range;
 	private double lastSpeed=0;
 	private static double maxSpeedChange=1/20.0;
-	
+
+	double _speedFactor = 1;
+	double _rotateFactor = 1;
+
+	// Servo Loop Gains
+	double Drive_Kf = 1.7;
+	double Drive_Kp = 5;
+	double Drive_Ki = 0;//0.02;
+	double Drive_Kd = 30;
+
+	// Filter state for joystick movements
+	double _lastMoveSpeed = 0;
 
 	public WPI_TalonSRX frontLeftTalon = new WPI_TalonSRX(RobotMap.LEFT_MOTOR_CHANNEL_FRONT);
 	WPI_TalonSRX backLeftTalon = new WPI_TalonSRX(RobotMap.LEFT_MOTOR_CHANNEL_BACK);
 	public WPI_TalonSRX frontRightTalon = new WPI_TalonSRX(RobotMap.RIGHT_MOTOR_CHANNEL_FRONT);
 	WPI_TalonSRX backRightTalon = new WPI_TalonSRX(RobotMap.RIGHT_MOTOR_CHANNEL_BACK);
 	
-	SpeedControllerGroup right = new SpeedControllerGroup(frontRightTalon, backRightTalon);
-	SpeedControllerGroup left = new SpeedControllerGroup(frontLeftTalon, backLeftTalon);
+	//SpeedControllerGroup _right = new SpeedControllerGroup(frontRightTalon, backRightTalon);
+	//SpeedControllerGroup _left = new SpeedControllerGroup(frontLeftTalon, backLeftTalon);
 
-	DifferentialDrive drivetrain = new DifferentialDrive(left, right);
+	//DifferentialDrive drivetrain = new DifferentialDrive(_left, _right);
 
 
 	protected void initDefaultCommand() {
-/*		frontLeftTalon.setInverted(true);
-		backLeftTalon.setInverted(true);
-		frontRightTalon.setInverted(true);
-		backRightTalon.setInverted(true);
-*/
 		SmartDashboard.putNumber("ScaleFactor", 1.0);
 		setDefaultCommand(new TeleopDrive());
 	}
 
+	public void DriveTrainInit()
+	{
+		/* choose the sensor and sensor direction */
+		frontLeftTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,0);
+		frontLeftTalon.setSensorPhase(true);
+		frontLeftTalon.setInverted(true);
+		backLeftTalon.setInverted(true);
+		/* set the peak and nominal outputs, 12V means full */
+		frontLeftTalon.configNominalOutputForward(0.,0);
+		frontLeftTalon.configNominalOutputReverse(0.,0);
+		frontLeftTalon.configPeakOutputForward(1,0);
+		frontLeftTalon.configPeakOutputReverse(-1,0);
+		frontLeftTalon.setNeutralMode(NeutralMode.Coast);
+		backLeftTalon.setNeutralMode(NeutralMode.Coast);
+		
+		/* choose the sensor and sensor direction */
+
+		frontRightTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,0);
+		frontRightTalon.setSensorPhase(true);
+		frontRightTalon.configNominalOutputForward(0.,0);
+		frontRightTalon.configNominalOutputReverse(-0.,0);
+		frontRightTalon.configPeakOutputForward(1,0);
+		frontRightTalon.configPeakOutputReverse(-1,0);
+		frontRightTalon.setNeutralMode(NeutralMode.Coast);
+		backRightTalon.setNeutralMode(NeutralMode.Coast);
+		
+		// Configure slave Talons to follow masters
+		backLeftTalon.follow(frontLeftTalon);
+		backRightTalon.follow(frontRightTalon);
+	}
+	
 	public void drive(double moveSpeed, double rotateSpeed)
 	{
-		drivetrain.arcadeDrive(moveSpeed, rotateSpeed);
+		//drivetrain.arcadeDrive(moveSpeed, rotateSpeed);
 	}
 
 	public void driveTank(double leftSpeed, double rightSpeed) 
 	{
-		drivetrain.tankDrive(leftSpeed, rightSpeed);
+		//drivetrain.tankDrive(leftSpeed, rightSpeed);
+	}
+	
+	public void driveCloseLoopControl(double moveSpeed, double rotateSpeed)
+	{
+		double left  = 0;
+		double right = 0;
+
+		if (Math.abs(moveSpeed) < Constants.CloseLoopJoystickDeadband)
+		{
+			moveSpeed=0;
+		}
+		
+		if (Math.abs(rotateSpeed) < Constants.CloseLoopJoystickDeadband)
+		{
+			rotateSpeed=0;
+		}
+		
+		// Determine if speed factor needs to be applied
+		if (OI.isFullSpeed()) {	
+			_rotateFactor = 1;
+			_speedFactor = 1;
+		}
+		else
+		{
+			_rotateFactor = Constants.ClosedLoopSlowRotateFactor;
+			_speedFactor = Constants.ClosedLoopSlowFactor;
+		}
+		
+		_lastMoveSpeed = limitValue(_speedFactor * moveSpeed, 
+								    _lastMoveSpeed - Constants.MaxSpeedChange,
+								    _lastMoveSpeed + Constants.MaxSpeedChange);	
+
+		left = Constants.ClosedLoopCruiseVelocity * _lastMoveSpeed - _rotateFactor * 
+													rotateSpeed * Constants.ClosedLoopTurnSpeed;
+		right = Constants.ClosedLoopCruiseVelocity * _lastMoveSpeed + _rotateFactor * 
+													rotateSpeed * Constants.ClosedLoopTurnSpeed;
+
+		// Convert Meters / seconds to Encoder Counts per 100 milliseconds
+		frontLeftTalon.set(ControlMode.Velocity, left * Constants.SecondsTo100Milliseconds / Constants.MetersPerPulse);
+		frontRightTalon.set(ControlMode.Velocity, right * Constants.SecondsTo100Milliseconds / Constants.MetersPerPulse);
+
+
+		SmartDashboard.putNumber("Move Speed", moveSpeed);
+		
+		
+		SmartDashboard.putNumber("Left Speed", left);
+		SmartDashboard.putNumber("Right Speed", right);
+		
+		SmartDashboard.putNumber("Left PWM", frontLeftTalon.getMotorOutputPercent());
+		SmartDashboard.putNumber("Right PWM", frontRightTalon.getMotorOutputPercent());
+		
+		SmartDashboard.putNumber("Left Velocity", frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
+		SmartDashboard.putNumber("Right Velocity", frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
+		
+		SmartDashboard.putNumber("Left Position", Constants.MetersPerPulse*frontLeftTalon.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("Right Position", Constants.MetersPerPulse*frontRightTalon.getSelectedSensorPosition(0));
 	}
 
 	public void driveWithTable(double moveSpeed, double rotateSpeed)
@@ -91,7 +189,7 @@ public class Drivetrain extends Subsystem{
 		SmartDashboard.putNumber("LeftSpeed:", leftMotorSpeed);
 		SmartDashboard.putNumber("RightSpeed:", rightMotorSpeed);
 		
-		drivetrain.tankDrive(leftMotorSpeed, rightMotorSpeed);
+		//drivetrain.tankDrive(leftMotorSpeed, rightMotorSpeed);
 	}
 
 	double getLeftMotorSpeed(double moveSpeed, double rotateSpeed)

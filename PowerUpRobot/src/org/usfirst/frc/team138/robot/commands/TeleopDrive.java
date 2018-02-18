@@ -2,6 +2,7 @@ package org.usfirst.frc.team138.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 
+import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.OI;
 import org.usfirst.frc.team138.robot.Robot;
 
@@ -19,18 +20,14 @@ public class TeleopDrive extends Command{
 	}
 
 	protected void execute() {
-		//
-		// the first Robot.drivetrain.driveWithTable may not be necessary
-		// 10/7/17 - pre RiverRage
-		// TODO: remove
-		//
-//		if (Robot.oi.getMoveSpeed() < clawUpPoint && Robot.claw.wristIsUp() == false) {
-//			Robot.claw.wristUp();
-//		    Robot.drivetrain.driveWithTable(Robot.oi.getMoveSpeed(), Robot.oi.getRotateSpeed());
-//		} else {
-//			Robot.drivetrain.driveWithTable(Robot.oi.getMoveSpeed(), Robot.oi.getRotateSpeed());
-//		}
-		Robot.drivetrain.driveWithTable(OI.getMoveSpeed(), OI.getRotateSpeed());
+		if (Constants.useClosedLoopDrivetrain)
+		{
+			Robot.drivetrain.driveCloseLoopControl(OI.getMoveSpeed(), OI.getRotateSpeed());
+		}
+		else
+		{
+			Robot.drivetrain.driveWithTable(OI.getMoveSpeed(), OI.getRotateSpeed());
+		}	
 	}
 
 	protected boolean isFinished() {
