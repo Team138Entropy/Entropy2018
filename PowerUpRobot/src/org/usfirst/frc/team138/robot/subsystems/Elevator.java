@@ -175,6 +175,7 @@ public class Elevator extends Subsystem{
 		SmartDashboard.putNumber("Direction", _direction);
 		SmartDashboard.putString("Current Command", _currentCommand);
 		SmartDashboard.putNumber("Jog Direction", _currentJogDirection);
+		SmartDashboard.putNumber("Elevate Output:",_elevatorMotor.getMotorOutputPercent());
 	}
 	
 	public void StopHoming()

@@ -51,7 +51,7 @@ public class Constants {
 		// Drivetrain
 		public final static boolean useClosedLoopDrivetrain = true;
 
-		public final static double ClosedLoopCruiseVelocity = 1; // meters / second
+		public final static double ClosedLoopCruiseVelocity = 1.75; // meters / second
 		public final static double ClosedLoopSlowFactor = 0.4; // slowFactor * CV
 		public final static double ClosedLoopSlowRotateFactor = 0.5;
 		
@@ -59,7 +59,7 @@ public class Constants {
 		// on a circle of circumference of pi*0.5 or 1.57 Meters.
 		// For 180 Degree turn in 1 second (180 Degrees/sec), each
 		// wheel travels 1/2 Circumference of .785 Meters in 1 second
-		public final static double ClosedLoopTurnSpeed = 0.785; // Meters/sec
+		public final static double ClosedLoopTurnSpeed = 0.5; // Meters/sec
 		
 		public final static double MaxSpeedChange = 1 * 0.025; // full-speed/sec * .025 seconds
 		public final static double MaxSlowSpeedChange = 1 * 0.025;
