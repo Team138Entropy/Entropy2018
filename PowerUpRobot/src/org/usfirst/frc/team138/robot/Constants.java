@@ -25,9 +25,12 @@ public class Constants {
 		// These are autonomous constants useful for the autonomous commands
 		//
 		
-		public final static double distanceSwitch = 310.0;	// 3.1 meters
-		public final static double distanceScale = 600.0;	// 6 meters
-		public final static double distanceBaseLine = 135.0;	// 1.35 meters
+		public final static double distanceSwitch = 310.0;		// Centimeters
+		public final static double distanceScale = 600.0;		// Centimeters
+		public final static double distanceBaseLine = 135.0;	// Centimeters
+		public final static double autoSpeed = 0.5; 			// Fraction of full speed
+		public final static double releaseDelay = 0.5;			// Seconds
+		public final static int startingBoxDistance = 92;		// Centimeters
 		
 		// This is our encoder constant for distance (in METERS) per  encoder pulse
 		// 6" Wheels, 15:45 chain drive; 256 encoder counts per drive sprocket rotation
