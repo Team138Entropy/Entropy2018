@@ -36,23 +36,24 @@ public class Elevator extends Subsystem{
 	public static final int kElevatorTimeoutMs = 10;
 	
 	public enum ElevatorTarget{
-		etAcquire,
-		etSwitch,
-		etScale
+		NONE,
+		JOG,			// Jog Mode
+		HOME,			// Home Mode
+		ACQUIRE,		// Acquire Cube Level 1 (Floor)
+		EXCHANGE,		// Deposit Exchange
+		CUBE_LEVEL_2,	// Acquire Cube Level 2
+		SWITCH,			// Deposit Switch / Acquire Cube Level 3 
+		SCALE,			// Deposit Lower Scale
+		UPPER_SCALE		// Deposit Upper Scale
 	}
-	private enum ScaleIndex{
-		siNotSelected,
-		siLower,
-		siUpper
-	}
+
 	private int _direction = 0;		// 0: not moving to target, -1 or 1 moving to target in that direction
 	
 	private double _targetPosition = 0.0;
 	private double _currentPosition = 0.0;
+	private ElevatorTarget _currentElevatorTarget = ElevatorTarget.NONE;
 	
-	private String _currentCommand = "None";
 	private int _currentJogDirection = 0;
-	private ScaleIndex _currentScaleIndex = ScaleIndex.siNotSelected;
 	
 	public void ElevatorInit() {
 		// initial direction is 0, since elevator is not moving
@@ -90,85 +91,167 @@ public class Elevator extends Subsystem{
 		setDefaultCommand(new JogElevator());
 	}
 	
-	// Sets up the move
+	// Convert the target string to an ElevatorTarget
 	public ElevatorTarget ConvertToTarget(String target) {
 		ElevatorTarget elevatorTarget;
 		
 		switch (target) {
 		case "Aquire":
-			elevatorTarget = ElevatorTarget.etAcquire;
+			elevatorTarget = ElevatorTarget.ACQUIRE;
+			break;
+		case "Exchange": 
+			elevatorTarget = ElevatorTarget.EXCHANGE;
+			break;
+		case "CubeLevel2": 
+			elevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
 			break;
 		case "Switch":
-			elevatorTarget = ElevatorTarget.etSwitch;
+			elevatorTarget = ElevatorTarget.SWITCH;
 			break;
 		case "Scale":
-			elevatorTarget = ElevatorTarget.etScale;
+			elevatorTarget = ElevatorTarget.SCALE;
 			break;
+		case "UpperScale":
+			elevatorTarget = ElevatorTarget.UPPER_SCALE;
+				break;
 		default:
-			elevatorTarget = ElevatorTarget.etAcquire;
+			elevatorTarget = ElevatorTarget.ACQUIRE;
 			break;
 		}
 		return elevatorTarget;
 	}
 	
+	// Convert the Elevator Target to its string representation
+	public String ConvertToString(ElevatorTarget target)
+	{
+		String elevatorTarget;
+		
+		switch (target) {
+		case NONE: 
+			elevatorTarget = "None";
+			break;
+		case JOG: 
+			elevatorTarget = "Jog";
+			break;
+		case HOME: 
+			elevatorTarget = "Home";
+			break;
+		case ACQUIRE:
+			elevatorTarget = "Acquire";
+			break;
+		case EXCHANGE:
+			elevatorTarget = "Exchange";
+			break;
+		case CUBE_LEVEL_2:
+			elevatorTarget = "Cube Level 2";
+			break;
+		case SWITCH:
+			elevatorTarget = "Switch";
+			break;
+		case SCALE:
+			elevatorTarget = "Scale";
+			break;
+		case UPPER_SCALE:
+			elevatorTarget = "Upper Scale";
+			break;
+		default:
+			elevatorTarget = "Invalid";
+			break;
+		}
+		return elevatorTarget;
+		
+	}
+	
+	// Start jogging the elevator
 	public void JogElevator(int jogDirection, double jogSpeed)
 	{
-		_currentCommand = "Jog";
+		_currentElevatorTarget = ElevatorTarget.JOG;
 		_currentJogDirection = jogDirection;
 		_elevatorMotor.set(ControlMode.PercentOutput, jogSpeed * jogDirection);
 	}
 	
+	// Start homing the elevator
 	public void HomeElevator()
 	{
-		_currentCommand = "Home";
+		_currentElevatorTarget = ElevatorTarget.HOME;
 		_elevatorMotor.set(ControlMode.PercentOutput, Constants.elevatorHomingSpeed);
 	}
 	
+	// Elevate to a specific target position
 	public void Elevate (ElevatorTarget target) {
-		_currentCommand = "Elevate";
-		switch (target) {
-		case etAcquire:
-			_currentCommand = "ElevateAcquire";
-			_currentScaleIndex = ScaleIndex.siNotSelected;
-			_targetPosition = 0;
-			break;
-		case etSwitch:
-			_currentCommand = "ElevateSwitch";
-			_currentScaleIndex = ScaleIndex.siNotSelected;
-			_targetPosition = 1100; 
-			break;
-		case etScale:
-			if ( _currentScaleIndex == ScaleIndex.siNotSelected)
-			{
-				_currentCommand = "ElevateLowerScale";
-				_currentScaleIndex = ScaleIndex.siLower;
-				_targetPosition = 2500;
+		_currentElevatorTarget = target;
+		
+		if (target == ElevatorTarget.NONE)
+		{
+			StopMoving();
+		}
+		else
+		{		
+			switch (target) {
+			case ACQUIRE:
+				_targetPosition = 0;	// Acquire Height is Cube Level 1
+				break;
+			case EXCHANGE:
+				_targetPosition = 500;	// Alternate Acquire position is Exchange
+										//TODO: determine real position
+				break;
+			case CUBE_LEVEL_2:
+				_targetPosition = 900;	// Alternate Switch position is Cube Level 2
+										// TODO: determine real position
+				break;
+			case SWITCH:
+				_targetPosition = 1100; // Switch height is also Cube Level 3
+				break;
+			case SCALE:
+				_targetPosition = 2500;	// Default scale position is lower scale
+				break;
+			case UPPER_SCALE:
+				_targetPosition = 3000;	// Alternate scale position is upper scale
+			default:
+				// Error 
+				break;
+				
 			}
-			else 
-			{
-				_currentCommand = "ElevateUpperScale";
-				_currentScaleIndex = ScaleIndex.siUpper;
-				_targetPosition = 3000;
-			}
-			break;
-		default:
-			// Error 
-			break;
 			
+			_currentPosition = GetElevatorPosition();
+			
+			if (_targetPosition > _currentPosition) {
+				_direction = 1;
+			}
+			else {
+				_direction = -1;
+			}
+			
+			_elevatorMotor.set(ControlMode.PercentOutput , _direction *_cruiseVelocity / 100);
 		}
-		
-		_currentPosition = GetElevatorPosition();
-		
-		if (_targetPosition > _currentPosition) {
-			_direction = 1;
-		}
-		else {
-			_direction = -1;
-		}
-		
-		_elevatorMotor.set(ControlMode.PercentOutput , _direction *_cruiseVelocity / 100);
 	}
 	
+	// Determine the alternate target for the current elevator target
+	public ElevatorTarget getAlternateElevatorTarget()
+	{
+		ElevatorTarget alternateElevatorTarget;
+		
+		switch (_currentElevatorTarget)
+		{
+		case ACQUIRE:
+			alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+			break;
+		case SWITCH:
+			alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
+			break;
+		case SCALE:
+			alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
+			break;
+		default:
+			// No alternate function for any other target
+			alternateElevatorTarget = ElevatorTarget.NONE;
+			break;
+		}
+		
+		return alternateElevatorTarget;
+	}
+	
+	// Return the elevator position in encoder counts
 	public double GetElevatorPosition() {
 		 return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
 	}
@@ -193,10 +276,11 @@ public class Elevator extends Subsystem{
 		SmartDashboard.putNumber("Current Position", GetElevatorPosition());
 		SmartDashboard.putNumber("Target Position", _targetPosition);
 		SmartDashboard.putNumber("Direction", _direction);
-		SmartDashboard.putString("Current Command", _currentCommand);
+		SmartDashboard.putString("Current Target", ConvertToString(_currentElevatorTarget));
 		SmartDashboard.putNumber("Jog Direction", _currentJogDirection);
 	}
 	
+	// Stop the homing move, reset the encoder position 
 	public void StopHoming()
 	{
 		_elevatorMotor.set(ControlMode.PercentOutput, 0);
@@ -208,14 +292,17 @@ public class Elevator extends Subsystem{
 		return (_direction == 0);
 	}
 	
+	// Cancel the current elevator move, but don't stop the motion immediately
+	// This occurs when another move command is about to start with a new target position
 	public void CancelMove() {
-		_currentCommand = "None";
+		_currentElevatorTarget = ElevatorTarget.NONE;
 		_targetPosition = _currentPosition;
 	}
 	
+	// Stop the current elevator move immediately
 	public void StopMoving()
 	{
-		_currentCommand = "None";
+		_currentElevatorTarget = ElevatorTarget.NONE;
 		_elevatorMotor.set(ControlMode.PercentOutput, 0);
 		_direction = 0;
 	}

@@ -5,19 +5,14 @@ import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ElevateToTarget extends Command {
+public class ElevateToAlternateTarget extends Command {
 	
 	private ElevatorTarget elevatorTarget;
 	
-	public ElevateToTarget(String target){
-		requires(Robot.elevator);
-		elevatorTarget = Robot.elevator.ConvertToTarget(target);
-		}
-	
-	public ElevateToTarget(ElevatorTarget target)
+	public ElevateToAlternateTarget()
 	{
 		requires(Robot.elevator);
-		elevatorTarget = target;
+		elevatorTarget = Robot.elevator.getAlternateElevatorTarget();
 	}
 	
 
