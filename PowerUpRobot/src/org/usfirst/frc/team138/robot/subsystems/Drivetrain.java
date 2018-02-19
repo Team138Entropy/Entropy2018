@@ -13,8 +13,7 @@ import org.usfirst.frc.team138.robot.OI;
 
 public class Drivetrain extends Subsystem{
 	private static double CONTROLLER_DEAD_ZONE = 0.09;
-	private static double min_speed,max_speed;
-	private static double speed_range;
+	private static double min_speed;
 	private double lastSpeed=0;
 	private static double maxSpeedChange=1/20.0;
 	
@@ -54,9 +53,7 @@ public class Drivetrain extends Subsystem{
 	{
 
 		min_speed=Math.abs(DriveTable.Drive_Matrix_2017[14][0]);
-		max_speed=1.0;
 		double scale=0.5;
-		speed_range=max_speed-min_speed;
 		SmartDashboard.putNumber("MinSpeed:", min_speed);
 
 		//rotateSpeed = -rotateSpeed;
