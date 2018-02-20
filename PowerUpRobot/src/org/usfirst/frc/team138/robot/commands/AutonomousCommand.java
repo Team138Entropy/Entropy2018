@@ -98,7 +98,7 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
 			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
-			addSequential(new AutoDrive(90.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.rotateToScore));
 			// Use vision to drive to scale?
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
@@ -117,7 +117,7 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
 			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
-			addSequential(new AutoDrive(-90.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(-1*Constants.rotateToScore));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
@@ -146,6 +146,7 @@ public class AutonomousCommand extends CommandGroup {
 			// Switch on left
 			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
+			addSequential(new AutoDrive(Constants.rotateToScore));
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());	
 		}
@@ -175,7 +176,7 @@ public class AutonomousCommand extends CommandGroup {
 			// Switch on right
 			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
-			addSequential(new AutoDrive(-90.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(-1*Constants.rotateToScore));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());

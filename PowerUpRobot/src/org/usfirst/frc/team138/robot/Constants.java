@@ -31,6 +31,7 @@ public class Constants {
 		public final static double autoSpeed = 0.5; 			// Fraction of full speed
 		public final static double releaseDelay = 0.5;			// Seconds
 		public final static int startingBoxDistance = 92;		// Centimeters
+		public final static double rotateToScore = 90.0;		// Degrees
 		
 		
 		// Drivetrain
