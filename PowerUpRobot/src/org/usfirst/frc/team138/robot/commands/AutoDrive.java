@@ -23,6 +23,7 @@ public class AutoDrive extends Command implements PIDOutput{
 	double driveDistance = 0.0;
 	double targetAngle = 0.0;
 	boolean arcTurn = false;
+	double counter=0;
 	
 	//************************************************
 	//PID CONSTANTS
@@ -61,7 +62,6 @@ public class AutoDrive extends Command implements PIDOutput{
 		targetAngle = angle;
 		turnController = new PIDController(Constants.kPRotate, Constants.kIRotate, Constants.kDRotate, Sensors.gyro, this);
 		
-		SmartDashboard.putBoolean("AutoDrive", true);
 	}
 	
 	
@@ -95,6 +95,10 @@ public class AutoDrive extends Command implements PIDOutput{
 	public void initialize() {
 		Sensors.resetEncoders();
 		Sensors.gyro.reset();
+		counter=0;
+		
+		Robot.drivetrain.frontLeftTalon.setSelectedSensorPosition(0, 0, 0);
+		Robot.drivetrain.frontRightTalon.setSelectedSensorPosition(0, 0, 0);
 		
 		turnController.setAbsoluteTolerance(ToleranceDegrees);         
 	    turnController.setOutputRange(-.25, 0.25);
@@ -148,8 +152,11 @@ public class AutoDrive extends Command implements PIDOutput{
 							(Math.abs(leftDistance()) + Math.abs(rightDistance())) / 2
 							/ driveDistance);
 				}
+
+				SmartDashboard.putNumber("Auto Counter:", counter++);
 				Robot.drivetrain.drive(driveSpeed, rotateToAngleRate);
 				
+/*				
 				if (lastRightDistance == rightDistance() || lastLeftDistance == leftDistance()) 
 				{
 					if (stallCounter == 25) 
@@ -168,6 +175,7 @@ public class AutoDrive extends Command implements PIDOutput{
 				{
 					stallCounter = 0;
 				}	
+				*/
 				lastRightDistance = rightDistance();
 				lastLeftDistance = leftDistance();
 				
@@ -190,7 +198,7 @@ public class AutoDrive extends Command implements PIDOutput{
 		output = -output;
 		if (rotateInPlace)
 		{
-			double minSpeed = 0.5;
+			double minSpeed = 1;
 			if (output > minSpeed || output < -minSpeed)
 			{
 				rotateToAngleRate = output;

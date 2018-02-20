@@ -78,11 +78,13 @@ public class Drivetrain extends Subsystem{
 	{
 		if (Constants.useClosedLoopDrivetrain)
 		{
-			Robot.drivetrain.driveCloseLoopControl(OI.getMoveSpeed(), OI.getRotateSpeed());
+			SmartDashboard.putNumber("Drive Speed", moveSpeed);
+			SmartDashboard.putNumber("Rotate Speed", rotateSpeed);
+			Robot.drivetrain.driveCloseLoopControl(moveSpeed, rotateSpeed);
 		}
 		else
 		{
-			Robot.drivetrain.driveWithTable(OI.getMoveSpeed(), OI.getRotateSpeed());
+			Robot.drivetrain.driveWithTable(moveSpeed, rotateSpeed);
 		}	
 	}
 
