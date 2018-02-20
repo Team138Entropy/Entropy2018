@@ -126,7 +126,7 @@ public class Elevator extends Subsystem{
 			_targetPosition = 0;
 			break;
 		case etSwitch:
-			_targetPosition = 1100; 
+			_targetPosition = 1500; 
 			break;
 		case etScale:
 			_targetPosition = 3000; 
@@ -175,6 +175,7 @@ public class Elevator extends Subsystem{
 		SmartDashboard.putNumber("Direction", _direction);
 		SmartDashboard.putString("Current Command", _currentCommand);
 		SmartDashboard.putNumber("Jog Direction", _currentJogDirection);
+		SmartDashboard.putNumber("Elevate Output:",_elevatorMotor.getMotorOutputPercent());
 	}
 	
 	public void StopHoming()

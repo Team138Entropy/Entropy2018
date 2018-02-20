@@ -50,7 +50,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	// Interface
+    	drivetrain.DriveTrainInit();
     	compressor.start();
 		Sensors.initialize();
 		grasper.initialize();

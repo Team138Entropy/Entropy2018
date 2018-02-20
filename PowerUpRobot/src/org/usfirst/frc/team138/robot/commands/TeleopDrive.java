@@ -19,18 +19,7 @@ public class TeleopDrive extends Command{
 	}
 
 	protected void execute() {
-		//
-		// the first Robot.drivetrain.driveWithTable may not be necessary
-		// 10/7/17 - pre RiverRage
-		// TODO: remove
-		//
-//		if (Robot.oi.getMoveSpeed() < clawUpPoint && Robot.claw.wristIsUp() == false) {
-//			Robot.claw.wristUp();
-//		    Robot.drivetrain.driveWithTable(Robot.oi.getMoveSpeed(), Robot.oi.getRotateSpeed());
-//		} else {
-//			Robot.drivetrain.driveWithTable(Robot.oi.getMoveSpeed(), Robot.oi.getRotateSpeed());
-//		}
-		Robot.drivetrain.driveWithTable(OI.getMoveSpeed(), OI.getRotateSpeed());
+		Robot.drivetrain.drive(OI.getMoveSpeed(), OI.getRotateSpeed());
 	}
 
 	protected boolean isFinished() {
