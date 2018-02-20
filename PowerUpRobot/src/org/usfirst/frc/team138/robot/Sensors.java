@@ -30,6 +30,10 @@ public class Sensors {
 		Robot.drivetrain.frontLeftTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		Robot.drivetrain.frontRightTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
+        gyro = new ADXRS450_Gyro();
+        gyro.calibrate();
+        gyro.reset();
+
         
 	}
 	
@@ -54,8 +58,10 @@ public class Sensors {
 		SmartDashboard.putNumber("Position", Robot.elevator._elevatorMotor.getSelectedSensorPosition(0));     
 		SmartDashboard.putNumber("Voltage", Robot.elevator._elevatorMotor.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Velocity", Robot.elevator._elevatorMotor.getSelectedSensorVelocity(0));
-		SmartDashboard.putBoolean("Lower Limit SW", Robot.elevator._lowerLimitSwitch.get());
-		SmartDashboard.putBoolean("Upper Limit SW", Robot.elevator._upperLimitSwitch.get());
+		
+		SmartDashboard.putNumber("Heading", gyro.getAngle());
+		SmartDashboard.putNumber("Left Velocity",Robot.drivetrain.frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
+		SmartDashboard.putNumber("Right Velocity",Robot.drivetrain.frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 
 				
 		

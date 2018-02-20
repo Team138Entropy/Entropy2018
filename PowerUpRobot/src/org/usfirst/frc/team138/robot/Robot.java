@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team138.robot.subsystems.*;
 import org.usfirst.frc.team138.robot.commands.*;
+import org.usfirst.frc.team138.robot.Constants.*;
+
 //import edu.wpi.first.wpilibj.Preferences;
 
 /**
@@ -103,6 +105,12 @@ public class Robot extends IterativeRobot {
 	 */
     public void autonomousInit() {
     	mode = "auto";
+    	SmartDashboard.putString("AutoCommand", "Init");
+    	
+    	Constants.kPRotate=prefs.getDouble("Rotate KP", .01);
+    	Constants.kDRotate=prefs.getDouble("Rotate KD", .0);
+    	Constants.kIRotate=prefs.getDouble("Rotate KI", .0);
+    	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();
         autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
         		startPosChooser.getSelected(),

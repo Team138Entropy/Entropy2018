@@ -50,4 +50,9 @@ public class Constants {
 		public final static double deploySpeed = -0.7;
 		public final static double holdSpeed = 0.3;
 
+		// Rotate Gain
+		public static double kPRotate=.012;
+		public static double kIRotate=0;
+		public static double kDRotate=0;
+
 }

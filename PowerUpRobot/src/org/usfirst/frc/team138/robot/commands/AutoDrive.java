@@ -27,7 +27,7 @@ public class AutoDrive extends Command implements PIDOutput{
 	//************************************************
 	//PID CONSTANTS
 
-	static double kPRotate = 0.012;
+//	static double kPRotate = 0.005; // .012
 	static double kPDrive = 0.2;
 	static double kI = 0.0;
 	static double kD = 0.0;
@@ -48,7 +48,7 @@ public class AutoDrive extends Command implements PIDOutput{
 		rotateInPlace = false;
 		driveSpeed = speedArg;
 		driveDistance = distanceArg;
-		turnController = new PIDController(kPDrive, kI, kD, Sensors.gyro, this);
+		turnController = new PIDController(Constants.kPRotate, Constants.kIRotate, Constants.kDRotate, Sensors.gyro, this);
 	}
 	
 	/**
@@ -59,7 +59,9 @@ public class AutoDrive extends Command implements PIDOutput{
 		requires(Robot.drivetrain);
 		rotateInPlace = true;
 		targetAngle = angle;
-		turnController = new PIDController(kPRotate, kI, kD, Sensors.gyro, this);
+		turnController = new PIDController(Constants.kPRotate, Constants.kIRotate, Constants.kDRotate, Sensors.gyro, this);
+		
+		SmartDashboard.putBoolean("AutoDrive", true);
 	}
 	
 	
@@ -95,7 +97,7 @@ public class AutoDrive extends Command implements PIDOutput{
 		Sensors.gyro.reset();
 		
 		turnController.setAbsoluteTolerance(ToleranceDegrees);         
-	    turnController.setOutputRange(-1.0, 1);
+	    turnController.setOutputRange(-.25, 0.25);
 	    turnController.setContinuous(true);
 		turnController.setInputRange(360.0, 360.0);
 		if (rotateInPlace)
@@ -188,7 +190,7 @@ public class AutoDrive extends Command implements PIDOutput{
 		output = -output;
 		if (rotateInPlace)
 		{
-			double minSpeed = 0.8;
+			double minSpeed = 0.5;
 			if (output > minSpeed || output < -minSpeed)
 			{
 				rotateToAngleRate = output;
