@@ -77,6 +77,8 @@ public final class OI {
     static Button releaseButton = new JoystickButton(operatorStick, nykoRightTrigger);
     static Button openGrasperButton = new JoystickButton(operatorStick, nykoLeftBumper);
     static Button closeGrasperButton = new JoystickButton(operatorStick, nykoRightBumper);
+    static Button lowerWristButton = new JoystickButton(operatorStick, nykoMiddle9);
+    static Button raiseWristButton = new JoystickButton(operatorStick, nykoMiddle10);
     static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
     static Button cancelElevatorMoveButton = new JoystickButton(operatorStick, nykoRightStick);
     
@@ -93,6 +95,8 @@ public final class OI {
     	releaseButton.whenReleased(new CompleteRelease());
     	openGrasperButton.whenPressed(new OpenGrasper());
     	closeGrasperButton.whenPressed(new CloseGrasper());
+    	lowerWristButton.whenPressed(new LowerWrist());
+    	raiseWristButton.whenPressed(new RaiseWrist());
     	homeElevatorButton.whileHeld(new HomeElevator());
     	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
     }
