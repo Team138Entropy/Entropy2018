@@ -92,6 +92,5 @@ public class Grasper extends Subsystem{
 		SmartDashboard.putString("Acquire Release","Complete Release");
 		stopRollers();
 		openGrasper();
-		
 	}
 }
