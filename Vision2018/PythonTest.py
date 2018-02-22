@@ -10,6 +10,7 @@ Created on Sun Feb 11 09:09:06 2018
 import libjevois as jevois
 import cv2
 import numpy as np
+import lineSort as ls
 
 #import matplotlib.pyplot as plt
 
@@ -54,6 +55,26 @@ class PythonTest:
     #    jevois.LFATAL("process no usb not implemented")
     # ###################################################################################################
     ## Process function with USB output
+    
+    def widthFromHistogram(thresholded):
+    
+         # sum in x and y looking the two vertical bars
+        xsum = np.sum(thresholded,0)
+        ysum = np.sum(thresholded,1)
+    # turned to thresholded from "ret: 
+        cv2.line(outpoot,(lastx,righty),(firstx,lefty),255,2)
+    #    cv2.imshow('threshold',thresholded)
+        lookforPeaks = True
+        targetFound = 0
+        if (lookforPeaks):
+            xpeaks = PythonTest.findPeaks(xsum)
+            ypeaks = PythonTest.findPeaks(ysum)
+            #print 'X=',xpeaks,'    Y=',ypeaks
+            
+            aveWidth = foundWidth/(len(xpeaks)-1)
+            return aveWidth
+            #print(aveWidth)
+        
     def process(self, inframe, outframe):
         # Get the next camera image (may block until it is captured) and convert it to OpenCV BGR (for color output):
         #img = inframe.getCvBGR()
@@ -92,7 +113,10 @@ class PythonTest:
          # Convert to HSV
         img = inframe.getCvBGR()        
         img1 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        outpoot = inframe.getCvBGR()
+        rows,cols = img.shape
+
+        M = cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
+        img = cv2.warpAffine(img,M,(cols,rows))
         
         # filter by color and intensity
     
@@ -100,9 +124,10 @@ class PythonTest:
     #Colors++++++++++++++++++++++++++++++++++++++++++
     #test red or blue
         redStart = True
+        blueStart = False
 
     #blue
-        if not (redStart):
+        if (blueStart):
             lower_blue = np.array([99,100,100])
             upper_blue = np.array([129,255,255])
             mask = cv2.inRange(img1, lower_blue, upper_blue)
@@ -117,25 +142,33 @@ class PythonTest:
             mask1 = cv2.inRange(img1, lower_red, upper_red)
         
             mask = cv2.bitwise_or(mask,mask1)
-        kernel = np.ones((7,7), np.uint8)
-        mask = cv2.dilate(mask,kernel,iterations = 5)
-        # mask off the grayscale image
-        gray = img1[:,:,2]
-        ret = cv2.bitwise_and(gray,gray, mask= mask)
-        thresholded = PythonTest.adaptiveThreshold(ret,0.95)
-        thresholded = PythonTest.cleanupImage(thresholded,9)    
-        lightContours = PythonTest.locateContours(thresholded,0,0)
+            
+        if (redStart or blueStart):
+            kernel = np.ones((7,7), np.uint8)
+            mask = cv2.dilate(mask,kernel,iterations = 5)
+            # mask off the grayscale image
+            gray = img1[:,:,2]
+            ret = cv2.bitwise_and(gray,gray, mask= mask)
+            thresholded = PythonTest.adaptiveThreshold(ret,0.95)
+            thresholded = PythonTest.cleanupImage(thresholded,9)    
+            lightContours = PythonTest.locateContours(thresholded,0,0)
+
+
+        """
+        if lightContours is not None:
+            #cnt = lightContours[0]
+            patchwork = []
+            dtype = [('x', np.uint8), ('y', np.uint8), ('w', np.uint8), ('h',np.uint)]
         
-        #lightContours.
-        
-        
-        #cnt = lightContours[0]
-        patchwork = np.array([], ndmin=2, dtype=np.uint8)
-        for cnt in lightContours:
-            cnt.shape
-            type(cnt)
+            for cnt in lightContours:
+                (x,y,w,h) = cv2.boundingRect(cnt)
+                patchwork.append((x,y,w,h))
+            
+            
             #patchwork = np.concatenate((patchwork,cnt))
         patchwork = np.asarray(patchwork)
+        
+        
         [vx,vy,x,y] = cv2.fitLine(patchwork,cv2.DIST_L2,0,1.0,0.99)
         firstx = 480
         lastx = 0
@@ -150,6 +183,7 @@ class PythonTest:
         righty = int(((gray.shape[1]-x)*vy/vx)+y)
         
         foundWidth = lastx-firstx
+        """
     #    rightx = 
     #    leftx
     #    cv2.line(thresholded,(gray.shape[1]-1,righty),(0,lefty),255,2)
@@ -167,7 +201,7 @@ class PythonTest:
     #        x,y,w,h = cv2.boundingRect(cnt)
     #        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
     #        centerx = x+(w/2)
-    #        centery = y-(h/2)
+    #        centery = y+(h/2)
     #        points = np.concatenate((points, [centerx, centery]))
     #    fittedLine = cv2.fitLine(points, cv2.DIST_L2, 0, 0.01, 0.01)
         
@@ -180,22 +214,8 @@ class PythonTest:
     
     #    ch = 0xFF & cv2.waitKey(100) 
         
-        # sum in x and y looking the two vertical bars
-        xsum = np.sum(thresholded,0)
-        ysum = np.sum(thresholded,1)
-    # turned to thresholded from "ret: 
-        cv2.line(outpoot,(lastx,righty),(firstx,lefty),255,2)
-    #    cv2.imshow('threshold',thresholded)
-        lookforPeaks = True
-        targetFound = 0
-        if (lookforPeaks):
-            xpeaks = PythonTest.findPeaks(xsum)
-            ypeaks = PythonTest.findPeaks(ysum)
-            #print 'X=',xpeaks,'    Y=',ypeaks
-            
-            aveWidth = foundWidth/(len(xpeaks)-1)
-            #print(aveWidth)
-        
+        #aveWidth = widthFromHistogram(thresholded)
+   
         
             
     
@@ -238,11 +258,11 @@ class PythonTest:
         
         #if (lookforPeaks):
             #plt.show(10)
-        jesus = distanceToCamera(3, aveWidth)
-        pixels = {"Finding" : 1, "Distance" : jesus}
-        json_pixels = json.dumps(pixels)
-        jevois.sendSerial(json_pixels)
-        outframe.sendCvBGR(outpoot)
+        #jesus = distanceToCamera(3, aveWidth)
+        #pixels = {"Finding" : 1, "Distance" : jesus}
+        #json_pixels = json.dumps(pixels)
+        #jevois.sendSerial(json_pixels)
+        outframe.sendCvBGR(img)
 
     def removeDupContours(inContours):
         """
@@ -321,4 +341,7 @@ class PythonTest:
             ret.append((start,len(arr)-1))
             
         return ret
-   
+
+
+
+        

@@ -9,16 +9,15 @@ Created on Mon Feb 19 09:02:05 2018
 @author: jeffrey.f.bryant
 """
 
-from __future__ import print_function
 from cmath import rect, phase
 from math import radians, degrees,sqrt,atan2,pi
 
 # Clustering parameter tweakable threshold constants
 slopeThreshold = 10.0 # degrees
-spacingThreshold = 0.3  # percentage as a fraction
+spacingThreshold = 0.2  # percentage as a fraction
 
 
-class Point:
+class point:
     """
     Single point object
     """
@@ -43,7 +42,7 @@ class Point:
         return (sqrt(dx*dx+dy*dy),(180.0 * atan2(dy,dx)/pi))
         
          
-class Pair:
+class pair:
     """
     pair of points used to measure distance and slope
     """
@@ -70,7 +69,7 @@ def meanAngle(deg):
     """
     return degrees(phase(sum(rect(1, radians(d)) for d in deg)/len(deg)))
 
-class Cluster:
+class cluster:
     """
     Cluster is a container for 3 or more points along a line that are
     spaced evenly.
@@ -79,9 +78,9 @@ class Cluster:
         
         self.valid = False
             
-        pair1 = Pair(p1,p2)
-        pair2 = Pair(p2,p3)
-        pair3 = Pair(p1,p3)
+        pair1 = pair(p1,p2)
+        pair2 = pair(p2,p3)
+        pair3 = pair(p1,p3)
         
         # Must be unique points
         if (pair1.dist == 0.0):
@@ -140,7 +139,7 @@ class Cluster:
         # compute average slope and find the closest point
         slopes = []
         for p in self.points:
-            newPair = Pair(p,newPoint)
+            newPair = pair(p,newPoint)
             if (newPair.dist < closestDist):
                 closestDist = newPair.dist
                 slopes.append(newPair.slope)
@@ -170,23 +169,6 @@ class Cluster:
         self.points.append(newPoint)
         
         return True
-        
-def addMorePoints(cluster,points,pointsToRemove):
-    """
-    Attempt to grow a cluster once it has been created by appending points
-    to it
-    """
-    pointAdded = True
-    while pointAdded:
-        pointAdded = False
-        for p in points:
-            if not p in pointsToRemove:
-                added = cluster.addPoint(p)
-                if added:
-                    pointAdded = True
-                    pointsToRemove.append(p)
-
-                
 
 def computeClusters(points):
     """ Compute line clusters for a bunch of input points by attempting to
@@ -213,16 +195,14 @@ def computeClusters(points):
                     if l3 in pointsToRemove:
                         newPoint = False
                     if (newPoint):
-                        cluster1 = Cluster(l1,l2,l3)
+                        cluster1 = cluster(l1,l2,l3)
                         if (cluster1.valid):
                             pointsToRemove.append(l1)
                             pointsToRemove.append(l2)
                             pointsToRemove.append(l3)
                             clusters.append(cluster1)
                             progress = True
-                            
-                            addMorePoints(cluster1,points,pointsToRemove)
-                            print("Added Cluster Size=", len(clusters), "Points= ",len(cluster1.points))
+                            ##print "Added Cluster Size=", len(clusters)
                             break
                         
         for p in pointsToRemove:
@@ -240,80 +220,77 @@ def computeClusters(points):
     return clusters      
 
 
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<< Test Routines >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# -------------------- Test Routines -----------------------------------------
 
 def pairTest():
     
-    print ("\n-------------------  pairTest(): ------------------")
-    p1 = Point(1.1,-1.0)
-    p2 = Point(2.0,-2.0)
-    pair1 = Pair(p1,p2)
-    print (pair1.dist,pair1.slope)
+    ##print "\n-------------------  pairTest(): ------------------"
+    p1 = point(1.1,-1.0)
+    p2 = point(2.0,-2.0)
+    pair1 = pair(p1,p2)
+    ##print pair1.dist,pair1.slope
     
-    p3 = Point(3.0,-3.0)
-    pair2 = Pair(p2,p3)   
-    print (pair2.dist,pair2.slope)
-    
-    print ("deltra Angle:",pair1.deltaAngle(pair2))
+    p3 = point(3.0,-3.0)
+    pair2 = pair(p2,p3)   
+    ##print pair2.dist,pair2.slope
+    ##print pair1.deltaAngle(pair2)
     
 def simpleClusterTest():
     
-    print ("\n-------------------  simpleClusterTest(): ------------------")
-    p1 = Point(1.1,-1.0)
-    p2 = Point(2.0,-2.0)
-    p3 = Point(3.0,-3.0)    
-    cluster1 = Cluster(p1,p2,p3)
-    print (cluster1.valid,cluster1.avgDist,cluster1.avgSlope)
+    ##print "\n-------------------  simpleClusterTest(): ------------------"    
+    p1 = point(1.1,-1.0)
+    p2 = point(2.0,-2.0)
+    p3 = point(3.0,-3.0)    
+    cluster1 = cluster(p1,p2,p3)
+    #print cluster1.valid,cluster1.avgDist,cluster1.avgSlope
     
-    p4 = Point(4.0,-4.1)
+    p4 = point(4.0,-4.1)
     added = cluster1.addPoint(p4)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print added,cluster1.avgDist,cluster1.avgSlope
     
-    p5 = Point(0.0,0.0)
+    p5 = point(0.0,0.0)
     added = cluster1.addPoint(p5)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print added,cluster1.avgDist,cluster1.avgSlope
     
-    p6 = Point(5.0,-5.2)
+    p6 = point(5.0,-5.2)
     added = cluster1.addPoint(p6)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print added,cluster1.avgDist,cluster1.avgSlope
     
-    p7 = Point(-1.0,+1.0)
+    p7 = point(-1.0,+1.0)
     added = cluster1.addPoint(p7)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print added,cluster1.avgDist,cluster1.avgSlope
     
     # Should not work (not on the line)
-    p8 = Point(-1.0,-1.0)
+    p8 = point(-1.0,-1.0)
     added = cluster1.addPoint(p8)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print added,cluster1.avgDist,cluster1.avgSlope
 
     for p in cluster1.points:
-        print (p.x,p.y)
+        pass
+        #print p.x,p.y
         
-        
-def printClusters(clusters):
-    for c in clusters:
-        print ("Cluster [valid,slope,avgDistance]:",c.valid,c.avgSlope,c.avgDist)
-        for p in c.points:
-            print ("    ",p.x,p.y)
-    
                 
 def computeClustersTest():
     
-    print ("\n-------------------  computeClustersTest(): ------------------")
+    #print "\n-------------------  computeClustersTest(): ------------------"    
     
-    p1 = Point(0.0,0.0)
-    p2 = Point(1.0,1.0)
-    p3 = Point(2.0,2.0)
-    p4 = Point(3.0,3.0)
+    p1 = point(0.0,0.0)
+    p2 = point(1.0,1.0)
+    p3 = point(2.0,2.0)
+    p4 = point(3.0,3.0)
     
-    p5 = Point(-1.0,0.0)
-    p6 = Point(-2.0,1.0)
-    p7 = Point(-3.0,2.0)
-    p8 = Point(-4.0,3.0)
+    p5 = point(-1.0,0.0)
+    p6 = point(-2.0,1.0)
+    p7 = point(-3.0,2.0)
+    p8 = point(-4.0,3.0)
 
     points = [p1,p2,p3,p4,p5,p6,p7,p8]
     clusters = computeClusters(points)
-    printClusters(clusters)
+    for c in clusters:
+        #print c.valid,c.avgSlope,c.avgDist
+        for p in c.points:
+            #print "    ",p.x,p.y
+            pass
             
 if __name__ == '__main__': 
     """
@@ -322,3 +299,12 @@ if __name__ == '__main__':
     pairTest()
     simpleClusterTest()
     computeClustersTest()
+    
+    
+
+
+
+
+    
+            
+        
