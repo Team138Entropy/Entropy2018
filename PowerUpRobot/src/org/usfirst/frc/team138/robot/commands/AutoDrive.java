@@ -3,11 +3,12 @@ package org.usfirst.frc.team138.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.Sensors;
+import org.usfirst.frc.team138.robot.Utility;
 import org.usfirst.frc.team138.robot.Constants;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
+
 
 public class AutoDrive extends Command implements PIDOutput{
 	
@@ -23,21 +24,16 @@ public class AutoDrive extends Command implements PIDOutput{
 	double driveDistance = 0.0;
 	double targetAngle = 0.0;
 	boolean arcTurn = false;
-	double counter=0;
+	double timer=0;
 	
-	//************************************************
-	//PID CONSTANTS
-
-//	static double kPRotate = 0.005; // .012
-	static double kPDrive = 0.2;
-	static double kI = 0.0;
-	static double kD = 0.0;
 
 	//*******************************************
 	
 	//Degree Tolerance
 	//within how many degrees will you be capable of turning
 	static double ToleranceDegrees = 1.0;
+	double IntegralError=0;
+
 	
 	/**
 	 * Drives straight for the specified distance
@@ -47,9 +43,17 @@ public class AutoDrive extends Command implements PIDOutput{
 	public AutoDrive(double speedArg, double distanceArg){
 		requires(Robot.drivetrain);
 		rotateInPlace = false;
-		driveSpeed = speedArg;
-		driveDistance = distanceArg;
-		turnController = new PIDController(Constants.kPRotate, Constants.kIRotate, Constants.kDRotate, Sensors.gyro, this);
+		driveSpeed = 2*speedArg;
+		if (distanceArg>0)
+			driveDistance=distanceArg-Constants.AutoDriveOvershoot;
+		else
+		{
+			driveDistance=distanceArg+Constants.AutoDriveOvershoot;
+			driveSpeed=-driveSpeed;
+		}
+			
+		IntegralError=0;
+		timer=0;
 	}
 	
 	/**
@@ -60,59 +64,25 @@ public class AutoDrive extends Command implements PIDOutput{
 		requires(Robot.drivetrain);
 		rotateInPlace = true;
 		targetAngle = angle;
-		turnController = new PIDController(Constants.kPRotate, Constants.kIRotate, Constants.kDRotate, Sensors.gyro, this);
+		IntegralError=0;
 		
 	}
 	
 	
 	private double leftDistance() {
 		// Return leftDistance from left encoder in centimeters
-		return Constants.Meters2CM*Sensors.getLeftDistance();
+		return -1*Constants.Meters2CM*Sensors.getLeftDistance();
 	}
 	private double rightDistance() {
 		// Return rightDistance from right encoder in centimeters
-		return Constants.Meters2CM*Sensors.getRightDistance();
+		return -1*Constants.Meters2CM*Sensors.getRightDistance();
 	}
 
-	/**
-	 * Drives the robot the specified number of inches to the side while rotating to the angle specified !!TESTING!!
-	 * @param speed The speed, from -1.0 to 1.0, the robot will drive. Negative speeds go backwards
-	 * @param angle Angle, in degrees, to turn to. Negative angles turn left, positive angles turn right
-	 * @param offsetInches Number of inches the robot is off center of the target
-	 */
-	public AutoDrive(double speed, double angle, double offsetCentimeters)
-	{
-		requires(Robot.drivetrain);
-		rotateInPlace = false;
-		arcTurn = true;
-		targetAngle = angle;
-		driveSpeed = speed;
-		// Arc length
-		driveDistance = 2 * Math.PI * angle / 360 * offsetCentimeters / Math.sin(angle);
-		
-	}
-
+	
 	public void initialize() {
 		Sensors.resetEncoders();
-		Sensors.gyro.reset();
-		counter=0;
-		
-		Robot.drivetrain.frontLeftTalon.setSelectedSensorPosition(0, 0, 0);
-		Robot.drivetrain.frontRightTalon.setSelectedSensorPosition(0, 0, 0);
-		
-		turnController.setAbsoluteTolerance(ToleranceDegrees);         
-	    turnController.setOutputRange(-.25, 0.25);
-	    turnController.setContinuous(true);
-		turnController.setInputRange(360.0, 360.0);
-		if (rotateInPlace)
-		{
-			turnController.setSetpoint(targetAngle);
-		}
-		else 
-		{
-			turnController.setSetpoint(0);
-		}
-		turnController.enable();
+		Sensors.gyro.reset();	
+		timer=0;		
 	}
 
 	public void execute() {
@@ -124,20 +94,30 @@ public class AutoDrive extends Command implements PIDOutput{
 		else
 		{
 			boolean result;
+			double rate;
 			if (rotateInPlace)
 			{
+				double diffAngle=targetAngle-Sensors.gyro.getAngle();
 				if (targetAngle > 0)
 				{
-					result = Sensors.gyro.getAngle() >= targetAngle;
+					result =(diffAngle<=0);
 				}
 				else
 				{
-					result = Sensors.gyro.getAngle() <= targetAngle;
+					result =(diffAngle>=0);
 				}
+				IntegralError+=diffAngle*.025;
+				rate=Constants.kPRotate*diffAngle+IntegralError*Constants.kIRotate;
+				// rotate Talons opposite direction
+				rotateToAngleRate=Utility.limitValue(rate,-1,1);
 			}
 			else
 			{
-				result = (Math.abs(leftDistance()) >= driveDistance) || (Math.abs(rightDistance()) >= driveDistance);
+				rotateToAngleRate=0;
+				lastRightDistance = rightDistance();
+				lastLeftDistance = leftDistance();
+				double avgDistance=.5*(lastRightDistance+lastLeftDistance);
+				result = (Math.abs(avgDistance) >= Math.abs(driveDistance));
 			}
 			if (result)
 			{
@@ -146,46 +126,15 @@ public class AutoDrive extends Command implements PIDOutput{
 			}		
 			else
 			{
-				if (arcTurn)
-				{
-					turnController.setSetpoint(targetAngle * 
-							(Math.abs(leftDistance()) + Math.abs(rightDistance())) / 2
-							/ driveDistance);
-				}
-
-				SmartDashboard.putNumber("Auto Counter:", counter++);
 				Robot.drivetrain.drive(driveSpeed, rotateToAngleRate);
 				
-/*				
-				if (lastRightDistance == rightDistance() || lastLeftDistance == leftDistance()) 
-				{
-					if (stallCounter == 25) 
-					{
-						turnController.setSetpoint(2);
-						//isDone = true;
-						//areMotorsStalled = true;
-					}
-					if(stallCounter == 50)
-					{
-						isDone = true;
-					}
-					stallCounter++;
-				}
-				else
-				{
-					stallCounter = 0;
-				}	
-				*/
-				lastRightDistance = rightDistance();
-				lastLeftDistance = leftDistance();
 				
-				SmartDashboard.putNumber("Rotate to Angle Rate", rotateToAngleRate);
 			}
 		}
 	}
 
 	public boolean isFinished() {
-		return isDone;
+		return (isDone && (timer++>Constants.AutoDrivePause));
 	}
 
 	public void end() {
@@ -214,7 +163,7 @@ public class AutoDrive extends Command implements PIDOutput{
 		}
 		else
 		{
-			rotateToAngleRate =  output;
+			rotateToAngleRate =  0;
 		}		
 	}
 	

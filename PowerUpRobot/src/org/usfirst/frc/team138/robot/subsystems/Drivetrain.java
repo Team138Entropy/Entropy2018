@@ -2,6 +2,7 @@ package org.usfirst.frc.team138.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team138.robot.commands.TeleopDrive;
+import org.usfirst.frc.team138.robot.Utility;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -19,8 +20,7 @@ public class Drivetrain extends Subsystem{
 	private static double CONTROLLER_DEAD_ZONE = 0.09;
 	private static double min_speed;
 	private double lastSpeed=0;
-	private static double maxSpeedChange=1/20.0;
-
+	private static double maxSpeedChange=1/20.0;// 1/20
 	double _speedFactor = 1;
 	double _rotateFactor = 1;
 
@@ -32,6 +32,8 @@ public class Drivetrain extends Subsystem{
 
 	// Filter state for joystick movements
 	double _lastMoveSpeed = 0;
+	
+	int counter=0;
 
 	public WPI_TalonSRX frontLeftTalon = new WPI_TalonSRX(RobotMap.LEFT_MOTOR_CHANNEL_FRONT);
 	WPI_TalonSRX backLeftTalon = new WPI_TalonSRX(RobotMap.LEFT_MOTOR_CHANNEL_BACK);
@@ -42,6 +44,7 @@ public class Drivetrain extends Subsystem{
 		SmartDashboard.putNumber("ScaleFactor", 1.0);
 		setDefaultCommand(new TeleopDrive());
 	}
+	
 
 	public void DriveTrainInit()
 	{
@@ -72,15 +75,15 @@ public class Drivetrain extends Subsystem{
 		// Configure slave Talons to follow masters
 		backLeftTalon.follow(frontLeftTalon);
 		backRightTalon.follow(frontRightTalon);
+		
 	}
 	
 	public void drive(double moveSpeed, double rotateSpeed)
 	{
 		if (Constants.useClosedLoopDrivetrain)
 		{
-			SmartDashboard.putNumber("Drive Speed", moveSpeed);
-			SmartDashboard.putNumber("Rotate Speed", rotateSpeed);
 			Robot.drivetrain.driveCloseLoopControl(moveSpeed, rotateSpeed);
+			
 		}
 		else
 		{
@@ -93,6 +96,14 @@ public class Drivetrain extends Subsystem{
 		double left  = 0;
 		double right = 0;
 
+		SmartDashboard.putNumber("Drive Speed", moveSpeed);
+		SmartDashboard.putNumber("Rotate Speed", rotateSpeed);
+		/*
+		 * Robot motors move opposite to joystick and autonomuous directions
+		 */
+		moveSpeed=-moveSpeed;
+		rotateSpeed=-rotateSpeed;
+
 		if (Math.abs(moveSpeed) < Constants.CloseLoopJoystickDeadband)
 		{
 			moveSpeed=0;
@@ -103,6 +114,8 @@ public class Drivetrain extends Subsystem{
 			rotateSpeed=0;
 		}
 		
+
+
 		// Determine if speed factor needs to be applied
 		if (OI.isFullSpeed()) {	
 			_rotateFactor = 1;
@@ -114,7 +127,7 @@ public class Drivetrain extends Subsystem{
 			_speedFactor = Constants.ClosedLoopSlowFactor;
 		}
 		
-		_lastMoveSpeed = limitValue(_speedFactor * moveSpeed, 
+		_lastMoveSpeed = Utility.limitValue(_speedFactor * moveSpeed, 
 								    _lastMoveSpeed - Constants.MaxSpeedChange,
 								    _lastMoveSpeed + Constants.MaxSpeedChange);	
 
@@ -128,20 +141,17 @@ public class Drivetrain extends Subsystem{
 		frontRightTalon.set(ControlMode.Velocity, right * Constants.SecondsTo100Milliseconds / Constants.MetersPerPulse);
 
 
-		SmartDashboard.putNumber("Move Speed", moveSpeed);
+		SmartDashboard.putNumber("Left Speed (M/s)", -left);
+		SmartDashboard.putNumber("Right Speed (M/S)", -right);
 		
+		SmartDashboard.putNumber("Left PWM", -frontLeftTalon.getMotorOutputPercent());
+		SmartDashboard.putNumber("Right PWM", -frontRightTalon.getMotorOutputPercent());
 		
-		SmartDashboard.putNumber("Left Speed", left);
-		SmartDashboard.putNumber("Right Speed", right);
+		SmartDashboard.putNumber("Left Talon Vel (M/S)", -frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
+		SmartDashboard.putNumber("Right Talon Vel (M/S)", -frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 		
-		SmartDashboard.putNumber("Left PWM", frontLeftTalon.getMotorOutputPercent());
-		SmartDashboard.putNumber("Right PWM", frontRightTalon.getMotorOutputPercent());
-		
-		SmartDashboard.putNumber("Left Velocity", frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
-		SmartDashboard.putNumber("Right Velocity", frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
-		
-		SmartDashboard.putNumber("Left Position", Constants.MetersPerPulse*frontLeftTalon.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("Right Position", Constants.MetersPerPulse*frontRightTalon.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("Left Position (M)", -Constants.MetersPerPulse*frontLeftTalon.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("Right Position (M)",-Constants.MetersPerPulse*frontRightTalon.getSelectedSensorPosition(0));
 	}
 
 	public void driveWithTable(double moveSpeed, double rotateSpeed)
@@ -153,7 +163,7 @@ public class Drivetrain extends Subsystem{
 
 		//rotateSpeed = -rotateSpeed;
 		// Filter input speeds
-		moveSpeed=lastSpeed+limitValue(moveSpeed-lastSpeed,-maxSpeedChange,maxSpeedChange);
+		moveSpeed=lastSpeed+Utility.limitValue(moveSpeed-lastSpeed,-maxSpeedChange,maxSpeedChange);
 		lastSpeed=moveSpeed;
 		
 		SmartDashboard.putNumber("lastSpeed:", lastSpeed);
@@ -217,7 +227,7 @@ public class Drivetrain extends Subsystem{
 		double[] arrayPtr = DriveTable.Drive_Lookup_X;
 		int arrayLength = DriveTable.Drive_Lookup_X.length;
 
-		double rotateValue = limitValue(rotateSpeed, arrayPtr[0], arrayPtr[arrayLength-1]);
+		double rotateValue = Utility.limitValue(rotateSpeed, arrayPtr[0], arrayPtr[arrayLength-1]);
 
 		for(int i = 0; i < arrayLength; i++) 
 		{
@@ -248,7 +258,7 @@ public class Drivetrain extends Subsystem{
 
 		arrayPtr = DriveTable.Drive_Lookup_Y;
 		arrayLength = DriveTable.Drive_Lookup_Y.length;
-		double moveValue = limitValue(moveSpeed, arrayPtr[0], arrayPtr[arrayLength - 1]);
+		double moveValue = Utility.limitValue(moveSpeed, arrayPtr[0], arrayPtr[arrayLength - 1]);
 
 		for( int i = 0; i < arrayLength; i++) 
 		{
@@ -284,22 +294,6 @@ public class Drivetrain extends Subsystem{
 	{  
 		return (((bound1 <= testValue) && (testValue <= bound2)) ||
 				((bound1 >= testValue) && (testValue >= bound2)));
-	}
-
-	double limitValue(double testValue, double lowerBound, double upperBound)
-	{
-		if(testValue > upperBound)
-		{
-			return upperBound;
-		}
-		else if(testValue < lowerBound)
-		{
-			return lowerBound;
-		}
-		else
-		{
-			return testValue;
-		}
 	}
 
 	double applyDeadZone(double speed)

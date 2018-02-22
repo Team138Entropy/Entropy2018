@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 import org.usfirst.frc.team138.robot.OI;
 import org.usfirst.frc.team138.robot.Robot;
+import org.usfirst.frc.team138.robot.Sensors;
 
 //import org.usfirst.frc.team138.robot.subsystems.Claw;
 
@@ -16,6 +17,8 @@ public class TeleopDrive extends Command{
 	}
 
 	protected void initialize() {
+		Sensors.resetEncoders();
+		Sensors.gyro.reset();	
 	}
 
 	protected void execute() {

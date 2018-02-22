@@ -100,12 +100,12 @@ public final class OI {
     
 	public static double getMoveSpeed()
 	{
-		return driverStick.getRawAxis(xboxLeftYAxis);
+		return -driverStick.getRawAxis(xboxLeftYAxis);
 	}
 	
 	public static double getRotateSpeed()
 	{
-		return driverStick.getRawAxis(xboxRightXAxis);
+		return -driverStick.getRawAxis(xboxRightXAxis);
 	}
 	
 	public static double getClimbSpeed()

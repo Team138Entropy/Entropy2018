@@ -15,9 +15,10 @@ public class AutonomousCommand extends CommandGroup {
 		// Test Modes
 		if (autoMode == "test")
 		{
-			addSequential(new AutoDrive(1, 3000));
-//			addSequential(new AutoDrive(45));
-		//	addSequential(new AutoDrive(-45));
+			addSequential(new AutoDrive(1, 200));
+			addSequential(new AutoDrive(90));
+			addSequential(new AutoDrive(-90));
+			addSequential(new AutoDrive(1, -200));
 		}
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData

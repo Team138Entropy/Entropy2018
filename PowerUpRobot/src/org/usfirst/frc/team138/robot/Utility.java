@@ -15,6 +15,24 @@ public class Utility {
 		return result;
 	}
 	
+	public static double limitValue(double testValue, double lowerBound, double upperBound)
+	{
+		if(testValue > upperBound)
+		{
+			return upperBound;
+		}
+		else if(testValue < lowerBound)
+		{
+			return lowerBound;
+		}
+		else
+		{
+			return testValue;
+		}
+	}
+
+
+	
 	public static double diffAngles(double angle1, double angle2) {
 		// returns unwrapped difference between two wrapped angles
 		// angles are assumed to wrap at +/-180 degree boundary

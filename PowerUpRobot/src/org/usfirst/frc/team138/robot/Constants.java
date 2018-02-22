@@ -39,7 +39,7 @@ public class Constants {
 
 		public final static double ClosedLoopCruiseVelocity = 1.75; // meters / second
 		public final static double ClosedLoopSlowFactor = 0.4; // slowFactor * CV
-		public final static double ClosedLoopSlowRotateFactor = 0.5;
+		public final static double ClosedLoopSlowRotateFactor = 1;
 		
 		// Wheel spacing ~0.5 Meters;  For zero Turn, each wheel travels
 		// on a circle of circumference of pi*0.5 or 1.57 Meters.
@@ -56,9 +56,8 @@ public class Constants {
 		public final static double MetersPerPulse = Math.PI*6*.0254*15/45/256;
 		public final static double SecondsTo100Milliseconds = 0.1;
 		
-		// TEST ONLY
 		// public static double Meters2CM = 100.0; // convert distance in Meters to Centimeters
-		public static double Meters2CM = 200.0; // convert distance in Meters to Centimeters
+		public static double Meters2CM = 100.0; // convert distance in Meters to Centimeters
 		// TEST ONLY
 		
 		public final static int LeftDriveEncoderPolarity = -1;
@@ -76,9 +75,12 @@ public class Constants {
 		public final static double deploySpeed = -0.7;
 		public final static double holdSpeed = 0.3;
 
-		// Rotate Gain
+		// Rotate Gain - used in Autonomous
 		public static double kPRotate=.012;
 		public static double kIRotate=0;
 		public static double kDRotate=0;
+		// Compensate AutoDrive overshoot 
+		public static double AutoDriveOvershoot=50;	// CM
+		public static double AutoDrivePause=20; // 40=1second
 
 }
