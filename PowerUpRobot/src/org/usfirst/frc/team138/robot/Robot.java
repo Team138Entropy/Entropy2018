@@ -42,6 +42,7 @@ public class Robot extends IterativeRobot {
     // Global constants
     public static String mode; // "auto" or "teleop"
     public static String gameData;
+	public static boolean practiceBot = false;
 
     /**
      * This function is run when the robot is first started up and should be
