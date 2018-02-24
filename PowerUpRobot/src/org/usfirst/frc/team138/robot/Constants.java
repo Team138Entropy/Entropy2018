@@ -75,13 +75,17 @@ public class Constants {
 		public final static double deploySpeed = -0.7;
 		public final static double holdSpeed = 0.3;
 
-		// Rotate Gain - used in Autonomous
+		// ***** Autonomous drive parameters *******
+		public static double AutoDriveAccel=1; // M/sec2 (1 ~.1G)
 		public static double AutoDriveRotateRate=.5; // Meters/second
+		// PID gains to control rotation (measured by Gyro)
 		public static double kPRotate=.012;
 		public static double kIRotate=0;
 		public static double kDRotate=0;
 		// Compensate AutoDrive overshoot 
 		public static double AutoDriveOvershoot=50;	// CM
+		// Insert delay after each autonomous move to allow
+		// mechanism to settle (before sensors are reset at start of next move)
 		public static double AutoDrivePause=20; // 40=1second
 
 }

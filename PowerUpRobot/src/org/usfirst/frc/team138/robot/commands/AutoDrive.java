@@ -49,7 +49,6 @@ public class AutoDrive extends Command {
 			// If moving backwards, invert drivespeed
 			driveSpeed=-driveSpeed;
 		}
-			
 		IntegralError=0;
 		timer=0;
 	}
@@ -118,7 +117,8 @@ public class AutoDrive extends Command {
 				IntegralError+=diffAngle*.025;
 				rate=Constants.kPRotate*diffAngle+IntegralError*Constants.kIRotate;
 				// Scale to Meters/second
-				rotateToAngleRate=Utility.limitValue(rate,-1,1)*Constants.AutoDriveRotateRate;			
+				rotateToAngleRate=Utility.limitValue(rate,-1,1)*Constants.AutoDriveRotateRate;	
+				driveSpeed=0;
 			}
 			else
 			{
@@ -133,8 +133,14 @@ public class AutoDrive extends Command {
 				Robot.drivetrain.drive(0.0, 0.0);
 				isDone = true;
 			}
-			else
-				Robot.drivetrain.drive(driveSpeed, rotateToAngleRate);
+			else {
+				double distanceRemaining=Math.abs(avgDistance)-Math.abs(driveDistance);
+				double speed;
+				// Control deceleration to stop based on AutoDriveAccel limit
+				// Approaching stop: Speed= sqrt(2*Accel*distance2Go), otherwise: driveSpeed
+				speed=Math.min(Math.sqrt(2*Constants.AutoDriveAccel*Math.abs(driveSpeed)*distanceRemaining),Math.abs(driveSpeed));
+				Robot.drivetrain.drive(speed*Math.signum(driveSpeed), rotateToAngleRate);
+			}
 		}
 		// update distance moved (used to detect stalled motors)
 		lastLeftDistance = leftDistance();
