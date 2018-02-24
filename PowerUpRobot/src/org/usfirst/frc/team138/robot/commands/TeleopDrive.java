@@ -26,22 +26,28 @@ public class TeleopDrive extends Command{
 		moveSpeed=OI.getMoveSpeed();
 		rotateSpeed= OI.getRotateSpeed();
 		// Full speed or slow speed?
-		if (!OI.isFullSpeed()) {
-			moveSpeed=moveSpeed*Constants.ClosedLoopSlowFactor;
+		if (OI.isFullSpeed()) {
+			// Full speed
+			moveSpeed=moveSpeed*Constants.ClosedLoopCruiseVelocity;
+			rotateSpeed=rotateSpeed*Constants.ClosedLoopTurnSpeed;
+		}
+		else { 
+			// Slow speed
+			moveSpeed=moveSpeed*Constants.ClosedLoopSlowVelocity;
 			rotateSpeed=rotateSpeed*Constants.ClosedLoopSlowRotateFactor;
 		}
 		// Limit rate of change of moveSpeed
 		moveSpeed=Robot.drivetrain.limitDriveAccel(moveSpeed);
 		if (!OI.isFullSpeed())
 		{
-			// Convert to Meters/Sec
-			moveSpeed=moveSpeed*Constants.ClosedLoopCruiseVelocity;
-			rotateSpeed=rotateSpeed*Constants.ClosedLoopTurnSpeed;
 			// Send to driveTrain in Meters/sec units.
 			Robot.drivetrain.drive(moveSpeed,rotateSpeed);
 		}
 		else {
 			// Full Speed - use "old fashioned" driveWithTable
+			// Convert back to % throttle for backwards compatibility
+			moveSpeed=moveSpeed/Constants.ClosedLoopCruiseVelocity;
+			rotateSpeed=rotateSpeed/Constants.ClosedLoopTurnSpeed;
 			Robot.drivetrain.driveWithTable(moveSpeed, rotateSpeed);
 		}
 	}

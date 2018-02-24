@@ -36,18 +36,19 @@ public class Constants {
 		
 		// Drivetrain
 		public final static boolean useClosedLoopDrivetrain = true;
-
-		public final static double ClosedLoopCruiseVelocity = 1.75; // meters / second
-		public final static double ClosedLoopSlowFactor = 0.4; // slowFactor * CV
-		public final static double ClosedLoopSlowRotateFactor = 1;
-		
+		// Full joystick motion equates to following actual move speeds:
+		public final static double ClosedLoopCruiseVelocity = 2.25; // meters / second
+		public final static double ClosedLoopSlowVelocity = 0.6; // M/sec
 		// Wheel spacing ~0.5 Meters;  For zero Turn, each wheel travels
 		// on a circle of circumference of pi*0.5 or 1.57 Meters.
 		// For 180 Degree turn in 1 second (180 Degrees/sec), each
 		// wheel travels 1/2 Circumference of .785 Meters in 1 second
 		public final static double ClosedLoopTurnSpeed = 0.5; // Meters/sec
+		// Allow for slower turn speed when in slow mode, factor applied to 
+		// full speed rotation rate
+		public final static double ClosedLoopSlowRotateFactor = 1;
 		
-		public final static double MaxSpeedChange = 1 * 0.025; // full-speed/sec * .025 seconds
+		public final static double MaxSpeedChange = 1 * 0.025; // Meters/sec2 * .025 seconds
 		public final static double MaxSlowSpeedChange = 1 * 0.025;
 		public final static double CloseLoopJoystickDeadband = 0.1;
 		

@@ -17,7 +17,6 @@ import org.usfirst.frc.team138.robot.Robot;
 
 
 public class Drivetrain extends Subsystem{
-	private static double CONTROLLER_DEAD_ZONE = 0.09;
 	public double lastSpeed=0;
 	double _speedFactor = 1;
 	double _rotateFactor = 1;
@@ -25,7 +24,7 @@ public class Drivetrain extends Subsystem{
 	// Servo Loop Gains
 	double Drive_Kf = 1.7;
 	double Drive_Kp = 5;
-	double Drive_Ki = 0;//0.02;
+	double Drive_Ki = 0.02;
 	double Drive_Kd = 30;
 
 	// Filter state for joystick movements
@@ -60,7 +59,6 @@ public class Drivetrain extends Subsystem{
 		backLeftTalon.setNeutralMode(NeutralMode.Coast);
 		
 		/* choose the sensor and sensor direction */
-
 		frontRightTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,0);
 		frontRightTalon.setSensorPhase(true);
 		frontRightTalon.configNominalOutputForward(0.,0);
@@ -70,10 +68,19 @@ public class Drivetrain extends Subsystem{
 		frontRightTalon.setNeutralMode(NeutralMode.Coast);
 		backRightTalon.setNeutralMode(NeutralMode.Coast);
 		
+		// Configure Talon gains
+		frontLeftTalon.config_kF(0, Drive_Kf,0);
+		frontLeftTalon.config_kP(0, Drive_Kp,0);
+		frontLeftTalon.config_kI(0, Drive_Ki,0);
+		frontLeftTalon.config_kD(0, Drive_Kd,0);
+		frontRightTalon.config_kF(0, Drive_Kf,0);
+		frontRightTalon.config_kP(0, Drive_Kp,0);
+		frontRightTalon.config_kI(0, Drive_Ki,0);
+		frontRightTalon.config_kD(0, Drive_Kd,0);
+		
 		// Configure slave Talons to follow masters
 		backLeftTalon.follow(frontLeftTalon);
 		backRightTalon.follow(frontRightTalon);
-		
 	}
 	
 	public double limitDriveAccel(double moveSpeed)
