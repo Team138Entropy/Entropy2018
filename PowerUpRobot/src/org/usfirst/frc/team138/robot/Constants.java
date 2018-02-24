@@ -6,6 +6,8 @@ package org.usfirst.frc.team138.robot;
 public class Constants {
 
 	// System Constants
+	
+		public static boolean practiceBot = false;
 		
 		// Deadband applied to Joystick, when
 		// magnitude is less than deadBand, then set Magnitude to 0
