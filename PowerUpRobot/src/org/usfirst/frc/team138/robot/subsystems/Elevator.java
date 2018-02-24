@@ -129,7 +129,7 @@ public class Elevator extends Subsystem{
 			_targetPosition = 1500; 
 			break;
 		case etScale:
-			_targetPosition = 3000; 
+			_targetPosition = 2800; 
 			break;
 		default:
 			// Error 

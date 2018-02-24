@@ -9,12 +9,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team138.robot.subsystems.*;
-
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import org.usfirst.frc.team138.robot.commands.*;
-import org.usfirst.frc.team138.robot.Constants.*;
 
 //import edu.wpi.first.wpilibj.Preferences;
 
@@ -115,7 +110,7 @@ public class Robot extends IterativeRobot {
     	Constants.kDRotate=prefs.getDouble("Rotate KD", .0);
     	Constants.kIRotate=prefs.getDouble("Rotate KI", .001);
 
-    	Constants.AutoDriveOvershoot=prefs.getDouble("AutoDrive Overshoot", .03); // CM
+    	Constants.AutoDriveRotateOvershoot=prefs.getDouble("AutoDrive Overshoot", 4); // Degrees
 
     	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();

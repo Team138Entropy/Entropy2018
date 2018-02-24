@@ -37,18 +37,18 @@ public class Constants {
 		// Drivetrain
 		public final static boolean useClosedLoopDrivetrain = true;
 		// Full joystick motion equates to following actual move speeds:
-		public final static double ClosedLoopCruiseVelocity = 2.25; // meters / second
+		public final static double ClosedLoopCruiseVelocity = 2.5; // meters / second
 		public final static double ClosedLoopSlowVelocity = 0.6; // M/sec
 		// Wheel spacing ~0.5 Meters;  For zero Turn, each wheel travels
 		// on a circle of circumference of pi*0.5 or 1.57 Meters.
 		// For 180 Degree turn in 1 second (180 Degrees/sec), each
 		// wheel travels 1/2 Circumference of .785 Meters in 1 second
-		public final static double ClosedLoopTurnSpeed = 0.5; // Meters/sec
-		// Allow for slower turn speed when in slow mode, factor applied to 
-		// full speed rotation rate
-		public final static double ClosedLoopSlowRotateFactor = 1;
+		public final static double ClosedLoopTurnSpeed = 0.75; // Meters/sec
+		// Allow for slower turn speed when in slow mode,
+		public final static double ClosedLoopSlowRotateSpeed = 0.5;
 		
-		public final static double MaxSpeedChange = 1 * 0.025; // Meters/sec2 * .025 seconds
+		public final static double MaxSpeedChange = 3 * 0.025; // Meters/sec2 * .025 seconds
+		public final static double MaxRotateSpeedChange = 3 * 0.025; // Meters/sec2 * .025 seconds
 		public final static double MaxSlowSpeedChange = 1 * 0.025;
 		public final static double CloseLoopJoystickDeadband = 0.1;
 		
@@ -78,15 +78,16 @@ public class Constants {
 
 		// ***** Autonomous drive parameters *******
 		public static double AutoDriveAccel=1; // M/sec2 (1 ~.1G)
-		public static double AutoDriveRotateRate=.5; // Meters/second
+		public static double AutoDriveRotateRate=.35; // Meters/second
 		// PID gains to control rotation (measured by Gyro)
-		public static double kPRotate=.012;
-		public static double kIRotate=0;
+		public static double kPRotate=.2;
+		public static double kIRotate=3;
 		public static double kDRotate=0;
 		// Compensate AutoDrive overshoot 
-		public static double AutoDriveOvershoot=50;	// CM
+		public static double AutoDriveRotateOvershoot=7;	// Degrees
 		// Insert delay after each autonomous move to allow
 		// mechanism to settle (before sensors are reset at start of next move)
 		public static double AutoDrivePause=20; // 40=1second
+		public static double AutoDriveStopTolerance=2; // CM
 
 }

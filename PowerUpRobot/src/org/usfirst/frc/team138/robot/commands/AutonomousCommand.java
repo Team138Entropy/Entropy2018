@@ -15,10 +15,22 @@ public class AutonomousCommand extends CommandGroup {
 		// Test Modes
 		if (autoMode == "test")
 		{
+			// Scale on left
+			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
+	//		addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
+			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
+			addSequential(new AutoDrive(Constants.rotateToScore));
+			// Use vision to drive to scale?
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());
+
+/*			addSequential(new AutoDrive(1, 200));
+			addSequential(new AutoDrive(180));
 			addSequential(new AutoDrive(1, 200));
-			addSequential(new AutoDrive(90));
-			addSequential(new AutoDrive(-90));
-			addSequential(new AutoDrive(1, -200));
+			addSequential(new AutoDrive(-180));
+			addSequential(new AutoDrive(1, 200));
+			*/
 		}
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData
