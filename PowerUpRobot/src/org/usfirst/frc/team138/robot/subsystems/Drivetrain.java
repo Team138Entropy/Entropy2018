@@ -134,17 +134,8 @@ public class Drivetrain extends Subsystem{
 	public void driveWithTable(double moveSpeed, double rotateSpeed)
 	{
 		/* 
-		 *  moveSpeed and rotateSpeed are in Meters/sec
+		 *  moveSpeed and rotateSpeed are +/- 1 where 1=full voltage
 		 */
-		
-		// Convert to % of full speed
-		moveSpeed=moveSpeed/Constants.ClosedLoopCruiseVelocity;
-		rotateSpeed=rotateSpeed/Constants.ClosedLoopTurnSpeed;
-		
-		moveSpeed = applyDeadZone(moveSpeed);
-		rotateSpeed = applyDeadZone(rotateSpeed);
-
-		// Motor Speeds on both the left and right sides
 		double leftMotorSpeed  = getLeftMotorSpeed(moveSpeed, rotateSpeed);
 		double rightMotorSpeed = getRightMotorSpeed(moveSpeed, rotateSpeed);
 		frontLeftTalon.set(ControlMode.PercentOutput, leftMotorSpeed);
@@ -249,18 +240,7 @@ public class Drivetrain extends Subsystem{
 				((bound1 >= testValue) && (testValue >= bound2)));
 	}
 
-	double applyDeadZone(double speed)
-	{
-		double finalSpeed;
-
-		if ( Math.abs(speed) < CONTROLLER_DEAD_ZONE) {
-			finalSpeed = 0;
-		}
-		else {
-			finalSpeed = speed;
-		}
-		return finalSpeed;
-	}
+	
 
 
 
