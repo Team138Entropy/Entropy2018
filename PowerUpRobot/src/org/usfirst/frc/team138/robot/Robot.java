@@ -25,6 +25,7 @@ public class Robot extends IterativeRobot {
     SendableChooser<String> teamChooser;
     SendableChooser<String> startPosChooser;
     SendableChooser<String> autoModeChooser;
+    SendableChooser<String> robotChooser;
         
     // Subsystems
     public static final Compressor compressor = new Compressor();
@@ -42,7 +43,6 @@ public class Robot extends IterativeRobot {
     // Global constants
     public static String mode; // "auto" or "teleop"
     public static String gameData;
-	public static boolean practiceBot = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -58,6 +58,11 @@ public class Robot extends IterativeRobot {
 		// Smart Dashboard Initialization
 		Sensors.updateSmartDashboard();
 		SmartDashboard.putData(Scheduler.getInstance());
+		
+		robotChooser = new SendableChooser<String>();
+		robotChooser.addDefault("Competition robot", "comp robot");
+		robotChooser.addDefault("Practice robot", "practice robot");
+		SmartDashboard.putData("Robot:", robotChooser);		
 		
 		teamChooser = new SendableChooser<String>();
 		teamChooser.addDefault("Red Alliance", "red");
@@ -109,6 +114,7 @@ public class Robot extends IterativeRobot {
         		startPosChooser.getSelected(),
         		autoModeChooser.getSelected(),
         		gameData);
+        isPracticeRobot();
         autonomousCommand.start();
     }
 
@@ -125,9 +131,19 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) {
         	autonomousCommand.cancel();        	
         }        
+        isPracticeRobot();
     	Sensors.resetEncoders();
     	elevator.StopMoving();
     	
+    }
+    
+    public void isPracticeRobot() {
+    	if (robotChooser.getSelected() == "practice robot") {
+    		Constants.practiceBot = true;
+    	}
+    	else {
+    		Constants.practiceBot = false;
+    	}
     }
 
     /**

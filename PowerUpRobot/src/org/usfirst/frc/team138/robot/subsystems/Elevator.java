@@ -122,7 +122,7 @@ public class Elevator extends Subsystem{
 	
 	public void Elevate (ElevatorTarget target) {
 		_currentCommand = "Elevate";
-		if (Robot.practiceBot) { // These numbers need updating
+		if (Constants.practiceBot) { // These numbers need updating
 			switch (target) {
 			case etAcquire:
 				_targetPosition = 0;
@@ -131,7 +131,7 @@ public class Elevator extends Subsystem{
 				_targetPosition = 1500; 
 				break;
 			case etScale:
-				_targetPosition = 3000; 
+				_targetPosition = 2800; 
 				break;
 			default:
 				// Error 
