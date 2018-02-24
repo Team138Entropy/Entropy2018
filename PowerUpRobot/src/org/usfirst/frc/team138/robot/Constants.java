@@ -76,6 +76,7 @@ public class Constants {
 		public final static double holdSpeed = 0.3;
 
 		// Rotate Gain - used in Autonomous
+		public static double AutoDriveRotateRate=.5; // Meters/second
 		public static double kPRotate=.012;
 		public static double kIRotate=0;
 		public static double kDRotate=0;

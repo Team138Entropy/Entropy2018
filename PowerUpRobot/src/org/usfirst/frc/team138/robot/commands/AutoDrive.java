@@ -6,17 +6,13 @@ import org.usfirst.frc.team138.robot.Sensors;
 import org.usfirst.frc.team138.robot.Utility;
 import org.usfirst.frc.team138.robot.Constants;
 
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDOutput;
 
-
-public class AutoDrive extends Command implements PIDOutput{
+public class AutoDrive extends Command {
 	
 	boolean isDone = false;
-	PIDController turnController;
 	double rotateToAngleRate = 0.0;
-	double lastRightDistance = 0.0;
 	double lastLeftDistance = 0.0;
+	double lastRightDistance = 0.0;
 	int stallCounter = 0;
 	boolean areMotorsStalled = false;
 	boolean rotateInPlace;
@@ -25,6 +21,7 @@ public class AutoDrive extends Command implements PIDOutput{
 	double targetAngle = 0.0;
 	boolean arcTurn = false;
 	double timer=0;
+	double MinDistance=10; // centimeter (limit to detect stall)
 	
 
 	//*******************************************
@@ -33,22 +30,23 @@ public class AutoDrive extends Command implements PIDOutput{
 	//within how many degrees will you be capable of turning
 	static double ToleranceDegrees = 1.0;
 	double IntegralError=0;
-
-	
 	/**
 	 * Drives straight for the specified distance
-	 * @param speedArg The speed, from -1.0 to 1.0, the robot will drive. Negative speeds go backwards
-	 * @param distanceArg The distance to drive, in inches. Uses the absolute value of encoders, so use positive distances
+	 * @param speedArg The speed, from 0 to full in Meters/sec, the robot will drive. 
+	 * Negative distance drives backwards
+	 * @param distanceArg The distance to drive, in CM (centimeters). 
 	 */
 	public AutoDrive(double speedArg, double distanceArg){
 		requires(Robot.drivetrain);
 		rotateInPlace = false;
-		driveSpeed = 2*speedArg;
+		driveSpeed = speedArg;
+		// Adjust drive distance to allow for distance required to decelerate to stop
 		if (distanceArg>0)
 			driveDistance=distanceArg-Constants.AutoDriveOvershoot;
 		else
 		{
 			driveDistance=distanceArg+Constants.AutoDriveOvershoot;
+			// If moving backwards, invert drivespeed
 			driveSpeed=-driveSpeed;
 		}
 			
@@ -58,19 +56,22 @@ public class AutoDrive extends Command implements PIDOutput{
 	
 	/**
 	 * Rotates to an angle
-	 * @param angle Angle, in degrees, to turn to. Negative angles turn left, positive angles turn right
+	 * @param angle Angle, in degrees, to turn to. Negative angles turn right, positive angles turn left
+	 * ie:  right hand rule convention
 	 */
 	public AutoDrive(double angle){
 		requires(Robot.drivetrain);
 		rotateInPlace = true;
 		targetAngle = angle;
-		IntegralError=0;
-		
+		IntegralError=0;		
 	}
 	
 	
 	private double leftDistance() {
 		// Return leftDistance from left encoder in centimeters
+		// motors and encoders run oposite to robot convention
+		// Invert encoder readings here so that distance increases
+		// when robot moving forward.
 		return -1*Constants.Meters2CM*Sensors.getLeftDistance();
 	}
 	private double rightDistance() {
@@ -78,62 +79,72 @@ public class AutoDrive extends Command implements PIDOutput{
 		return -1*Constants.Meters2CM*Sensors.getRightDistance();
 	}
 
-	
 	public void initialize() {
+		// reset gyro and encoders are start of every autonomous move
+		// ie: sequential moves are relative to previous position.
 		Sensors.resetEncoders();
 		Sensors.gyro.reset();	
 		timer=0;		
 	}
 
 	public void execute() {
-		if (areMotorsStalled) 
+		boolean moveComplete; // true when move complete
+		double rate; // rate of rotation			
+		double avgDistance=.5*(leftDistance()+rightDistance());
+		// Stalled?
+		if (Math.abs(lastLeftDistance-leftDistance())<MinDistance || 
+				Math.abs(lastRightDistance-rightDistance())<MinDistance ) 
 		{
-			Robot.drivetrain.drive(0.0, 0.0);
-			System.out.println("Stalled");
+			if (stallCounter == 25) 
+			{
+				Robot.drivetrain.drive(0.0, 0.0);
+				areMotorsStalled = true;
+			}
+			if(stallCounter == 50)
+				isDone = true;
+			stallCounter++;
 		}
 		else
 		{
-			boolean result;
-			double rate;
+			stallCounter = 0;
 			if (rotateInPlace)
 			{
+				// Angular difference between target and current heading
 				double diffAngle=targetAngle-Sensors.gyro.getAngle();
 				if (targetAngle > 0)
-				{
-					result =(diffAngle<=0);
-				}
+					moveComplete =(diffAngle<=0);
 				else
-				{
-					result =(diffAngle>=0);
-				}
+					moveComplete =(diffAngle>=0);
 				IntegralError+=diffAngle*.025;
 				rate=Constants.kPRotate*diffAngle+IntegralError*Constants.kIRotate;
-				// rotate Talons opposite direction
-				rotateToAngleRate=Utility.limitValue(rate,-1,1);
+				// Scale to Meters/second
+				rotateToAngleRate=Utility.limitValue(rate,-1,1)*Constants.AutoDriveRotateRate;			
 			}
 			else
 			{
+				// move straight
 				rotateToAngleRate=0;
-				lastRightDistance = rightDistance();
-				lastLeftDistance = leftDistance();
-				double avgDistance=.5*(lastRightDistance+lastLeftDistance);
-				result = (Math.abs(avgDistance) >= Math.abs(driveDistance));
+				// Check distance-to-go
+				// Are we there yet?
+				moveComplete = (Math.abs(avgDistance) >= Math.abs(driveDistance));
 			}
-			if (result)
+			if (moveComplete)
 			{
 				Robot.drivetrain.drive(0.0, 0.0);
 				isDone = true;
-			}		
-			else
-			{
-				Robot.drivetrain.drive(driveSpeed, rotateToAngleRate);
-				
-				
 			}
+			else
+				Robot.drivetrain.drive(driveSpeed, rotateToAngleRate);
 		}
+		// update distance moved (used to detect stalled motors)
+		lastLeftDistance = leftDistance();
+		lastRightDistance = rightDistance();
 	}
 
 	public boolean isFinished() {
+		// Insert delay after motion complete before command is considered completer
+		// allows time for motion to settle before resetting sensors at start of next
+		// command
 		return (isDone && (timer++>Constants.AutoDrivePause));
 	}
 
@@ -143,28 +154,5 @@ public class AutoDrive extends Command implements PIDOutput{
 	protected void interrupted() {
 	}
 	
-	public void pidWrite(double output) {
-		output = -output;
-		if (rotateInPlace)
-		{
-			double minSpeed = 1;
-			if (output > minSpeed || output < -minSpeed)
-			{
-				rotateToAngleRate = output;
-			}
-			else if (targetAngle > 0)
-			{
-				rotateToAngleRate = -minSpeed;
-			}
-			else
-			{
-				rotateToAngleRate = minSpeed;
-			}
-		}
-		else
-		{
-			rotateToAngleRate =  0;
-		}		
-	}
 	
 }

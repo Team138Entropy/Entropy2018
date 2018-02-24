@@ -18,9 +18,7 @@ import org.usfirst.frc.team138.robot.Robot;
 
 public class Drivetrain extends Subsystem{
 	private static double CONTROLLER_DEAD_ZONE = 0.09;
-	private static double min_speed;
-	private double lastSpeed=0;
-	private static double maxSpeedChange=1/20.0;// 1/20
+	public double lastSpeed=0;
 	double _speedFactor = 1;
 	double _rotateFactor = 1;
 
@@ -78,6 +76,14 @@ public class Drivetrain extends Subsystem{
 		
 	}
 	
+	public double limitDriveAccel(double moveSpeed)
+	{
+		// Limit rate of change of move and rotate in order to control acceleration
+		lastSpeed = Utility.limitValue(moveSpeed, lastSpeed - Constants.MaxSpeedChange,
+			    lastSpeed + Constants.MaxSpeedChange);
+		return lastSpeed;
+	}
+	
 	public void drive(double moveSpeed, double rotateSpeed)
 	{
 		if (Constants.useClosedLoopDrivetrain)
@@ -93,109 +99,56 @@ public class Drivetrain extends Subsystem{
 
 	public void driveCloseLoopControl(double moveSpeed, double rotateSpeed)
 	{
+		/*
+		 * moveSpeed and rotateSpeed in Meters/second.
+		 */
 		double left  = 0;
 		double right = 0;
-
-		SmartDashboard.putNumber("Drive Speed", moveSpeed);
-		SmartDashboard.putNumber("Rotate Speed", rotateSpeed);
 		/*
-		 * Robot motors move opposite to joystick and autonomuous directions
+		 * Robot motors move opposite to joystick and autonomous directions
 		 */
 		moveSpeed=-moveSpeed;
 		rotateSpeed=-rotateSpeed;
 
-		if (Math.abs(moveSpeed) < Constants.CloseLoopJoystickDeadband)
-		{
-			moveSpeed=0;
-		}
-		
-		if (Math.abs(rotateSpeed) < Constants.CloseLoopJoystickDeadband)
-		{
-			rotateSpeed=0;
-		}
-		
-
-
-		// Determine if speed factor needs to be applied
-		if (OI.isFullSpeed()) {	
-			_rotateFactor = 1;
-			_speedFactor = 1;
-		}
-		else
-		{
-			_rotateFactor = Constants.ClosedLoopSlowRotateFactor;
-			_speedFactor = Constants.ClosedLoopSlowFactor;
-		}
-		
-		_lastMoveSpeed = Utility.limitValue(_speedFactor * moveSpeed, 
-								    _lastMoveSpeed - Constants.MaxSpeedChange,
-								    _lastMoveSpeed + Constants.MaxSpeedChange);	
-
-		left = Constants.ClosedLoopCruiseVelocity * _lastMoveSpeed - _rotateFactor * 
-													rotateSpeed * Constants.ClosedLoopTurnSpeed;
-		right = Constants.ClosedLoopCruiseVelocity * _lastMoveSpeed + _rotateFactor * 
-													rotateSpeed * Constants.ClosedLoopTurnSpeed;
+		left = moveSpeed - rotateSpeed; 
+		right = moveSpeed + rotateSpeed;
 
 		// Convert Meters / seconds to Encoder Counts per 100 milliseconds
 		frontLeftTalon.set(ControlMode.Velocity, left * Constants.SecondsTo100Milliseconds / Constants.MetersPerPulse);
 		frontRightTalon.set(ControlMode.Velocity, right * Constants.SecondsTo100Milliseconds / Constants.MetersPerPulse);
 
 
-		SmartDashboard.putNumber("Left Speed (M/s)", -left);
-		SmartDashboard.putNumber("Right Speed (M/S)", -right);
+		SmartDashboard.putNumber("L CMD Speed (M/s)", -left);
+		SmartDashboard.putNumber("R CMD Speed (M/S)", -right);
 		
-		SmartDashboard.putNumber("Left PWM", -frontLeftTalon.getMotorOutputPercent());
-		SmartDashboard.putNumber("Right PWM", -frontRightTalon.getMotorOutputPercent());
+		SmartDashboard.putNumber("L PWM", -frontLeftTalon.getMotorOutputPercent());
+		SmartDashboard.putNumber("R PWM", -frontRightTalon.getMotorOutputPercent());
 		
-		SmartDashboard.putNumber("Left Talon Vel (M/S)", -frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
-		SmartDashboard.putNumber("Right Talon Vel (M/S)", -frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
+		SmartDashboard.putNumber("L Talon Vel (M/S)", -frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
+		SmartDashboard.putNumber("R Talon Vel (M/S)", -frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 		
-		SmartDashboard.putNumber("Left Position (M)", -Constants.MetersPerPulse*frontLeftTalon.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("Right Position (M)",-Constants.MetersPerPulse*frontRightTalon.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("L Position (M)", -Constants.MetersPerPulse*frontLeftTalon.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("R Position (M)",-Constants.MetersPerPulse*frontRightTalon.getSelectedSensorPosition(0));
 	}
 
 	public void driveWithTable(double moveSpeed, double rotateSpeed)
 	{
-
-		min_speed=Math.abs(DriveTable.Drive_Matrix_2017[14][0]);
-		double scale=0.5;
-		SmartDashboard.putNumber("MinSpeed:", min_speed);
-
-		//rotateSpeed = -rotateSpeed;
-		// Filter input speeds
-		moveSpeed=lastSpeed+Utility.limitValue(moveSpeed-lastSpeed,-maxSpeedChange,maxSpeedChange);
-		lastSpeed=moveSpeed;
+		/* 
+		 *  moveSpeed and rotateSpeed are in Meters/sec
+		 */
 		
-		SmartDashboard.putNumber("lastSpeed:", lastSpeed);
-	
-
-		if (OI.isFullSpeed())
-			moveSpeed = applyDeadZone(moveSpeed);
-		else
-			moveSpeed = .5*applyDeadZone(moveSpeed);
-			
+		// Convert to % of full speed
+		moveSpeed=moveSpeed/Constants.ClosedLoopCruiseVelocity;
+		rotateSpeed=rotateSpeed/Constants.ClosedLoopTurnSpeed;
+		
+		moveSpeed = applyDeadZone(moveSpeed);
 		rotateSpeed = applyDeadZone(rotateSpeed);
 
 		// Motor Speeds on both the left and right sides
 		double leftMotorSpeed  = getLeftMotorSpeed(moveSpeed, rotateSpeed);
 		double rightMotorSpeed = getRightMotorSpeed(moveSpeed, rotateSpeed);
-		scale=1.0;
-		if (leftMotorSpeed>0)
-			leftMotorSpeed=min_speed+scale*(leftMotorSpeed-min_speed);
-		else
-			leftMotorSpeed=-min_speed+scale*(leftMotorSpeed+min_speed);
-		
-		if (rightMotorSpeed>0)
-			rightMotorSpeed=min_speed+scale*(rightMotorSpeed-min_speed);
-		else
-			rightMotorSpeed=-min_speed+scale*(rightMotorSpeed+min_speed);
-			
-		SmartDashboard.putNumber("LeftSpeed:", leftMotorSpeed);
-		SmartDashboard.putNumber("RightSpeed:", rightMotorSpeed);
-		
-		//drivetrain.tankDrive(leftMotorSpeed, rightMotorSpeed);
-		frontLeftTalon.set(ControlMode.Velocity, leftMotorSpeed);
-		frontRightTalon.set(ControlMode.Velocity, rightMotorSpeed);
+		frontLeftTalon.set(ControlMode.PercentOutput, leftMotorSpeed);
+		frontRightTalon.set(ControlMode.PercentOutput, rightMotorSpeed);
 	}
 
 	double getLeftMotorSpeed(double moveSpeed, double rotateSpeed)
