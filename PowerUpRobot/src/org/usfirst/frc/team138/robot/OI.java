@@ -3,6 +3,8 @@ package org.usfirst.frc.team138.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 //import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team138.robot.commands.*;
 import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
@@ -63,8 +65,20 @@ public final class OI {
 	static final int nykoRightYAxis = 2;	// Z Axis on Driver Station
 	static final int nykoRightXAxis = 3;	// Rotate Axis on Driver Station
 	
+    // Brian's Joystick
+	static final int briansJoystick = 2;
+	
+	static final int brianEnableButton = 1;
+	
+	// Brian's axes
+	static final int brianSpeedAxis = 0;
+	static final int brianRotateAxis = 1;
+	
+	static final boolean useBriansJoy = true;
+	
     static Joystick driverStick = new Joystick(xboxController);
     static Joystick operatorStick = new Joystick(nykoController);
+    static Joystick briansStick = new Joystick(briansJoystick);
     
     // Driver Stick
     static Button sampleButton 		= new JoystickButton(driverStick, xboxA);
@@ -79,6 +93,9 @@ public final class OI {
     static Button closeGrasperButton = new JoystickButton(operatorStick, nykoRightBumper);
     static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
     static Button cancelElevatorMoveButton = new JoystickButton(operatorStick, nykoRightStick);
+    
+    // Brian's Joystick
+    static Button briansEnableButton = new JoystickButton(briansStick, brianEnableButton);
     
     static double lastX=0;
     static double LastY=0;
@@ -100,12 +117,27 @@ public final class OI {
     
 	public static double getMoveSpeed()
 	{
-		return driverStick.getRawAxis(xboxLeftYAxis);
+		if (briansStick.getRawButton(brianEnableButton))
+		{
+			// Xbox controller Y axis reports -1 forward, so emulate that on Brian's Joystick
+			return (-1 * briansStick.getRawAxis(brianSpeedAxis));
+		}
+		else
+		{
+			return driverStick.getRawAxis(xboxLeftYAxis);
+		}
 	}
 	
 	public static double getRotateSpeed()
 	{
-		return driverStick.getRawAxis(xboxRightXAxis);
+		if (briansStick.getRawButton(brianEnableButton))
+		{
+			return briansStick.getRawAxis(brianRotateAxis);
+		}
+		else
+		{
+			return driverStick.getRawAxis(xboxRightXAxis);
+		}
 	}
 	
 	public static double getClimbSpeed()
@@ -203,6 +235,13 @@ public final class OI {
 		// Execute a zero-turn (rotate about robot center) if zero-turn button is pressed
 		zt=driverStick.getRawButton(xboxX) | driverStick.getRawButton(xboxY);
 		return zt;
+	}
+	
+	public static void updateSmartDashboard()
+	{
+		SmartDashboard.putBoolean("Brian's Joy Enabled", briansStick.getRawButton(brianEnableButton));
+		SmartDashboard.putNumber("Speed Input", getMoveSpeed());
+		SmartDashboard.putNumber("Rotation Input", getRotateSpeed());
 	}
 	    
 } // :D)))
