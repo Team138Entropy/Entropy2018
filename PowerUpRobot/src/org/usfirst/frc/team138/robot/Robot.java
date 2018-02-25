@@ -61,8 +61,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData(Scheduler.getInstance());
 		
 		robotChooser = new SendableChooser<String>();
-		robotChooser.addDefault("Competition robot", "comp robot");
-		robotChooser.addDefault("Practice robot", "practice robot");
+		robotChooser.addDefault("Competition robot", Constants.competitionRobot);
+		robotChooser.addDefault("Practice robot", Constants.practiceRobot);
 		SmartDashboard.putData("Robot:", robotChooser);		
 		
 		teamChooser = new SendableChooser<String>();
@@ -141,18 +141,18 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) {
         	autonomousCommand.cancel();        	
         }        
-        isPracticeRobot();
+        Constants.practiceBot = isPracticeRobot();
     	Sensors.resetEncoders();
     	elevator.StopMoving();
     	
     }
     
-    public void isPracticeRobot() {
-    	if (robotChooser.getSelected() == "practice robot") {
-    		Constants.practiceBot = true;
+    public boolean isPracticeRobot() {
+    	if (robotChooser.getSelected() == Constants.practiceRobot) {
+    		return true;
     	}
     	else {
-    		Constants.practiceBot = false;
+    		return false;
     	}
     }
 
