@@ -72,7 +72,17 @@ public class Elevator extends Subsystem{
 		_elevatorMotor.config_kP(kElevatorPIDLoopIndex, _liftKp, kElevatorTimeoutMs);
 		_elevatorMotor.config_kI(kElevatorPIDLoopIndex, _liftKi, kElevatorTimeoutMs);
 		_elevatorMotor.config_kD(kElevatorPIDLoopIndex, _liftKd, kElevatorTimeoutMs);
-
+		
+		// Set current limit on elevator motor Talon
+		// current limit applies to current drawn from battery
+		// limit of 20 amps implies 12*20 = 240 Watts max power drawn from
+		// battery.  Actual motor current at stall is sqrt(Watts/R)
+		// 775 Motor resistance ~0.15 Ohms.  So 20 Amps input equates to 40 Amps in motor
+		// at Stall.
+		_elevatorMotor.configContinuousCurrentLimit(20, 5000);
+		_elevatorMotor.configPeakCurrentLimit(30, 2000);
+		_elevatorMotor.enableCurrentLimit(true);
+		
 		// Integral control only applies when the error is small; this avoids integral windup
 		_elevatorMotor.config_IntegralZone(0, 200, kElevatorTimeoutMs);
 
