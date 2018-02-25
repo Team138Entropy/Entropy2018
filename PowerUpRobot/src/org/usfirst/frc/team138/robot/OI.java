@@ -69,6 +69,7 @@ public final class OI {
 	static final int briansJoystick = 2;
 	
 	static final int brianEnableButton = 1;
+	static final int brianHighSpeedButton = 2;
 	
 	// Brian's axes
 	static final int brianSpeedAxis = 0;
@@ -93,9 +94,6 @@ public final class OI {
     static Button closeGrasperButton = new JoystickButton(operatorStick, nykoRightBumper);
     static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
     static Button cancelElevatorMoveButton = new JoystickButton(operatorStick, nykoRightStick);
-    
-    // Brian's Joystick
-    static Button briansEnableButton = new JoystickButton(briansStick, brianEnableButton);
     
     static double lastX=0;
     static double LastY=0;
@@ -169,7 +167,14 @@ public final class OI {
 	}
 	
 	public static boolean isFullSpeed() {
-		return driverStick.getRawAxis(xboxRightTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
+		if (briansStick.getRawButton(brianEnableButton))
+		{
+			return briansStick.getRawButton(brianHighSpeedButton);
+		}
+		else
+		{
+			return driverStick.getRawAxis(xboxRightTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
+		}
 	}
 	
 	
