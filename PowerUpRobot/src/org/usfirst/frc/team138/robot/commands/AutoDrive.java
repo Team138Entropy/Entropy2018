@@ -23,7 +23,7 @@ public class AutoDrive extends Command {
 	double targetAngle = 0.0;
 	boolean arcTurn = false;
 	double timer=0;
-	double MinDistance=10; // centimeter (limit to detect stall)
+	double MinDistance=.25*.025*Constants.AutoDriveSpeed*Constants.Meters2CM; // centimeter (limit to detect stall)
 	
 
 	//*******************************************
@@ -41,10 +41,11 @@ public class AutoDrive extends Command {
 	public AutoDrive(double speedArg, double distanceArg){
 		requires(Robot.drivetrain);
 		rotateInPlace = false;
-		driveSpeed = Math.abs(speedArg);
+		driveSpeed = Math.abs(speedArg)*Constants.AutoDriveSpeed;
 		driveDistance = distanceArg;
 		IntegralError=0;
 		timer=0;
+		stallCounter=0;
 	}
 	
 	/**
@@ -61,12 +62,13 @@ public class AutoDrive extends Command {
 		else
 			angle=angle+Constants.AutoDriveRotateOvershoot;
 		targetAngle = angle;
+		stallCounter=0;
 	}
 	
 	
 	private double leftDistance() {
 		// Return leftDistance from left encoder in centimeters
-		// motors and encoders run oposite to robot convention
+		// motors and encoders run opposite to robot convention
 		// Invert encoder readings here so that distance increases
 		// when robot moving forward.
 		return -1*Constants.Meters2CM*Sensors.getLeftDistance();
@@ -81,7 +83,8 @@ public class AutoDrive extends Command {
 		// ie: sequential moves are relative to previous position.
 		Sensors.resetEncoders();
 		Sensors.gyro.reset();	
-		timer=0;		
+		timer=0;
+		stallCounter=0;
 	}
 
 	public void execute() {
@@ -94,20 +97,21 @@ public class AutoDrive extends Command {
 		if (Math.abs(lastLeftDistance-leftDistance())<MinDistance || 
 				Math.abs(lastRightDistance-rightDistance())<MinDistance ) 
 		{
-			if (stallCounter == 25) 
+			if (stallCounter == 50) 
 			{
 				Robot.drivetrain.drive(0.0, 0.0);
 				areMotorsStalled = true;
-			}
-			if(stallCounter == 50)
 				isDone = true;
+			}
 			stallCounter++;
 			SmartDashboard.putString("Stall:","Stalled");
 		}
 		else
 		*/
+		
 		{
 			stallCounter = 0;
+			SmartDashboard.putString("Stall:","  ");
 			if (rotateInPlace)
 			{
 				// Angular difference between target and current heading

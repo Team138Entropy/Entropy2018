@@ -1,7 +1,6 @@
 package org.usfirst.frc.team138.robot.subsystems;
 
 import org.usfirst.frc.team138.robot.Constants;
-import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.RobotMap;
 import org.usfirst.frc.team138.robot.commands.JogElevator;
 
@@ -131,7 +130,7 @@ public class Elevator extends Subsystem{
 				_targetPosition = 1500; 
 				break;
 			case etScale:
-				_targetPosition = 2800; 
+				_targetPosition = 2700; 
 				break;
 			default:
 				// Error 

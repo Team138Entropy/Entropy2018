@@ -16,14 +16,18 @@ public class AutonomousCommand extends CommandGroup {
 		if (autoMode == "test")
 		{
 			// Scale on left
-			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
-	//		addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
+			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
+			addParallel(new AutoDrive(Constants.rotateToScore));
 			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
-			addSequential(new AutoDrive(Constants.rotateToScore));
 			// Use vision to drive to scale?
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
+			addParallel(new CloseGrasper());
+			addParallel(new ElevateToTarget(ElevatorTarget.etAcquire));
+			addParallel(new AutoDrive(Constants.autoSpeed, -50)); // backup 50 CM
 			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
 
 /*			addSequential(new AutoDrive(1, 200));
 			addSequential(new AutoDrive(180));
