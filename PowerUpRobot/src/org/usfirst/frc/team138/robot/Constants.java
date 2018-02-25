@@ -7,6 +7,8 @@ public class Constants {
 
 	// System Constants
 	
+		public static double commandLoopIterationSeconds = 0.025;
+	
 		public static boolean practiceBot = false;
 		
 		// Deadband applied to Joystick, when
@@ -92,5 +94,9 @@ public class Constants {
 		// mechanism to settle (before sensors are reset at start of next move)
 		public static double AutoDrivePause=10; // 40=1second
 		public static double AutoDriveStopTolerance=2; // CM
+		
+		// Dashboard input constants
+		public final static String practiceRobot = "practice robot";
+		public final static String competitionRobot = "comp robot";
 
 }
