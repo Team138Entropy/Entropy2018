@@ -7,6 +7,8 @@ public class Constants {
 
 	// System Constants
 	
+		public static double commandLoopIterationSeconds = 0.025;
+	
 		public static boolean practiceBot = false;
 		
 		// Deadband applied to Joystick, when
