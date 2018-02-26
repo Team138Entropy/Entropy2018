@@ -26,7 +26,8 @@ public class ElevateToTarget extends Command {
 
 	protected void initialize() {
 		Robot.elevator.Elevate(elevatorTarget);
-	}
+		_currentCommandTime = 0;
+		}
 
 	protected void execute() {
 		Robot.elevator.Execute();

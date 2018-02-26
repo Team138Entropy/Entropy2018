@@ -6,6 +6,7 @@ import org.usfirst.frc.team138.robot.commands.JogElevator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -82,6 +83,9 @@ public class Elevator extends Subsystem{
 		_elevatorMotor.configContinuousCurrentLimit(20, 5000);
 		_elevatorMotor.configPeakCurrentLimit(30, 2000);
 		_elevatorMotor.enableCurrentLimit(true);
+		
+		// Set brake mode to hold at position
+		_elevatorMotor.setNeutralMode(NeutralMode.Brake);		
 		
 		// Integral control only applies when the error is small; this avoids integral windup
 		_elevatorMotor.config_IntegralZone(0, 200, kElevatorTimeoutMs);
@@ -211,8 +215,7 @@ public class Elevator extends Subsystem{
 	}
 	
 	// Interface to let command know it's done
-	public boolean IsMoveComplete() {
-		
+	public boolean IsMoveComplete() {		
 		return (_direction == 0);
 	}
 	
