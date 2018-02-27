@@ -7,6 +7,8 @@ public class Constants {
 
 	// System Constants
 	
+		public static double commandLoopIterationSeconds = 0.025;
+	
 		public static boolean practiceBot = false;
 		
 		// Deadband applied to Joystick, when
@@ -49,7 +51,7 @@ public class Constants {
 		// Allow for slower turn speed when in slow mode,
 		public final static double ClosedLoopSlowRotateSpeed = 0.5;
 		
-		public final static double MaxSpeedChange = 3 * 0.025; // Meters/sec2 * .025 seconds
+		public final static double MaxSpeedChange = 2 * 0.025; // Meters/sec2 * .025 seconds
 		public final static double MaxRotateSpeedChange = 5 * 0.025; // Meters/sec2 * .025 seconds
 		public final static double MaxSlowSpeedChange = 1 * 0.025;
 		public final static double CloseLoopJoystickDeadband = 0.1;
@@ -79,6 +81,7 @@ public class Constants {
 		public final static double holdSpeed = 0.3;
 
 		// ***** Autonomous drive parameters *******
+		public static double AutoDriveSpeed=2.0; // M/sec
 		public static double AutoDriveAccel=1; // M/sec2 (1 ~.1G)
 		public static double AutoDriveRotateRate=.35; // Meters/second
 		// PID gains to control rotation (measured by Gyro)
@@ -89,7 +92,7 @@ public class Constants {
 		public static double AutoDriveRotateOvershoot=7;	// Degrees
 		// Insert delay after each autonomous move to allow
 		// mechanism to settle (before sensors are reset at start of next move)
-		public static double AutoDrivePause=20; // 40=1second
+		public static double AutoDrivePause=10; // 40=1second
 		public static double AutoDriveStopTolerance=2; // CM
 		
 		// Dashboard input constants

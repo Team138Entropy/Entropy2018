@@ -82,7 +82,7 @@ public class Robot extends IterativeRobot {
 		autoModeChooser.addObject("Manual", "manual");
 		autoModeChooser.addObject("Test" , "test");
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
-			
+					
 
     }
 	
@@ -110,7 +110,9 @@ public class Robot extends IterativeRobot {
 	 */
     public void autonomousInit() {
     	mode = "auto";
-    	SmartDashboard.putString("AutoCommand", "Init");
+		SmartDashboard.putData("Team:", teamChooser);
+		SmartDashboard.putData("Starting Position:", startPosChooser);		
+		SmartDashboard.putData("Auto Mode:", autoModeChooser);
     	
     	Constants.kPRotate=prefs.getDouble("Rotate KP", .02);
     	Constants.kDRotate=prefs.getDouble("Rotate KD", .0);
