@@ -1,12 +1,12 @@
 package org.usfirst.frc.team138.robot.subsystems;
 
 import org.usfirst.frc.team138.robot.Constants;
-import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.RobotMap;
 import org.usfirst.frc.team138.robot.commands.JogElevator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -73,7 +73,20 @@ public class Elevator extends Subsystem{
 		_elevatorMotor.config_kP(kElevatorPIDLoopIndex, _liftKp, kElevatorTimeoutMs);
 		_elevatorMotor.config_kI(kElevatorPIDLoopIndex, _liftKi, kElevatorTimeoutMs);
 		_elevatorMotor.config_kD(kElevatorPIDLoopIndex, _liftKd, kElevatorTimeoutMs);
-
+		
+		// Set current limit on elevator motor Talon
+		// current limit applies to current drawn from battery
+		// limit of 20 amps implies 12*20 = 240 Watts max power drawn from
+		// battery.  Actual motor current at stall is sqrt(Watts/R)
+		// 775 Motor resistance ~0.15 Ohms.  So 20 Amps input equates to 40 Amps in motor
+		// at Stall.
+		_elevatorMotor.configContinuousCurrentLimit(20, 5000);
+		_elevatorMotor.configPeakCurrentLimit(30, 2000);
+		_elevatorMotor.enableCurrentLimit(true);
+		
+		// Set brake mode to hold at position
+		_elevatorMotor.setNeutralMode(NeutralMode.Brake);		
+		
 		// Integral control only applies when the error is small; this avoids integral windup
 		_elevatorMotor.config_IntegralZone(0, 200, kElevatorTimeoutMs);
 
@@ -128,10 +141,10 @@ public class Elevator extends Subsystem{
 				_targetPosition = 0;
 				break;
 			case etSwitch:
-				_targetPosition = 1500; 
+				_targetPosition = 1200; 
 				break;
 			case etScale:
-				_targetPosition = 2800; 
+				_targetPosition = 2700; 
 				break;
 			default:
 				// Error 
@@ -202,8 +215,7 @@ public class Elevator extends Subsystem{
 	}
 	
 	// Interface to let command know it's done
-	public boolean IsMoveComplete() {
-		
+	public boolean IsMoveComplete() {		
 		return (_direction == 0);
 	}
 	

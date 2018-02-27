@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class StartRelease extends Command {
+	int timer;
 
     public StartRelease() {
         requires(Robot.grasper);
@@ -16,6 +17,7 @@ public class StartRelease extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.grasper.StartRelease();
+    	timer=0;
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -24,7 +26,10 @@ public class StartRelease extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+    	if (timer++>2)
+    		return true;
+    	else
+    		return false;
     }
 
     // Called once after isFinished returns true
