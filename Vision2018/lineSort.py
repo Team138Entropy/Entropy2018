@@ -202,7 +202,7 @@ def computeClusters(points):
                             pointsToRemove.append(l3)
                             clusters.append(cluster1)
                             progress = True
-                            print ("Added Cluster Size=", len(clusters))
+                            #print ("Added Cluster Size=", len(clusters))
                             break
                         
         for p in pointsToRemove:
@@ -224,61 +224,61 @@ def computeClusters(points):
 
 def pairTest():
     
-    print ("\n-------------------  pairTest(): ------------------")
+    #print ("\n-------------------  pairTest(): ------------------")
     p1 = point(1.1,-1.0)
     p2 = point(2.0,-2.0)
     pair1 = pair(p1,p2)
-    print (pair1.dist,pair1.slope)
+    #print (pair1.dist,pair1.slope)
     
     p3 = point(3.0,-3.0)
     pair2 = pair(p2,p3)   
-    print (pair2.dist,pair2.slope)
-    print (pair1.deltaAngle(pair2))
+    #print (pair2.dist,pair2.slope)
+    #print (pair1.deltaAngle(pair2))
     
 def simpleClusterTest():
     
-    print ("\n-------------------  simpleClusterTest(): ------------------"    )
+    #print ("\n-------------------  simpleClusterTest(): ------------------"    )
     p1 = point(1.1,-1.0)
     p2 = point(2.0,-2.0)
     p3 = point(3.0,-3.0)    
     cluster1 = cluster(p1,p2,p3)
-    print (cluster1.valid,cluster1.avgDist,cluster1.avgSlope)
+    #print (cluster1.valid,cluster1.avgDist,cluster1.avgSlope)
     
     p4 = point(4.0,-4.1)
     added = cluster1.addPoint(p4)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print (added,cluster1.avgDist,cluster1.avgSlope)
     
     p5 = point(0.0,0.0)
     added = cluster1.addPoint(p5)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print (added,cluster1.avgDist,cluster1.avgSlope)
     
     p6 = point(5.0,-5.2)
     added = cluster1.addPoint(p6)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print (added,cluster1.avgDist,cluster1.avgSlope)
     
     p7 = point(-1.0,+1.0)
     added = cluster1.addPoint(p7)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print (added,cluster1.avgDist,cluster1.avgSlope)
     
     # Should not work (not on the line)
     p8 = point(-1.0,-1.0)
     added = cluster1.addPoint(p8)
-    print (added,cluster1.avgDist,cluster1.avgSlope)
+    #print (added,cluster1.avgDist,cluster1.avgSlope)
 
     for p in cluster1.points:
-        print (p.x,p.y)
+        #print (p.x,p.y)
 
-def printClusters(clusters):
+#def printClusters(clusters):
     
-    for c in clusters:
-        print (c.valid,c.avgSlope,c.avgDist)
-        for p in c.points:
-            print ("    ",p.x,p.y    )
+    #for c in clusters:
+        #print (c.valid,c.avgSlope,c.avgDist)
+        #for p in c.points:
+            #print ("    ",p.x,p.y    )
       
                 
 def computeClustersTest():
     
-    print ("\n-------------------  computeClustersTest(): ------------------"    )
+    #print ("\n-------------------  computeClustersTest(): ------------------"    )
     
     p1 = point(0.0,0.0)
     p2 = point(1.0,1.0)
@@ -293,7 +293,7 @@ def computeClustersTest():
     points = [p1,p2,p3,p4,p5,p6,p7,p8]
     clusters = computeClusters(points)
 
-    printClusters(clusters)
+    #printClusters(clusters)
             
 if __name__ == '__main__': 
     """
