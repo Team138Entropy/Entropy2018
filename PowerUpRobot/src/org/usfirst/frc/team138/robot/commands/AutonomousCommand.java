@@ -4,6 +4,7 @@ import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonomousCommand extends CommandGroup {
 
@@ -15,19 +16,27 @@ public class AutonomousCommand extends CommandGroup {
 		// Test Modes
 		if (autoMode == "test")
 		{
+			
+//			depositCubeScale("left", "left");
+		//	depositCubeRightScale("right");
+//			depositCubeLeftSwitch("center");
+//			depositCubeRightSwitch("center");
+			depositCubeRightSwitch("right");
+			/*
 			// Scale on left
 			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
-			addParallel(new AutoDrive(Constants.rotateToScore));
+		//	addParallel(new AutoDrive(Constants.rotateToScore));
 			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
 			// Use vision to drive to scale?
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addParallel(new CloseGrasper());
 			addParallel(new ElevateToTarget(ElevatorTarget.etAcquire));
-			addParallel(new AutoDrive(Constants.autoSpeed, -50)); // backup 50 CM
+		//	addParallel(new AutoDrive(Constants.autoSpeed, -50)); // backup 50 CM
 			addSequential(new CompleteRelease());
 			addSequential(new CloseGrasper());
+			*/
 
 /*			addSequential(new AutoDrive(1, 200));
 			addSequential(new AutoDrive(180));
@@ -40,6 +49,7 @@ public class AutonomousCommand extends CommandGroup {
 		// This auto mode does the "proper action" depending on the starting position and gameData
 		if (autoMode == "auto")
 		{
+			SmartDashboard.putString("Game Data",gameData);
 			if (startPos == "left") {
 				
 				sameSide = "left";
@@ -113,14 +123,15 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "left") {
 			// Scale on left
-			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
+			addParallel(new AutoDrive(Constants.rotateToScore));
 			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
-			addSequential(new AutoDrive(Constants.rotateToScore));
 			// Use vision to drive to scale?
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
 		}
 		else if (startingPosition == "right")
 		{
@@ -132,13 +143,14 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "right") {
 			// Scale on right
-			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
+			addParallel(new AutoDrive(-1*Constants.rotateToScore));
 			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
-			addSequential(new AutoDrive(-1*Constants.rotateToScore));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
 		}
 		else if (startingPosition == "left")
 		{
@@ -162,11 +174,13 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "left") {
 			// Switch on left
-			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
-			addSequential(new AutoDrive(Constants.rotateToScore));
+			addSequential(new AutoDrive(-Constants.rotateToScore));
+			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());	
+			addSequential(new CloseGrasper());
 		}
 		
 		else if (startingPosition == "right")
@@ -176,15 +190,16 @@ public class AutonomousCommand extends CommandGroup {
 		else
 		{
 			// Center start
-			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, 92)); // TODO: Extract to constants
-			addSequential(new AutoDrive(-50.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(50.0)); // TODO: Extract to constants
 			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
-			addSequential(new AutoDrive(140.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(-140.0)); // TODO: Extract to constants
 			addSequential(new AutoDrive(Constants.autoSpeed, 183.88)); // TODO: Extract to constants
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
 		}
 	}
 	
@@ -192,12 +207,13 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "right") {
 			// Switch on right
-			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
-			addSequential(new AutoDrive(-1*Constants.rotateToScore));
+			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
+			addSequential(new AutoDrive(Constants.rotateToScore));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
 		}
 		else if (startingPosition == "left")
 		{
@@ -205,16 +221,17 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else
 		{
-			// Center start
-			addSequential(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
-			addSequential(new AutoDrive(55.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(-55.0)); // TODO: Extract to constants
 			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
-			addSequential(new AutoDrive(-145.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(145.0)); // TODO: Extract to constants
 			addSequential(new AutoDrive(Constants.autoSpeed, 137)); // TODO: Extract to constants
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
+			// Center start
 		}
 	}
 }
