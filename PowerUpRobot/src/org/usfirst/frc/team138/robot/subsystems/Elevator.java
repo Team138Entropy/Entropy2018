@@ -146,12 +146,6 @@ public class Elevator extends Subsystem{
 		case NONE: 
 			elevatorTarget = "None";
 			break;
-		case JOG: 
-			elevatorTarget = "Jog";
-			break;
-		case HOME: 
-			elevatorTarget = "Home";
-			break;
 		case ACQUIRE:
 			elevatorTarget = "Acquire";
 			break;
@@ -193,7 +187,6 @@ public class Elevator extends Subsystem{
 	
 	// Elevate to a specific target position
 	public void Elevate (ElevatorTarget target) {
-		_count++;
 		if (target == ElevatorTarget.NONE)
 		{
 			StopMoving();
@@ -210,14 +203,15 @@ public class Elevator extends Subsystem{
 				_targetPosition = 500;	// Alternate Acquire position is Exchange
 										//TODO: determine real position
 				break;
-			case CUBE_LEVEL_2:
-				_targetPosition = 900;	// Alternate Switch position is Cube Level 2
-				break;
-										// TODO: determine real position
 			case SWITCH:
 				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
 				_targetPosition = 1200; // Switch height is also Cube Level 3
 				break;
+				
+			case CUBE_LEVEL_2:
+				_targetPosition = 900;	// Alternate Switch position is Cube Level 2
+				break;
+										// TODO: determine real position
 			case SCALE:
 				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
 				_targetPosition = 2500;	// Default scale position is lower scale
@@ -306,11 +300,6 @@ public class Elevator extends Subsystem{
 		SmartDashboard.putNumber("Jog Direction", _currentJogDirection);
 		SmartDashboard.putNumber("Elevate Output:",_elevatorMotor.getMotorOutputPercent());
 		SmartDashboard.putNumber("Count", _count);
-	}
-	
-	public int getCount()
-	{
-		return _count;
 	}
 	
 	// Stop the homing move, reset the encoder position 
