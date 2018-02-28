@@ -86,8 +86,8 @@ public class Constants {
 		public static double AutoDriveRotateRate=.35; // Meters/second
 		// PID gains to control rotation (measured by Gyro)
 		public static double kPRotate=.2;
-		public static double kIRotate=3;
-		public static double kDRotate=0;
+		public static double kIRotate=2;
+		public static double kDRotate=0.5;
 		// Compensate AutoDrive overshoot 
 		public static double AutoDriveRotateOvershoot=7;	// Degrees
 		// Insert delay after each autonomous move to allow

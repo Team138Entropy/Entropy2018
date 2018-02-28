@@ -13,89 +13,61 @@ public class AutonomousCommand extends CommandGroup {
 		String sameSide;
 		String oppositeSide;
 		
+		
 		// Test Modes
 		if (autoMode == "test")
 		{
 			
-//			depositCubeScale("left", "left");
+			depositCubeScale("left", "left");
 		//	depositCubeRightScale("right");
 //			depositCubeLeftSwitch("center");
 //			depositCubeRightSwitch("center");
-			depositCubeRightSwitch("right");
-			/*
-			// Scale on left
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
-		//	addParallel(new AutoDrive(Constants.rotateToScore));
-			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
-			// Use vision to drive to scale?
-			addSequential(new StartRelease());
-			addSequential(new Wait(Constants.releaseDelay));
-			addParallel(new CloseGrasper());
-			addParallel(new ElevateToTarget(ElevatorTarget.etAcquire));
-		//	addParallel(new AutoDrive(Constants.autoSpeed, -50)); // backup 50 CM
-			addSequential(new CompleteRelease());
-			addSequential(new CloseGrasper());
-			*/
-
-/*			addSequential(new AutoDrive(1, 200));
-			addSequential(new AutoDrive(180));
-			addSequential(new AutoDrive(1, 200));
-			addSequential(new AutoDrive(-180));
-			addSequential(new AutoDrive(1, 200));
-			*/
+//			depositCubeRightSwitch("right");
 		}
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData
 		if (autoMode == "auto")
 		{
-			SmartDashboard.putString("Game Data",gameData);
-			if (startPos == "left") {
+			if (startPos.equals("left")) {
 				
 				sameSide = "left";
 				oppositeSide = "right";
 				
-				if (gameData == "LLL" || gameData == "RLR") {
+				if (gameData.equals("LLL") || gameData.equals("RLR") ) 
 					depositCubeScale(startPos, sameSide);
-				}
 				
-				if (gameData == "RRR") {
+				if (gameData.equals("RRR") ) 
 					crossAutoLine();
-				}
-				
-				if (gameData == "LRL") {
+								
+				if (gameData.equals("LRL") )
 					depositCubeSwitch(startPos, sameSide);
-				}
-			}
-			
-			if (startPos == "middle") {
-				
-				if (gameData == "LLL" || gameData == "LRL") {
-					// Left Switch
-					depositCubeSwitch(startPos, "left");
-				}
-				
-				if (gameData == "RRR" || gameData == "RLR") {
-					// Right Switch
-					depositCubeSwitch(startPos, "right");
-				}
 				
 			}
 			
-			if (startPos == "right") {
+			if (startPos.equals( "middle") ) {
+				
+				if (gameData.equals("LLL") || gameData.equals("LRL") ) 					
+					depositCubeSwitch(startPos, "left"); // Left Switch
+								
+				if (gameData.equals("RRR") || gameData.equals( "RLR") ) 					
+					depositCubeSwitch(startPos, "right"); // Right Switch
+			
+			}
+			
+			if (startPos.equals("right") ) {
 				
 				sameSide = "right";
 				oppositeSide = "left";
 				
-				if (gameData == "LLL") {
+				if (gameData.equals("LLL") ) {
 					crossAutoLine();
 				}
 				
-				if (gameData == "RRR" || gameData == "LRL") {
+				if (gameData.equals("RRR") || gameData.equals("LRL") ) {
 					depositCubeScale(startPos, sameSide);
 				}
 				
-				if (gameData == "RLR") {
+				if (gameData.equals( "RLR") ) {
 					depositCubeSwitch(startPos, sameSide);
 				}
 			}
