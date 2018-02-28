@@ -1,20 +1,20 @@
 package org.usfirst.frc.team138.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.Sensors;
+import org.usfirst.frc.team138.robot.Utility;
+import org.usfirst.frc.team138.robot.Constants;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDOutput;
 
-public class AutoDrive extends Command implements PIDOutput{
+public class AutoDrive extends Command {
 	
 	boolean isDone = false;
-	PIDController turnController;
 	double rotateToAngleRate = 0.0;
-	double lastRightDistance = 0.0;
 	double lastLeftDistance = 0.0;
+	double lastRightDistance = 0.0;
 	int stallCounter = 0;
 	boolean areMotorsStalled = false;
 	boolean rotateInPlace;
@@ -22,149 +22,151 @@ public class AutoDrive extends Command implements PIDOutput{
 	double driveDistance = 0.0;
 	double targetAngle = 0.0;
 	boolean arcTurn = false;
+	double timer=0;
+	double MinDistance=.25*.025*Constants.AutoDriveSpeed*Constants.Meters2CM; // centimeter (limit to detect stall)
 	
-	//************************************************
-	//PID CONSTANTS
-
-	static double kPRotate = 0.012;
-	static double kPDrive = 0.2;
-	static double kI = 0.0;
-	static double kD = 0.0;
 
 	//*******************************************
 	
 	//Degree Tolerance
 	//within how many degrees will you be capable of turning
 	static double ToleranceDegrees = 1.0;
-	
+	double IntegralError=0;
 	/**
 	 * Drives straight for the specified distance
-	 * @param speedArg The speed, from -1.0 to 1.0, the robot will drive. Negative speeds go backwards
-	 * @param distanceArg The distance to drive, in inches. Uses the absolute value of encoders, so use positive distances
+	 * @param speedArg The speed, from 0 to full in Meters/sec, the robot will drive. 
+	 * Negative distance drives backwards
+	 * @param distanceArg The distance to drive, in CM (centimeters). 
 	 */
 	public AutoDrive(double speedArg, double distanceArg){
 		requires(Robot.drivetrain);
 		rotateInPlace = false;
-		driveSpeed = speedArg;
+		driveSpeed = Math.abs(speedArg)*Constants.AutoDriveSpeed;
 		driveDistance = distanceArg;
-		turnController = new PIDController(kPDrive, kI, kD, Sensors.gyro, this);
+		IntegralError=0;
+		timer=0;
+		stallCounter=0;
 	}
 	
 	/**
 	 * Rotates to an angle
-	 * @param angle Angle, in degrees, to turn to. Negative angles turn left, positive angles turn right
+	 * @param angle Angle, in degrees, to turn to. Negative angles turn right, positive angles turn left
+	 * ie:  right hand rule convention
 	 */
 	public AutoDrive(double angle){
 		requires(Robot.drivetrain);
 		rotateInPlace = true;
+		IntegralError=0;
+		if (angle>0)
+			angle=angle-Constants.AutoDriveRotateOvershoot;
+		else
+			angle=angle+Constants.AutoDriveRotateOvershoot;
 		targetAngle = angle;
-		turnController = new PIDController(kPRotate, kI, kD, Sensors.gyro, this);
+		stallCounter=0;
 	}
 	
-	/**
-	 * Drives the robot the specified number of inches to the side while rotating to the angle specified !!TESTING!!
-	 * @param speed The speed, from -1.0 to 1.0, the robot will drive. Negative speeds go backwards
-	 * @param angle Angle, in degrees, to turn to. Negative angles turn left, positive angles turn right
-	 * @param offsetInches Number of inches the robot is off center of the target
-	 */
-	public AutoDrive(double speed, double angle, double offsetInches)
-	{
-		requires(Robot.drivetrain);
-		rotateInPlace = false;
-		arcTurn = true;
-		targetAngle = angle;
-		driveSpeed = speed;
-		// Arc length
-		driveDistance = 2 * Math.PI * angle / 360 * offsetInches / Math.sin(angle);
-		
+	
+	private double leftDistance() {
+		// Return leftDistance from left encoder in centimeters
+		// motors and encoders run opposite to robot convention
+		// Invert encoder readings here so that distance increases
+		// when robot moving forward.
+		return -1*Constants.Meters2CM*Sensors.getLeftDistance();
+	}
+	private double rightDistance() {
+		// Return rightDistance from right encoder in centimeters
+		return -1*Constants.Meters2CM*Sensors.getRightDistance();
 	}
 
 	public void initialize() {
+		// reset gyro and encoders are start of every autonomous move
+		// ie: sequential moves are relative to previous position.
 		Sensors.resetEncoders();
-		Sensors.gyro.reset();
-		
-		turnController.setAbsoluteTolerance(ToleranceDegrees);         
-	    turnController.setOutputRange(-1.0, 1);
-	    turnController.setContinuous(true);
-		turnController.setInputRange(360.0, 360.0);
-		if (rotateInPlace)
-		{
-			turnController.setSetpoint(targetAngle);
-		}
-		else 
-		{
-			turnController.setSetpoint(0);
-		}
-		turnController.enable();
+		Sensors.gyro.reset();	
+		timer=0;
+		stallCounter=0;
 	}
 
 	public void execute() {
-		if (areMotorsStalled) 
+		boolean moveComplete; // true when move complete
+		double rate; // rate of rotation			
+		double avgDistance=.5*(leftDistance()+rightDistance());
+		// Stalled?
+		double distanceRemaining=Math.abs(driveDistance)-Math.abs(avgDistance);
+		/*
+		if (Math.abs(lastLeftDistance-leftDistance())<MinDistance || 
+				Math.abs(lastRightDistance-rightDistance())<MinDistance ) 
 		{
-			Robot.drivetrain.drive(0.0, 0.0);
-			System.out.println("Stalled");
+			if (stallCounter == 50) 
+			{
+				Robot.drivetrain.drive(0.0, 0.0);
+				areMotorsStalled = true;
+				isDone = true;
+			}
+			stallCounter++;
+			SmartDashboard.putString("Stall:","Stalled");
 		}
 		else
+		*/
+		
 		{
-			boolean result;
+			stallCounter = 0;
+			SmartDashboard.putString("Stall:","  ");
 			if (rotateInPlace)
 			{
+				// Angular difference between target and current heading
+				double diffAngle=targetAngle-Sensors.gyro.getAngle();
 				if (targetAngle > 0)
-				{
-					result = Sensors.gyro.getAngle() >= targetAngle;
-				}
+					moveComplete =(diffAngle<=0);
 				else
-				{
-					result = Sensors.gyro.getAngle() <= targetAngle;
-				}
+					moveComplete =(diffAngle>=0);
+				IntegralError+=diffAngle*.025;
+				rate=-Constants.kPRotate*Sensors.gyro.getAngle()+IntegralError*Constants.kIRotate;
+				// Scale to Meters/second
+				rotateToAngleRate=Utility.limitValue(rate,-1,1)*Constants.AutoDriveRotateRate;	
+				driveSpeed=0;
 			}
 			else
 			{
-				result = (Math.abs(Sensors.getLeftDistance()) >= driveDistance) || (Math.abs(Sensors.getRightDistance()) >= driveDistance);
+				// move straight
+				rotateToAngleRate=0;
+				// Check distance-to-go
+				// Are we there yet?
+				moveComplete = (Math.abs(driveDistance) - Math.abs(avgDistance) < Constants.AutoDriveStopTolerance);
 			}
-			if (result)
+			if (moveComplete)
 			{
 				Robot.drivetrain.drive(0.0, 0.0);
 				isDone = true;
-			}		
-			else
-			{
-				if (arcTurn)
-				{
-					turnController.setSetpoint(targetAngle * 
-							(Math.abs(Sensors.getLeftDistance()) + Math.abs(Sensors.getRightDistance())) / 2
-							/ driveDistance);
-				}
-				Robot.drivetrain.drive(driveSpeed, rotateToAngleRate);
-				
-				if (lastRightDistance == Sensors.getRightDistance() || lastLeftDistance == Sensors.getLeftDistance()) 
-				{
-					if (stallCounter == 25) 
-					{
-						turnController.setSetpoint(2);
-						//isDone = true;
-						//areMotorsStalled = true;
-					}
-					if(stallCounter == 50)
-					{
-						isDone = true;
-					}
-					stallCounter++;
-				}
-				else
-				{
-					stallCounter = 0;
-				}	
-				lastRightDistance = Sensors.getRightDistance();
-				lastLeftDistance = Sensors.getLeftDistance();
-				
-				SmartDashboard.putNumber("Rotate to Angle Rate", rotateToAngleRate);
+			}
+			else {
+				double speed;
+				// Control deceleration to stop based on AutoDriveAccel limit
+				// Approaching stop: Speed= sqrt(2*Accel*distance2Go), otherwise: driveSpeed
+				distanceRemaining=Math.max(0,Math.abs(distanceRemaining))/Constants.Meters2CM; // Meters
+				speed=Math.min(Math.sqrt(2*Constants.AutoDriveAccel*Math.abs(driveSpeed*distanceRemaining)),driveSpeed);
+				// speed has sign of driveDistance
+				speed=Robot.drivetrain.limitDriveAccel(Math.signum(driveDistance)*speed);
+				rotateToAngleRate=Robot.drivetrain.limitRotateAccel(rotateToAngleRate);
+
+				Robot.drivetrain.drive(speed, rotateToAngleRate);
 			}
 		}
+		// update distance moved (used to detect stalled motors)
+		lastLeftDistance = leftDistance();
+		lastRightDistance = rightDistance();
 	}
 
 	public boolean isFinished() {
-		return isDone;
+		// Insert delay after motion complete before command is considered completer
+		// allows time for motion to settle before resetting sensors at start of next
+		// command
+		if (isDone && (timer++>Constants.AutoDrivePause)) {
+			Robot.drivetrain.Relax();
+			return true;
+		}
+		else
+			return false;
 	}
 
 	public void end() {
@@ -173,28 +175,5 @@ public class AutoDrive extends Command implements PIDOutput{
 	protected void interrupted() {
 	}
 	
-	public void pidWrite(double output) {
-		output = -output;
-		if (rotateInPlace)
-		{
-			double minSpeed = 0.8;
-			if (output > minSpeed || output < -minSpeed)
-			{
-				rotateToAngleRate = output;
-			}
-			else if (targetAngle > 0)
-			{
-				rotateToAngleRate = -minSpeed;
-			}
-			else
-			{
-				rotateToAngleRate = minSpeed;
-			}
-		}
-		else
-		{
-			rotateToAngleRate =  output;
-		}		
-	}
 	
 }

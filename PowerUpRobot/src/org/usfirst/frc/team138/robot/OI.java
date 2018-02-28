@@ -72,25 +72,50 @@ public final class OI {
     // Operator Stick
     static Button elevateToAcquireButton = new JoystickButton(operatorStick, nykoButton1);
     static Button elevateToSwitchButton = new JoystickButton(operatorStick, nykoButton2);
-    static Button elevateToScaleButton = new JoystickButton(operatorStick, nykoButton3);
+    static Button elevateToScaleButton = new JoystickButton(operatorStick, nykoButton4);
+    static Button acquireButton = new JoystickButton(operatorStick, nykoLeftTrigger);
+    static Button releaseButton = new JoystickButton(operatorStick, nykoRightTrigger);
+    static Button openGrasperButton = new JoystickButton(operatorStick, nykoLeftBumper);
+    static Button closeGrasperButton = new JoystickButton(operatorStick, nykoRightBumper);
+    static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
+    static Button cancelElevatorMoveButton = new JoystickButton(operatorStick, nykoRightStick);
     
     static double lastX=0;
     static double LastY=0;
     
     public OI(){
-    	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.etAquire));
+    	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.etAcquire));
     	elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.etSwitch));
     	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.etScale));
+    	acquireButton.whenPressed(new StartAcquire());
+    	acquireButton.whenReleased(new CompleteAcquire());
+    	releaseButton.whenPressed(new StartRelease());
+    	releaseButton.whenReleased(new CompleteRelease());
+    	openGrasperButton.whenPressed(new OpenGrasper());
+    	closeGrasperButton.whenPressed(new CloseGrasper());
+    	homeElevatorButton.whileHeld(new HomeElevator());
+    	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
     }
+    
     
 	public static double getMoveSpeed()
 	{
-		return driverStick.getRawAxis(xboxLeftYAxis);
+		// joystick values are opposite to robot directions
+		double moveSpeed=-driverStick.getRawAxis(xboxLeftYAxis);
+		// Apply thresholds to joystick positions to eliminate
+		// creep motion due to non-zero joystick value when joysticks are 
+		// "centered"
+		if (Math.abs(moveSpeed) < Constants.CloseLoopJoystickDeadband)
+			moveSpeed=0;
+		return moveSpeed;
 	}
 	
 	public static double getRotateSpeed()
 	{
-		return driverStick.getRawAxis(xboxLeftXAxis);
+		double rotateSpeed=-driverStick.getRawAxis(xboxRightXAxis);
+		if (Math.abs(rotateSpeed) < Constants.CloseLoopJoystickDeadband)
+			rotateSpeed=0;
+		return rotateSpeed;
 	}
 	
 	public static double getClimbSpeed()
@@ -98,78 +123,34 @@ public final class OI {
 		return operatorStick.getRawAxis(nykoLeftYAxis);
 	}
 	
+	// Return the jog direction: 1 for up, -1 for down
+	public static int getJogDirection()
+	{
+		// POV hat returns 0 for up
+		if (operatorStick.getPOV() == 0)
+		{
+			return 1;
+		}
+		// POV hat returns 180 for down
+		else if (operatorStick.getPOV() == 180)
+		{
+			return -1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	
 	public static boolean isReverse() {
 		return driverStick.getRawButton(xboxB);
 	}
 	
 	public static boolean isFullSpeed() {
-		return driverStick.getRawButton(xboxA);
+		return driverStick.getRawAxis(xboxRightTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
 	}
 	
 	
-	public static double [] getFieldCommand()
-	{
-		double Magnitude, Direction, x, y;
-		double [] result = new double[2];
-		// Coeff for cubic polynomial map btwn joystick and magnitude
-		/*
-		double A=.3;
-		double B=.25;
-		double C=-.1852;
-		double D=.85734;*/
-			// Linear, with offset
-		double A=.1;
-		double B=1;
-		double C=0;
-		double D=0;
-		
-		
-		double z;
-
-		y=-driverStick.getRawAxis(xboxLeftYAxis); // Inverted Y axis so "fwd" = +90 degrees
-		x=driverStick.getRawAxis(xboxLeftXAxis);
-		Magnitude=Math.sqrt(x*x+y*y);
-		// Apply deadband to avoid "creep" when joystick
-		// does not return "0" at center position.
-		if (Magnitude<Constants.joystickDeadband)
-			Magnitude=0;
-		else {		
-			//
-			// Cubic Polynomial maps between raw Joystick and Magnitude
-			z=Magnitude-Constants.joystickDeadband;		
-			Magnitude=A+B*z+C*z*z+D*z*z*z;		
-			// Normalize to maximum of +/-1
-			if (Math.abs(Magnitude)>1)
-				Magnitude = Magnitude/Math.abs(Magnitude);
-		}
-		
-		result[0]=Magnitude;
-		
-		// Filter joystick coordinates using simple exponential filter
-		lastX=Constants.rotateAlpha*x + (1-Constants.rotateAlpha)*lastX;
-		LastY=Constants.rotateAlpha*y + (1-Constants.rotateAlpha)*LastY;
-		// Direction, in degrees, in range +/- 180
-		Direction=180/Math.PI*Math.atan2(LastY, lastX);
-		// Joystick "0" degrees is to the "right", so that
-		// angles are reported in conventional Cartesian coordinate system
-		// with +X to the right and +Y is ahead (forward relative to operator).
-		result[1]=Direction;
-		// Note - must manage offset between gyro heading (raw heading reported as "0"
-		// when robot starts and is facing in the +Y in Field (Cartesian) coordinates.
-		// The offset between gyro and operator (joystick) is managed in the Sensors class.
-		
-		return result;
-		
-	}
-	
-
-	public static boolean isZeroTurn()
-	{
-		boolean zt;
-		// Execute a zero-turn (rotate about robot center) if zero-turn button is pressed
-		zt=driverStick.getRawButton(xboxX) | driverStick.getRawButton(xboxY);
-		return zt;
-	}
 	    
 } // :D)))
 
