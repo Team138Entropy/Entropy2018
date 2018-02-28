@@ -1,23 +1,17 @@
 package org.usfirst.frc.team138.robot.commands;
 
 import org.usfirst.frc.team138.robot.Robot;
-import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
-
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ElevateToAlternateTarget extends Command {
 	
-	private ElevatorTarget elevatorTarget;
-	
 	public ElevateToAlternateTarget()
 	{
 		requires(Robot.elevator);
-		elevatorTarget = Robot.elevator.getAlternateElevatorTarget();
 	}
 	
-
 	protected void initialize() {
-		Robot.elevator.Elevate(elevatorTarget);
+		Robot.elevator.ElevateToAlternateTarget();
 	}
 
 	protected void execute() {

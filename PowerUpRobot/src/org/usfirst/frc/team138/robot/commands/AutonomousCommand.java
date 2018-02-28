@@ -1,204 +1,237 @@
 package org.usfirst.frc.team138.robot.commands;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import org.usfirst.frc.team138.robot.Constants;
-
-// BedfordBase branch started 2017-03-25 - jmcg
-// 1. Increase "advance to neutral zone" distance to 10 feet"
-// 2. Mirror "advance to neutral zone" for left starting position
-// 3. Mark which moves have been tested with competition robot on practice field
-// 4. Mirror dialed-in values from "Red" alliance positions to corresponding "Blue" positions
-// note that values from red-left end up in blue-right while red-right end up in blue-left
-// except for negating the turn angles
+import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonomousCommand extends CommandGroup {
-	public AutonomousCommand(String team, String startPos, String autoMode, String gameData){
-		final String ourSwitch = gameData.valueOf(0);
-		final String scale = gameData.valueOf(1);
-		final String theirSwitch = gameData.valueOf(2);
+
+	public AutonomousCommand(String team, String startPos, String autoMode, String gameData) {
 		
-		// Test Mode
+		String sameSide;
+		String oppositeSide;
+		
+		// Test Modes
 		if (autoMode == "test")
 		{
-			addSequential(new AutoDrive(5));
-			addSequential(new AutoDrive(5));
+			
+//			depositCubeScale("left", "left");
+		//	depositCubeRightScale("right");
+//			depositCubeLeftSwitch("center");
+//			depositCubeRightSwitch("center");
+			depositCubeRightSwitch("right");
+			/*
+			// Scale on left
+			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
+		//	addParallel(new AutoDrive(Constants.rotateToScore));
+			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
+			// Use vision to drive to scale?
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addParallel(new CloseGrasper());
+			addParallel(new ElevateToTarget(ElevatorTarget.etAcquire));
+		//	addParallel(new AutoDrive(Constants.autoSpeed, -50)); // backup 50 CM
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
+			*/
+
+/*			addSequential(new AutoDrive(1, 200));
+			addSequential(new AutoDrive(180));
+			addSequential(new AutoDrive(1, 200));
+			addSequential(new AutoDrive(-180));
+			addSequential(new AutoDrive(1, 200));
+			*/
 		}
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData
 		if (autoMode == "auto")
 		{
+			SmartDashboard.putString("Game Data",gameData);
 			if (startPos == "left") {
 				
-				if (gameData == "LLL") {
-					// Scale
-					
-					addSequential(new AutoDrive( 0.8, Constants.leftAngleTwenty, Constants.distanceLeftScale));
-					addSequential(new AutoDrive(Constants.rightAngleTwenty));
-					addSequential(new Wait(Constants.oneSecond));
-					/* 
-					 * 
-					 * Drive forward veering slightly left
-					 * Face right
-					 * Wait
-					 * Raise arm to highest position
-					 * Wait
-					 * Release cube
-					 * 
-					 */
-					
+				sameSide = "left";
+				oppositeSide = "right";
+				
+				if (gameData == "LLL" || gameData == "RLR") {
+					depositCubeScale(startPos, sameSide);
 				}
 				
 				if (gameData == "RRR") {
-					// Drive forward ~11 feet
-					
-					addSequential(new AutoDrive( 0.8, 132));
-					
+					crossAutoLine();
 				}
 				
 				if (gameData == "LRL") {
-					// Switch
-					
-					/*
-					 * 
-					 * Drive forward veering slightly left
-					 * Wait
-					 * Raise arm to lowest position
-					 * Wait
-					 * Release cube
-					 * 
-					 */
-					
+					depositCubeSwitch(startPos, sameSide);
 				}
 			}
 			
 			if (startPos == "middle") {
 				
-				if (gameData == "LLL") {
-					// Switch
-					
-					/*
-					 *
-					 * Drive forward veering farther left
-					 * Turn right
-					 * Wait
-					 * Raise arm to lowest position
-					 * Wait
-					 * Release cube
-					 * 
-					 */
-					
+				if (gameData == "LLL" || gameData == "LRL") {
+					// Left Switch
+					depositCubeSwitch(startPos, "left");
 				}
 				
-				if (gameData == "RRR") {
-					// Switch
-					
-					/*
-					 *
-					 * Drive forward veering farther right
-					 * Turn left
-					 * Wait
-					 * Raise arm to lowest position
-					 * Wait
-					 * Release cube
-					 * 
-					 */
-					
+				if (gameData == "RRR" || gameData == "RLR") {
+					// Right Switch
+					depositCubeSwitch(startPos, "right");
 				}
 				
-				if (gameData == "RLR") {
-					// Switch
-					
-					/*
-					 *
-					 * Drive forward veering farther right
-					 * Turn left
-					 * Wait
-					 * Raise arm to lowest position
-					 * Wait
-					 * Release cube
-					 * 
-					 */
-					
-				}
-				
-				if (gameData == "LRL") {
-					// Switch
-					
-					/*
-					 *
-					 * Drive forward veering farther left
-					 * Turn right
-					 * Wait
-					 * Raise arm to lowest position
-					 * Wait
-					 * Release cube
-					 * 
-					 */
-					
-				}
 			}
 			
 			if (startPos == "right") {
 				
+				sameSide = "right";
+				oppositeSide = "left";
+				
 				if (gameData == "LLL") {
-					// Drive forward ~11 ft
-					
-					addSequential(new AutoDrive(0.8, 132));
-					
+					crossAutoLine();
 				}
 				
-				if (gameData == "RRR") {
-					// Scale
-					
-					/*
-					 *
-					 * Drive forward veering slightly right
-					 * Turn left
-					 * Wait
-					 * Raise arm to highest position
-					 * Wait
-					 * Release cube
-					 * 
-					 */
-						
+				if (gameData == "RRR" || gameData == "LRL") {
+					depositCubeScale(startPos, sameSide);
 				}
 				
 				if (gameData == "RLR") {
-					// Scale
-					
-					/*
-					 *
-					 * Drive forward veering farther left
-					 * Turn right
-					 * Drive forward
-					 * Turn right
-					 * Wait
-					 * Raise arm to highest position
-					 * Wait
-					 * Release cube
-					 * 
-					 */
-					
-				}
-				
-				if (gameData == "LRL") {
-					// Switch
-					
-					/*
-					 *
-					 * Drive forward veering farther left
-					 * Turn right
-					 * Wait
-					 * Raise arm to lowest position
-					 * Wait
-					 * Release cube
-					 * 
-					 */
-				
+					depositCubeSwitch(startPos, sameSide);
 				}
 			}
+		}
+	}
+
+	private void crossAutoLine() {
+		// "Off" position
+		addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceBaseLine));
+	}
+
+	private void depositCubeScale (String startingPosition, String side)
+	{
+		if (side == "left") 
+		{
+			depositCubeLeftScale(startingPosition);
+		}
+		else
+		{
+			depositCubeRightScale(startingPosition);
+		}
+	}
+	
+	private void depositCubeLeftScale(String startingPosition)
+	{
+		if (startingPosition == "left") {
+			// Scale on left
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
+			addParallel(new AutoDrive(Constants.rotateToScore));
+			addSequential(new ElevateToTarget(ElevatorTarget.SCALE));
+			// Use vision to drive to scale?
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
+		}
+		else if (startingPosition == "right")
+		{
+			// Not yet
+		}
+	}
+	
+	private void depositCubeRightScale(String startingPosition)
+	{
+		if (startingPosition == "right") {
+			// Scale on right
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
+			addParallel(new AutoDrive(-1*Constants.rotateToScore));
+			addSequential(new ElevateToTarget(ElevatorTarget.SCALE));
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
+		}
+		else if (startingPosition == "left")
+		{
+			// Not yet
+		}
+	}
+	
+	private void depositCubeSwitch (String startingPosition, String side)
+	{
+		if (side == "left") 
+		{
+			depositCubeLeftSwitch(startingPosition);
+		}
+		else
+		{
+			depositCubeRightSwitch(startingPosition);
+		}
+	}
+	
+	private void depositCubeLeftSwitch(String startingPosition)
+	{
+		if (startingPosition == "left") {
+			// Switch on left
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
+			addSequential(new AutoDrive(-Constants.rotateToScore));
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());	
+			addSequential(new CloseGrasper());
+		}
+		
+		else if (startingPosition == "right")
+		{
+			// Nothing here, this is a very very bad idea
+		}
+		else
+		{
+			// Center start
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addSequential(new AutoDrive(Constants.autoSpeed, 92)); // TODO: Extract to constants
+			addSequential(new AutoDrive(50.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(-140.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, 183.88)); // TODO: Extract to constants
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
+		}
+	}
+	
+	private void depositCubeRightSwitch(String startingPosition)
+	{
+		if (startingPosition == "right") {
+			// Switch on right
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
+			addSequential(new AutoDrive(Constants.rotateToScore));
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
+		}
+		else if (startingPosition == "left")
+		{
+			// Nothing here, this is a very very bad idea
+		}
+		else
+		{
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
+			addSequential(new AutoDrive(-55.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(145.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, 137)); // TODO: Extract to constants
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
+			// Center start
 		}
 	}
 }

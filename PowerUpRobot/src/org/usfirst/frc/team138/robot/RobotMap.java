@@ -22,7 +22,7 @@ public class RobotMap {
 	
 	// Pneumatic Control Module
 	public final static int SOLENOID_GRASPER_PORT  = 0;
-	public final static int SOLENOID_WRIST_PORT    = 2;
+	public final static int SOLENOID_WRIST_PORT    = 1;
 
 
 	

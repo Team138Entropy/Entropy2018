@@ -30,17 +30,21 @@ public class Sensors {
 		Robot.drivetrain.frontLeftTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		Robot.drivetrain.frontRightTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
+        gyro = new ADXRS450_Gyro();
+        gyro.calibrate();
+        gyro.reset();
+
         
 	}
 	
 	public static double getLeftDistance() {
 		// In METERS
-		return Robot.drivetrain.frontLeftTalon.getSelectedSensorPosition(0)*Constants.MetersPerPulse * Constants.LeftDriveEncoderPolarity;
+		return -Robot.drivetrain.frontLeftTalon.getSelectedSensorPosition(0)*Constants.MetersPerPulse;
 	}
 	
 	public static double getRightDistance() {
 		// In METERS
-		return Robot.drivetrain.frontRightTalon.getSelectedSensorPosition(0)*Constants.MetersPerPulse * Constants.RightDriveEncoderPolarity;
+		return -Robot.drivetrain.frontRightTalon.getSelectedSensorPosition(0)*Constants.MetersPerPulse;
 	}
 	
 	public static void resetEncoders() {
@@ -49,13 +53,14 @@ public class Sensors {
 	}	
 	
 	public static void updateSmartDashboard(){
-		SmartDashboard.putNumber("Left Pos", getLeftDistance());
-		SmartDashboard.putNumber("Right Pos", getRightDistance());
-		SmartDashboard.putNumber("Position", Robot.elevator._elevatorMotor.getSelectedSensorPosition(0));     
-		SmartDashboard.putNumber("Voltage", Robot.elevator._elevatorMotor.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Velocity", Robot.elevator._elevatorMotor.getSelectedSensorVelocity(0));
-		SmartDashboard.putBoolean("Lower Limit SW", Robot.elevator._lowerLimitSwitch.get());
-		SmartDashboard.putBoolean("Upper Limit SW", Robot.elevator._upperLimitSwitch.get());
+		SmartDashboard.putNumber("Left Pos(M)", getLeftDistance());
+		SmartDashboard.putNumber("Right Pos(M)", getRightDistance());
+		SmartDashboard.putNumber("Elev Position", Robot.elevator._elevatorMotor.getSelectedSensorPosition(0));     
+		SmartDashboard.putNumber("Elev Velocity", Robot.elevator._elevatorMotor.getSelectedSensorVelocity(0));
+		
+		SmartDashboard.putNumber("Heading", gyro.getAngle());
+		SmartDashboard.putNumber("Left Velocity",-Robot.drivetrain.frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
+		SmartDashboard.putNumber("Right Velocity",-Robot.drivetrain.frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 
 				
 		

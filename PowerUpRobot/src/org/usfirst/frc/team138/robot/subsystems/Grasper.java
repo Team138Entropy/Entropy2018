@@ -15,7 +15,7 @@ public class Grasper extends Subsystem{
 	// These are some class variables
 	
 	private Solenoid _grasperSolenoid = new Solenoid(RobotMap.SOLENOID_GRASPER_PORT);
-	private Solenoid _wristSolenoid;// = new Solenoid(RobotMap.SOLENOID_WRIST_PORT);
+	private Solenoid _wristSolenoid = new Solenoid(RobotMap.SOLENOID_WRIST_PORT);
 	
 	private WPI_TalonSRX _leftRollerTalon = new WPI_TalonSRX(RobotMap.LEFT_CUBE_CAN_GRASPER_PORT);
 	private WPI_TalonSRX _rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
@@ -43,13 +43,12 @@ public class Grasper extends Subsystem{
 		return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
 	}
     
-    private void raiseWrist() {
+    public void raiseWrist() {
     	_wristSolenoid.set(Constants.wristSolenoidActiveRaised);
     }
     
-    private void lowerWrist() {
+    public void lowerWrist() {
     	_wristSolenoid.set(!Constants.wristSolenoidActiveRaised);
-    	
     }
 	
 	public boolean wristIsUp() {
@@ -58,7 +57,6 @@ public class Grasper extends Subsystem{
 	
 	private void acquireRollers() {
 		_rollerSpeedController.set(Constants.aquireSpeed);
-
 	}
 	
 	private void deployRollers() {
@@ -81,20 +79,18 @@ public class Grasper extends Subsystem{
 	public void CompleteAcquire() {
 		SmartDashboard.putString("Acquire Release", "Complete Acquire");
 		holdRollers();
-		//raiseWrist();
+		raiseWrist();
 	}
 
 	public void StartRelease() {
 		SmartDashboard.putString("Acquire Release","Start Release");
-		//[lowerWrist();
+		lowerWrist();
 		deployRollers();
-		
 	}
 	
 	public void CompleteRelease() {
 		SmartDashboard.putString("Acquire Release","Complete Release");
 		stopRollers();
 		openGrasper();
-		
 	}
 }

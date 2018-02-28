@@ -6,6 +6,7 @@ import org.usfirst.frc.team138.robot.commands.JogElevator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -46,12 +47,14 @@ public class Elevator extends Subsystem{
 		SCALE,			// Deposit Lower Scale
 		UPPER_SCALE		// Deposit Upper Scale
 	}
+	
+	private static int _count = 0;
 
 	private int _direction = 0;		// 0: not moving to target, -1 or 1 moving to target in that direction
 	
 	private double _targetPosition = 0.0;
 	private double _currentPosition = 0.0;
-	private ElevatorTarget _currentElevatorTarget = ElevatorTarget.NONE;
+	private ElevatorTarget _alternateElevatorTarget = ElevatorTarget.NONE;
 	
 	private int _currentJogDirection = 0;
 	
@@ -79,6 +82,19 @@ public class Elevator extends Subsystem{
 		_elevatorMotor.config_kI(kElevatorPIDLoopIndex, _liftKi, kElevatorTimeoutMs);
 		_elevatorMotor.config_kD(kElevatorPIDLoopIndex, _liftKd, kElevatorTimeoutMs);
 
+		// Set current limit on elevator motor Talon
+		// current limit applies to current drawn from battery
+		// limit of 20 amps implies 12*20 = 240 Watts max power drawn from
+		// battery.  Actual motor current at stall is sqrt(Watts/R)
+		// 775 Motor resistance ~0.15 Ohms.  So 20 Amps input equates to 40 Amps in motor
+		// at Stall.
+		_elevatorMotor.configContinuousCurrentLimit(20, 5000);
+		_elevatorMotor.configPeakCurrentLimit(30, 2000);
+		_elevatorMotor.enableCurrentLimit(true);
+		
+		// Set brake mode to hold at position
+		_elevatorMotor.setNeutralMode(NeutralMode.Brake);		
+		
 		// Integral control only applies when the error is small; this avoids integral windup
 		_elevatorMotor.config_IntegralZone(0, 200, kElevatorTimeoutMs);
 
@@ -165,7 +181,6 @@ public class Elevator extends Subsystem{
 	// Start jogging the elevator
 	public void JogElevator(int jogDirection, double jogSpeed)
 	{
-		_currentElevatorTarget = ElevatorTarget.JOG;
 		_currentJogDirection = jogDirection;
 		_elevatorMotor.set(ControlMode.PercentOutput, jogSpeed * jogDirection);
 	}
@@ -173,22 +188,22 @@ public class Elevator extends Subsystem{
 	// Start homing the elevator
 	public void HomeElevator()
 	{
-		_currentElevatorTarget = ElevatorTarget.HOME;
 		_elevatorMotor.set(ControlMode.PercentOutput, Constants.elevatorHomingSpeed);
 	}
 	
 	// Elevate to a specific target position
 	public void Elevate (ElevatorTarget target) {
-		_currentElevatorTarget = target;
-		
+		_count++;
 		if (target == ElevatorTarget.NONE)
 		{
 			StopMoving();
 		}
 		else
 		{		
+		if (Constants.practiceBot) { // These numbers need updating
 			switch (target) {
 			case ACQUIRE:
+				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
 				_targetPosition = 0;	// Acquire Height is Cube Level 1
 				break;
 			case EXCHANGE:
@@ -197,12 +212,44 @@ public class Elevator extends Subsystem{
 				break;
 			case CUBE_LEVEL_2:
 				_targetPosition = 900;	// Alternate Switch position is Cube Level 2
-										// TODO: determine real position
 				break;
+										// TODO: determine real position
 			case SWITCH:
-				_targetPosition = 1100; // Switch height is also Cube Level 3
+				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
+				_targetPosition = 1200; // Switch height is also Cube Level 3
 				break;
 			case SCALE:
+				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
+				_targetPosition = 2500;	// Default scale position is lower scale
+				break;
+			case UPPER_SCALE:
+				_targetPosition = 2700;	// Alternate scale position is upper scale
+			default:
+				// Error 
+				break;
+			}
+		}
+		else
+		{
+			switch (target) {
+			case ACQUIRE:
+				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+				_targetPosition = 0;	// Acquire Height is Cube Level 1
+				break;
+			case EXCHANGE:
+				_targetPosition = 500;	// Alternate Acquire position is Exchange
+										//TODO: determine real position
+				break;
+			case CUBE_LEVEL_2:
+				_targetPosition = 900;	// Alternate Switch position is Cube Level 2
+				break;
+										// TODO: determine real position
+			case SWITCH:
+				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
+				_targetPosition = 1000; // Switch height is also Cube Level 3
+				break;
+			case SCALE:
+				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
 				_targetPosition = 2500;	// Default scale position is lower scale
 				break;
 			case UPPER_SCALE:
@@ -210,9 +257,8 @@ public class Elevator extends Subsystem{
 			default:
 				// Error 
 				break;
-				
 			}
-			
+		}
 			_currentPosition = GetElevatorPosition();
 			
 			if (_targetPosition > _currentPosition) {
@@ -226,29 +272,9 @@ public class Elevator extends Subsystem{
 		}
 	}
 	
-	// Determine the alternate target for the current elevator target
-	public ElevatorTarget getAlternateElevatorTarget()
+	public void ElevateToAlternateTarget()
 	{
-		ElevatorTarget alternateElevatorTarget;
-		
-		switch (_currentElevatorTarget)
-		{
-		case ACQUIRE:
-			alternateElevatorTarget = ElevatorTarget.EXCHANGE;
-			break;
-		case SWITCH:
-			alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
-			break;
-		case SCALE:
-			alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
-			break;
-		default:
-			// No alternate function for any other target
-			alternateElevatorTarget = ElevatorTarget.NONE;
-			break;
-		}
-		
-		return alternateElevatorTarget;
+		Elevate(_alternateElevatorTarget);
 	}
 	
 	// Return the elevator position in encoder counts
@@ -276,8 +302,15 @@ public class Elevator extends Subsystem{
 		SmartDashboard.putNumber("Current Position", GetElevatorPosition());
 		SmartDashboard.putNumber("Target Position", _targetPosition);
 		SmartDashboard.putNumber("Direction", _direction);
-		SmartDashboard.putString("Current Target", ConvertToString(_currentElevatorTarget));
+		SmartDashboard.putString("Alternate Target", ConvertToString(_alternateElevatorTarget));
 		SmartDashboard.putNumber("Jog Direction", _currentJogDirection);
+		SmartDashboard.putNumber("Elevate Output:",_elevatorMotor.getMotorOutputPercent());
+		SmartDashboard.putNumber("Count", _count);
+	}
+	
+	public int getCount()
+	{
+		return _count;
 	}
 	
 	// Stop the homing move, reset the encoder position 
@@ -295,14 +328,12 @@ public class Elevator extends Subsystem{
 	// Cancel the current elevator move, but don't stop the motion immediately
 	// This occurs when another move command is about to start with a new target position
 	public void CancelMove() {
-		_currentElevatorTarget = ElevatorTarget.NONE;
 		_targetPosition = _currentPosition;
 	}
 	
 	// Stop the current elevator move immediately
 	public void StopMoving()
 	{
-		_currentElevatorTarget = ElevatorTarget.NONE;
 		_elevatorMotor.set(ControlMode.PercentOutput, 0);
 		_direction = 0;
 	}

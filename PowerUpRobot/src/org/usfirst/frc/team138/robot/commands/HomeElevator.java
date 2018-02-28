@@ -9,8 +9,7 @@ public class HomeElevator extends Command {
 	public HomeElevator()
 	{
 		requires(Robot.elevator);
-		}
-	
+	}
 
 	protected void initialize() {
 		Robot.elevator.HomeElevator();
