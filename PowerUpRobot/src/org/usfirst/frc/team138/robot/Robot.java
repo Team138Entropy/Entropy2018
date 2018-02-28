@@ -114,11 +114,13 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Starting Position:", startPosChooser);		
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
     	
+		/*
     	Constants.kPRotate=prefs.getDouble("Rotate KP", .02);
     	Constants.kDRotate=prefs.getDouble("Rotate KD", .0);
     	Constants.kIRotate=prefs.getDouble("Rotate KI", .001);
-
     	Constants.AutoDriveRotateOvershoot=prefs.getDouble("AutoDrive Overshoot", 4); // Degrees
+    	*/
+
 
     	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();
