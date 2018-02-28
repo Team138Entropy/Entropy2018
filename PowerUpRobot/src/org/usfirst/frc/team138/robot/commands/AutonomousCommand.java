@@ -13,64 +13,61 @@ public class AutonomousCommand extends CommandGroup {
 		String sameSide;
 		String oppositeSide;
 		
+		
 		// Test Modes
 		if (autoMode == "test")
 		{
 			
-			depositCubeRightSwitch("right");
-			
+			depositCubeScale("left", "left");
+		//	depositCubeRightScale("right");
+//			depositCubeLeftSwitch("center");
+//			depositCubeRightSwitch("center");
+//			depositCubeRightSwitch("right");
 		}
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData
 		if (autoMode == "auto")
 		{
-			SmartDashboard.putString("Game Data",gameData);
-			if (startPos == "left") {
+			if (startPos.equals("left")) {
 				
 				sameSide = "left";
 				oppositeSide = "right";
 				
-				if (gameData == "LLL" || gameData == "RLR") {
+				if (gameData.equals("LLL") || gameData.equals("RLR") ) 
 					depositCubeScale(startPos, sameSide);
-				}
 				
-				if (gameData == "RRR") {
+				if (gameData.equals("RRR") ) 
 					crossAutoLine();
-				}
-				
-				if (gameData == "LRL") {
+								
+				if (gameData.equals("LRL") )
 					depositCubeSwitch(startPos, sameSide);
-				}
-			}
-			
-			if (startPos == "middle") {
-				
-				if (gameData == "LLL" || gameData == "LRL") {
-					// Left Switch
-					depositCubeSwitch(startPos, "left");
-				}
-				
-				if (gameData == "RRR" || gameData == "RLR") {
-					// Right Switch
-					depositCubeSwitch(startPos, "right");
-				}
 				
 			}
 			
-			if (startPos == "right") {
+			if (startPos.equals( "middle") ) {
+				
+				if (gameData.equals("LLL") || gameData.equals("LRL") ) 					
+					depositCubeSwitch(startPos, "left"); // Left Switch
+								
+				if (gameData.equals("RRR") || gameData.equals( "RLR") ) 					
+					depositCubeSwitch(startPos, "right"); // Right Switch
+			
+			}
+			
+			if (startPos.equals("right") ) {
 				
 				sameSide = "right";
 				oppositeSide = "left";
 				
-				if (gameData == "LLL") {
+				if (gameData.equals("LLL") ) {
 					crossAutoLine();
 				}
 				
-				if (gameData == "RRR" || gameData == "LRL") {
+				if (gameData.equals("RRR") || gameData.equals("LRL") ) {
 					depositCubeScale(startPos, sameSide);
 				}
 				
-				if (gameData == "RLR") {
+				if (gameData.equals( "RLR") ) {
 					depositCubeSwitch(startPos, sameSide);
 				}
 			}
@@ -166,11 +163,11 @@ public class AutonomousCommand extends CommandGroup {
 		{
 			// Center start
 			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
-			addSequential(new AutoDrive(50.0));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.centerTransitionDistance));
-			addSequential(new AutoDrive(-140.0));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.leftFarToLeftScale));
+			addSequential(new AutoDrive(Constants.autoSpeed, 92)); // TODO: Extract to constants
+			addSequential(new AutoDrive(50.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(-140.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, 183.88)); // TODO: Extract to constants
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
@@ -198,10 +195,10 @@ public class AutonomousCommand extends CommandGroup {
 		{
 			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
-			addSequential(new AutoDrive(-55.0));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.centerTransitionDistance));
-			addSequential(new AutoDrive(145.0));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.rightFarToRightScale));
+			addSequential(new AutoDrive(-55.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(145.0)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, 137)); // TODO: Extract to constants
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
