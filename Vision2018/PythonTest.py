@@ -113,7 +113,7 @@ class PythonTest:
          # Convert to HSV
         img = inframe.getCvBGR()        
         img1 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        rows,cols = img.shape
+        rows,cols, colors = img.shape
 
         M = cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
         img = cv2.warpAffine(img,M,(cols,rows))
@@ -152,8 +152,11 @@ class PythonTest:
             thresholded = PythonTest.adaptiveThreshold(ret,0.95)
             thresholded = PythonTest.cleanupImage(thresholded,9)    
             lightContours = PythonTest.locateContours(thresholded,0,0)
-
-
+            clusters = ls.computeClusters(lightContours)
+            totalitarian = 0
+            for cluster in clusters:
+                totalitarian += cluster.avgDist()
+            aveWidth = (totalitarian/len(clusters))
         """
         if lightContours is not None:
             #cnt = lightContours[0]
@@ -258,10 +261,10 @@ class PythonTest:
         
         #if (lookforPeaks):
             #plt.show(10)
-        #jesus = distanceToCamera(3, aveWidth)
-        #pixels = {"Finding" : 1, "Distance" : jesus}
-        #json_pixels = json.dumps(pixels)
-        #jevois.sendSerial(json_pixels)
+        jesus = distanceToCamera(3, aveWidth)
+        pixels = {"Finding" : 1, "Distance" : jesus}
+        json_pixels = json.dumps(pixels)
+        jevois.sendSerial(json_pixels)
         outframe.sendCvBGR(img)
 
     def removeDupContours(inContours):
@@ -341,7 +344,3 @@ class PythonTest:
             ret.append((start,len(arr)-1))
             
         return ret
-
-
-
-        
