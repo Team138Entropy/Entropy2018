@@ -18,10 +18,6 @@ public class AutonomousCommand extends CommandGroup {
 		if (autoMode == "test")
 		{
 			
-			depositCubeScale("left", "left");
-		//	depositCubeRightScale("right");
-//			depositCubeLeftSwitch("center");
-//			depositCubeRightSwitch("center");
 //			depositCubeRightSwitch("right");
 		}
 		
@@ -163,11 +159,11 @@ public class AutonomousCommand extends CommandGroup {
 		{
 			// Center start
 			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
-			addSequential(new AutoDrive(Constants.autoSpeed, 92)); // TODO: Extract to constants
-			addSequential(new AutoDrive(50.0)); // TODO: Extract to constants
-			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
-			addSequential(new AutoDrive(-140.0)); // TODO: Extract to constants
-			addSequential(new AutoDrive(Constants.autoSpeed, 183.88)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
+			addSequential(new AutoDrive(Constants.navigateLeftSwitch));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.centerTransitionDistance));
+			addSequential(new AutoDrive(Constants.alignRightSwitch));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.leftFarToLeftScale));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
@@ -195,15 +191,14 @@ public class AutonomousCommand extends CommandGroup {
 		{
 			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
-			addSequential(new AutoDrive(-55.0)); // TODO: Extract to constants
-			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
-			addSequential(new AutoDrive(145.0)); // TODO: Extract to constants
-			addSequential(new AutoDrive(Constants.autoSpeed, 137)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.navigateRightSwitch));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.centerTransitionDistance));
+			addSequential(new AutoDrive(Constants.alignLeftSwitch));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.rightFarToRightScale));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
 			addSequential(new CloseGrasper());
-			// Center start
 		}
 	}
 }

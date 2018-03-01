@@ -29,14 +29,20 @@ public class Constants {
 		// These are autonomous constants useful for the autonomous commands
 		//
 		
-		public final static double distanceSwitch = 310.0;		// Centimeters
-		public final static double distanceScale = 600.0;		// Centimeters
-		public final static double distanceBaseLine = 135.0;	// Centimeters
-		public final static double autoSpeed = 0.5; 			// Fraction of full speed
-		public final static double releaseDelay = 0.5;			// Seconds
-		public final static int startingBoxDistance = 92;		// Centimeters
-		public final static double rotateToScore = 90.0;		// Degrees
-		
+		public final static double distanceSwitch = 427.0;		     // Centimeters
+		public final static double distanceScale = 823.0;			 // Centimeters
+		public final static double distanceBaseLine = 305.0;		 // Centimeters
+		public final static double autoSpeed = 0.5; 				 // Fraction of full speed
+		public final static double releaseDelay = 0.5;				 // Seconds
+		public final static double startingBoxDistance = 92.0;		 // Centimeters
+		public final static double rotateToScore = 90.0;        	 // Degrees
+		public final static double centerTransitionDistance = 427.0; // Centimeters
+		public final static double leftFarToLeftScale = 183.0;		 // Centimeters
+		public final static double rightFarToRightScale = 137.0;	 // Centimeters
+		public final static double alignLeftSwitch = 145.0;			 // Degrees
+		public final static double alignRightSwitch = -140.0;		 // Degrees
+		public final static double navigateRightSwitch = -55.0;		 // Degrees
+		public final static double navigateLeftSwitch = 50.0;		 // Degrees
 		
 		// Drivetrain
 		public final static boolean useClosedLoopDrivetrain = true;
