@@ -95,10 +95,10 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "left") {
 			// Scale on left
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
 			addParallel(new AutoDrive(Constants.rotateToScore));
-			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
+			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			// Use vision to drive to scale?
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
@@ -114,11 +114,11 @@ public class AutonomousCommand extends CommandGroup {
 	private void depositCubeRightScale(String startingPosition)
 	{
 		if (startingPosition == "right") {
-			// Scale on right
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			// Scale on rkight
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
 			addParallel(new AutoDrive(-1*Constants.rotateToScore));
-			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
+			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
@@ -146,7 +146,7 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "left") {
 			// Switch on left
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
 			addSequential(new AutoDrive(-Constants.rotateToScore));
 			addSequential(new StartRelease());
@@ -162,7 +162,7 @@ public class AutonomousCommand extends CommandGroup {
 		else
 		{
 			// Center start
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, 92)); // TODO: Extract to constants
 			addSequential(new AutoDrive(50.0)); // TODO: Extract to constants
 			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
@@ -179,7 +179,7 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "right") {
 			// Switch on right
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
 			addSequential(new AutoDrive(Constants.rotateToScore));
 			addSequential(new StartRelease());
@@ -193,7 +193,7 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else
 		{
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
 			addSequential(new AutoDrive(-55.0)); // TODO: Extract to constants
 			addSequential(new AutoDrive(Constants.autoSpeed, 427.0)); // TODO: Extract to constants
