@@ -13,64 +13,57 @@ public class AutonomousCommand extends CommandGroup {
 		String sameSide;
 		String oppositeSide;
 		
+		
 		// Test Modes
 		if (autoMode == "test")
 		{
 			
-			depositCubeRightSwitch("right");
-			
+//			depositCubeRightSwitch("right");
 		}
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData
 		if (autoMode == "auto")
 		{
-			SmartDashboard.putString("Game Data",gameData);
-			if (startPos == "left") {
+			if (startPos.equals("left")) {
 				
 				sameSide = "left";
 				oppositeSide = "right";
 				
-				if (gameData == "LLL" || gameData == "RLR") {
+				if (gameData.equals("LLL") || gameData.equals("RLR") ) 
 					depositCubeScale(startPos, sameSide);
-				}
 				
-				if (gameData == "RRR") {
+				if (gameData.equals("RRR") ) 
 					crossAutoLine();
-				}
-				
-				if (gameData == "LRL") {
+								
+				if (gameData.equals("LRL") )
 					depositCubeSwitch(startPos, sameSide);
-				}
-			}
-			
-			if (startPos == "middle") {
-				
-				if (gameData == "LLL" || gameData == "LRL") {
-					// Left Switch
-					depositCubeSwitch(startPos, "left");
-				}
-				
-				if (gameData == "RRR" || gameData == "RLR") {
-					// Right Switch
-					depositCubeSwitch(startPos, "right");
-				}
 				
 			}
 			
-			if (startPos == "right") {
+			if (startPos.equals( "middle") ) {
+				
+				if (gameData.equals("LLL") || gameData.equals("LRL") ) 					
+					depositCubeSwitch(startPos, "left"); // Left Switch
+								
+				if (gameData.equals("RRR") || gameData.equals( "RLR") ) 					
+					depositCubeSwitch(startPos, "right"); // Right Switch
+			
+			}
+			
+			if (startPos.equals("right") ) {
 				
 				sameSide = "right";
 				oppositeSide = "left";
 				
-				if (gameData == "LLL") {
+				if (gameData.equals("LLL") ) {
 					crossAutoLine();
 				}
 				
-				if (gameData == "RRR" || gameData == "LRL") {
+				if (gameData.equals("RRR") || gameData.equals("LRL") ) {
 					depositCubeScale(startPos, sameSide);
 				}
 				
-				if (gameData == "RLR") {
+				if (gameData.equals( "RLR") ) {
 					depositCubeSwitch(startPos, sameSide);
 				}
 			}
@@ -98,10 +91,10 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "left") {
 			// Scale on left
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
 			addParallel(new AutoDrive(Constants.rotateToScore));
-			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
+			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			// Use vision to drive to scale?
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
@@ -117,11 +110,11 @@ public class AutonomousCommand extends CommandGroup {
 	private void depositCubeRightScale(String startingPosition)
 	{
 		if (startingPosition == "right") {
-			// Scale on right
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			// Scale on rkight
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
 			addParallel(new AutoDrive(-1*Constants.rotateToScore));
-			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
+			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
@@ -149,7 +142,7 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "left") {
 			// Switch on left
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
 			addSequential(new AutoDrive(-Constants.rotateToScore));
 			addSequential(new StartRelease());
@@ -165,7 +158,7 @@ public class AutonomousCommand extends CommandGroup {
 		else
 		{
 			// Center start
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
 			addSequential(new AutoDrive(Constants.navigateLeftSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.centerTransitionDistance));
@@ -182,7 +175,7 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "right") {
 			// Switch on right
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
 			addSequential(new AutoDrive(Constants.rotateToScore));
 			addSequential(new StartRelease());
@@ -196,8 +189,7 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else
 		{
-			// Center start
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
 			addSequential(new AutoDrive(Constants.navigateRightSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.centerTransitionDistance));
