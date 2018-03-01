@@ -17,33 +17,8 @@ public class AutonomousCommand extends CommandGroup {
 		if (autoMode == "test")
 		{
 			
-//			depositCubeScale("left", "left");
-		//	depositCubeRightScale("right");
-//			depositCubeLeftSwitch("center");
-//			depositCubeRightSwitch("center");
 			depositCubeRightSwitch("right");
-			/*
-			// Scale on left
-			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
-		//	addParallel(new AutoDrive(Constants.rotateToScore));
-			addSequential(new ElevateToTarget(ElevatorTarget.etScale));
-			// Use vision to drive to scale?
-			addSequential(new StartRelease());
-			addSequential(new Wait(Constants.releaseDelay));
-			addParallel(new CloseGrasper());
-			addParallel(new ElevateToTarget(ElevatorTarget.etAcquire));
-		//	addParallel(new AutoDrive(Constants.autoSpeed, -50)); // backup 50 CM
-			addSequential(new CompleteRelease());
-			addSequential(new CloseGrasper());
-			*/
-
-/*			addSequential(new AutoDrive(1, 200));
-			addSequential(new AutoDrive(180));
-			addSequential(new AutoDrive(1, 200));
-			addSequential(new AutoDrive(-180));
-			addSequential(new AutoDrive(1, 200));
-			*/
+			
 		}
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData
@@ -191,7 +166,7 @@ public class AutonomousCommand extends CommandGroup {
 		{
 			// Center start
 			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance)); // TODO: Extract to constants
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
 			addSequential(new AutoDrive(50.0));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.centerTransitionDistance));
 			addSequential(new AutoDrive(-140.0));
@@ -221,6 +196,7 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else
 		{
+			// Center start
 			addParallel(new ElevateToTarget(ElevatorTarget.etSwitch));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.startingBoxDistance));
 			addSequential(new AutoDrive(-55.0));
@@ -231,7 +207,6 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
 			addSequential(new CloseGrasper());
-			// Center start
 		}
 	}
 }
