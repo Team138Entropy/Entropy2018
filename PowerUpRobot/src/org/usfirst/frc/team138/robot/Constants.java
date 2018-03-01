@@ -39,6 +39,10 @@ public class Constants {
 		public final static double centerTransitionDistance = 427.0; // Centimeters
 		public final static double leftFarToLeftScale = 183.0;		 // Centimeters
 		public final static double rightFarToRightScale = 137.0;	 // Centimeters
+		public final static double alignLeftSwitch = 145.0;			 // Degrees
+		public final static double alignRightSwitch = -140.0;		 // Degrees
+		public final static double navigateRightSwitch = -55.0;		 // Degrees
+		public final static double navigateLeftSwitch = 50.0;		 // Degrees
 		
 		// Drivetrain
 		public final static boolean useClosedLoopDrivetrain = true;
