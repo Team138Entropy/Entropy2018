@@ -5,11 +5,12 @@ import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevateToTarget extends Command {
 	
 	private ElevatorTarget elevatorTarget;
-	private final double commandTimeoutSeconds = 5;
+	private final double commandTimeoutSeconds = 7;
 	private double _currentCommandTime = 0;
 	
 	public ElevateToTarget(String target){
@@ -32,6 +33,7 @@ public class ElevateToTarget extends Command {
 	protected void execute() {
 		Robot.elevator.Execute();
 		_currentCommandTime += Constants.commandLoopIterationSeconds;
+		SmartDashboard.putNumber("Timer", _currentCommandTime);
 	}
 
 	protected boolean isFinished() {

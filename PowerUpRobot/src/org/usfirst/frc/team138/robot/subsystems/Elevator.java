@@ -38,13 +38,11 @@ public class Elevator extends Subsystem{
 	
 	public enum ElevatorTarget{
 		NONE,
-		JOG,			// Jog Mode
-		HOME,			// Home Mode
 		ACQUIRE,		// Acquire Cube Level 1 (Floor)
 		EXCHANGE,		// Deposit Exchange
 		CUBE_LEVEL_2,	// Acquire Cube Level 2
 		SWITCH,			// Deposit Switch / Acquire Cube Level 3 
-		SCALE,			// Deposit Lower Scale
+		LOWER_SCALE,	// Deposit Lower Scale
 		UPPER_SCALE		// Deposit Upper Scale
 	}
 	
@@ -125,7 +123,7 @@ public class Elevator extends Subsystem{
 			elevatorTarget = ElevatorTarget.SWITCH;
 			break;
 		case "Scale":
-			elevatorTarget = ElevatorTarget.SCALE;
+			elevatorTarget = ElevatorTarget.LOWER_SCALE;
 			break;
 		case "UpperScale":
 			elevatorTarget = ElevatorTarget.UPPER_SCALE;
@@ -158,7 +156,7 @@ public class Elevator extends Subsystem{
 		case SWITCH:
 			elevatorTarget = "Switch";
 			break;
-		case SCALE:
+		case LOWER_SCALE:
 			elevatorTarget = "Scale";
 			break;
 		case UPPER_SCALE:
@@ -193,28 +191,26 @@ public class Elevator extends Subsystem{
 		}
 		else
 		{		
-		if (Constants.practiceBot) { // These numbers need updating
+		if (Constants.practiceBot) {
 			switch (target) {
 			case ACQUIRE:
-				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
 				_targetPosition = 0;	// Acquire Height is Cube Level 1
+				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
 				break;
 			case EXCHANGE:
 				_targetPosition = 500;	// Alternate Acquire position is Exchange
-										//TODO: determine real position
 				break;
 			case SWITCH:
-				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
 				_targetPosition = 1200; // Switch height is also Cube Level 3
+				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
 				break;
 				
 			case CUBE_LEVEL_2:
-				_targetPosition = 900;	// Alternate Switch position is Cube Level 2
+				_targetPosition = 700;	// Alternate Switch position is Cube Level 2
 				break;
-										// TODO: determine real position
-			case SCALE:
-				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
+			case LOWER_SCALE:
 				_targetPosition = 2500;	// Default scale position is lower scale
+				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
 				break;
 			case UPPER_SCALE:
 				_targetPosition = 2700;	// Alternate scale position is upper scale
@@ -223,28 +219,26 @@ public class Elevator extends Subsystem{
 				break;
 			}
 		}
-		else
+		else	// Competition Robot
 		{
 			switch (target) {
 			case ACQUIRE:
-				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
 				_targetPosition = 0;	// Acquire Height is Cube Level 1
+				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
 				break;
 			case EXCHANGE:
 				_targetPosition = 200;	// Alternate Acquire position is Exchange
-										//TODO: determine real position
 				break;
 			case CUBE_LEVEL_2:
 				_targetPosition = 300;	// Alternate Switch position is Cube Level 2
 				break;
-										// TODO: determine real position
 			case SWITCH:
-				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
 				_targetPosition = 1000; // Switch height is also Cube Level 3
+				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
 				break;
-			case SCALE:
-				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
+			case LOWER_SCALE:
 				_targetPosition = 2000;	// Default scale position is lower scale
+				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
 				break;
 			case UPPER_SCALE:
 				_targetPosition = 2600;	// Alternate scale position is upper scale

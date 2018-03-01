@@ -89,7 +89,7 @@ public final class OI {
     public OI(){
     	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.ACQUIRE));
     	elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.SWITCH));
-    	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.SCALE));
+    	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.LOWER_SCALE));
     	acquireButton.whenPressed(new StartAcquire());
     	acquireButton.whenReleased(new CompleteAcquire());
     	releaseButton.whenPressed(new StartRelease());

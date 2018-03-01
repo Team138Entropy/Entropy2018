@@ -95,10 +95,10 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		if (startingPosition == "left") {
 			// Scale on left
-			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
 			addParallel(new AutoDrive(Constants.rotateToScore));
-			addSequential(new ElevateToTarget(ElevatorTarget.SCALE));
+			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			// Use vision to drive to scale?
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
@@ -114,11 +114,11 @@ public class AutonomousCommand extends CommandGroup {
 	private void depositCubeRightScale(String startingPosition)
 	{
 		if (startingPosition == "right") {
-			// Scale on right
-			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			// Scale on rkight
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
 			addParallel(new AutoDrive(-1*Constants.rotateToScore));
-			addSequential(new ElevateToTarget(ElevatorTarget.SCALE));
+			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
