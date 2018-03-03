@@ -124,9 +124,26 @@ public final class OI {
 		return rotateSpeed;
 	}
 	
+	public static double getHookRotation()
+	{
+		// Joystick up returns negative axis values, so inverted
+		return (-1 * operatorStick.getRawAxis(nykoLeftYAxis));
+	}
+	
 	public static double getClimbSpeed()
 	{
-		return operatorStick.getRawAxis(nykoLeftYAxis);
+		// Joystick up returns negative axis values, so inverted
+		return (-1 * operatorStick.getRawAxis(nykoRightYAxis));
+	}
+	
+	public static boolean isHookRotationEnabled()
+	{
+		return (operatorStick.getPOV() == 270);
+	}
+	
+	public static boolean isWinchEnabled()
+	{
+		return (operatorStick.getPOV() == 90);
 	}
 	
 	// Return the jog direction: 1 for up, -1 for down

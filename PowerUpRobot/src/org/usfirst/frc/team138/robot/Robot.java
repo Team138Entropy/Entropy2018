@@ -33,6 +33,7 @@ public class Robot extends IterativeRobot {
     public static final Drivetrain drivetrain = new Drivetrain();
     public static final Grasper grasper = new Grasper();
     public static final Elevator elevator = new Elevator();
+    public static final Climber climber = new Climber();
 
     public static final OI oi = new OI();
 	
@@ -170,6 +171,7 @@ public class Robot extends IterativeRobot {
 		
         Sensors.updateSmartDashboard();
         elevator.updateSmartDashboard();
+        climber.updateSmartDashboard();
     }
     
     /**

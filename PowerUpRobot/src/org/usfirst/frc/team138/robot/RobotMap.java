@@ -15,16 +15,15 @@ public class RobotMap {
 	public final static int LEFT_CUBE_CAN_GRASPER_PORT  = 3;
 	public final static int RIGHT_CUBE_CAN_GRASPER_PORT = 4;
   
-	public final static int ELEVATOR_PORT = 2;
-	public final static int WINCH_PORT = 1;
+	public final static int ELEVATOR_PORT 				= 2;
+	public final static int WINCH_PORT 					= 1;
+	public final static int HOOK_PORT					= 9;
 	
 	// Analog Input
 	
 	// Pneumatic Control Module
 	public final static int SOLENOID_GRASPER_PORT  = 0;
 	public final static int SOLENOID_WRIST_PORT    = 1;
-
-
 	
 	// Relay
 }
