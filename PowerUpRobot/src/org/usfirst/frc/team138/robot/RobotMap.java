@@ -17,7 +17,7 @@ public class RobotMap {
   
 	public final static int ELEVATOR_PORT 				= 2;
 	public final static int WINCH_PORT 					= 1;
-	public final static int HOOK_PORT					= 9;
+	public final static int HOOK_PORT					= 10;
 	
 	// Analog Input
 	

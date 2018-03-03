@@ -126,8 +126,7 @@ public final class OI {
 	
 	public static double getHookRotation()
 	{
-		// Joystick up returns negative axis values, so inverted
-		return (-1 * operatorStick.getRawAxis(nykoLeftYAxis));
+		return (0.5 * operatorStick.getRawAxis(nykoLeftYAxis));
 	}
 	
 	public static double getClimbSpeed()
