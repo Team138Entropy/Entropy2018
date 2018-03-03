@@ -10,6 +10,7 @@ public class Constants {
 		public static double commandLoopIterationSeconds = 0.020;
 	
 		public static boolean practiceBot = false;
+		public static boolean competitionOverride = true;
 		
 		// Deadband applied to Joystick, when
 		// magnitude is less than deadBand, then set Magnitude to 0
@@ -23,7 +24,7 @@ public class Constants {
 		// where Alpha = Ts*2*pi*Freq
 		//   Ts is sample period (20 mSec for FRC)
 		//   Freq is location of filter pole in Hz
-		public static double rotateAlpha = .02*6.28*1;
+		public static double rotateAlpha = .02 * 6.28 * 1;
 
 		//
 		// These are autonomous constants useful for the autonomous commands
@@ -32,7 +33,7 @@ public class Constants {
 		public final static double distanceSwitch = 427.0;		     // Centimeters
 		public final static double distanceScale = 823.0;			 // Centimeters
 		public final static double distanceBaseLine = 305.0;		 // Centimeters
-		public final static double autoSpeed = 0.5; 				 // Fraction of full speed
+		public final static double autoSpeed = 0.6; 				 // Fraction of full speed
 		public final static double releaseDelay = 0.5;				 // Seconds
 		public final static double startingBoxDistance = 92.0;		 // Centimeters
 		public final static double rotateToScore = 90.0;        	 // Degrees
@@ -87,19 +88,19 @@ public class Constants {
 		public final static double holdSpeed = 0.3;
 
 		// ***** Autonomous drive parameters *******
-		public static double AutoDriveSpeed=2.0; // M/sec
-		public static double AutoDriveAccel=1; // M/sec2 (1 ~.1G)
-		public static double AutoDriveRotateRate=.35; // Meters/second
+		public static double AutoDriveSpeed = 2.0; // M/sec
+		public static double AutoDriveAccel = 1; // M/sec2 (1 ~.1G)
+		public static double AutoDriveRotateRate = .35; // Meters/second
 		// PID gains to control rotation (measured by Gyro)
-		public static double kPRotate=.2;
-		public static double kIRotate=2;
-		public static double kDRotate=0.5;
+		public static double kPRotate = .2;
+		public static double kIRotate = 2;
+		public static double kDRotate = 0.5;
 		// Compensate AutoDrive overshoot 
-		public static double AutoDriveRotateOvershoot=7;	// Degrees
+		public static double AutoDriveRotateOvershoot = 7;	// Degrees
 		// Insert delay after each autonomous move to allow
 		// mechanism to settle (before sensors are reset at start of next move)
-		public static double AutoDrivePause=10; // 40=1second
-		public static double AutoDriveStopTolerance=2; // CM
+		public static double AutoDrivePause = 10; // 40=1second
+		public static double AutoDriveStopTolerance = 2; // CM
 		
 		// Dashboard input constants
 		public final static String practiceRobot = "practice robot";

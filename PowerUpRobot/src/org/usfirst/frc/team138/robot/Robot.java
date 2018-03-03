@@ -152,7 +152,7 @@ public class Robot extends IterativeRobot {
     }
     
     public boolean isPracticeRobot() {
-    	if (robotChooser.getSelected() == Constants.practiceRobot) {
+    	if ((robotChooser.getSelected() == Constants.practiceRobot) && !Constants.competitionOverride) {
     		return true;
     	}
     	else {
