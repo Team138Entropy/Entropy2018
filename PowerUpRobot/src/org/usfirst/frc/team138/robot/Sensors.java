@@ -37,6 +37,8 @@ public class Sensors {
 
         Camera0 = CameraServer.getInstance().startAutomaticCapture("Camera0", 0);
 	// JeVois camera selects which script to run based on VideoMode
+	// This VideoMode selects the TestPython.py script which, in the default load, slightly decorates the
+	// image with a circle and a string "Hi from Python", but otherwise passes through the camera image unchanged.
 	Camera0.setVideoMode(PixelFormat.kYUYV, 640, 480, 15);
 
 	}
