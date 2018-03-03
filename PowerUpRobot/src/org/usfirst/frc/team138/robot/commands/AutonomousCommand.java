@@ -93,7 +93,7 @@ public class AutonomousCommand extends CommandGroup {
 			// Scale on left
 			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
-			addParallel(new AutoDrive(Constants.rotateToScore));
+			addParallel(new AutoDrive(-1 * Constants.rotateToScore));
 			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			// Use vision to drive to scale?
 			addSequential(new StartRelease());
@@ -113,7 +113,7 @@ public class AutonomousCommand extends CommandGroup {
 			// Scale on rkight
 			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
-			addParallel(new AutoDrive(-1*Constants.rotateToScore));
+			addParallel(new AutoDrive(Constants.rotateToScore));
 			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));

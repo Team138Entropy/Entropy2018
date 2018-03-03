@@ -126,7 +126,7 @@ public final class OI {
 	
 	public static double getHookRotation()
 	{
-		return (0.5 * operatorStick.getRawAxis(nykoLeftYAxis));
+		return (0.75 * operatorStick.getRawAxis(nykoLeftYAxis));
 	}
 	
 	public static double getClimbSpeed()
