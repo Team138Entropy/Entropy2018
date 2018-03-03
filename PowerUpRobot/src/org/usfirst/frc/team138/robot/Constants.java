@@ -30,8 +30,8 @@ public class Constants {
 		// These are autonomous constants useful for the autonomous commands
 		//
 		
-		public final static double distanceSwitch = 427.0;		     // Centimeters
-		public final static double distanceScale = 823.0;			 // Centimeters
+		public final static double distanceSwitch = 377.0;		     // Centimeters
+		public final static double distanceScale = 773.0;			 // Centimeters
 		public final static double distanceBaseLine = 305.0;		 // Centimeters
 		public final static double autoSpeed = 0.6; 				 // Fraction of full speed
 		public final static double releaseDelay = 0.5;				 // Seconds
