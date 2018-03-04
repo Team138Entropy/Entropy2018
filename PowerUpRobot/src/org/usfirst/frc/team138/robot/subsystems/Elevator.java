@@ -26,7 +26,7 @@ public class Elevator extends Subsystem{
 	double _liftKi = 0;
 	double _liftKd = 5;
 	
-	double _cruiseVelocity = 75;
+	double _cruiseVelocity = 90;
 	double _acceleration = 40; 
 	
 	// Talon SRX/ Victor SPX will support multiple (cascaded) PID loops

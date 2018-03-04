@@ -33,7 +33,7 @@ public class Constants {
 		public final static double distanceSwitch = 377.0;		     // Centimeters
 		public final static double distanceScale = 773.0;			 // Centimeters
 		public final static double distanceBaseLine = 305.0;		 // Centimeters
-		public final static double autoSpeed = 0.7; 				 // Fraction of full speed
+		public final static double autoSpeed = 0.8; 				 // Fraction of full speed
 		public final static double releaseDelay = 0.5;				 // Seconds
 		public final static double startingBoxDistance = 92.0;		 // Centimeters
 		public final static double rotateToScore = 90.0;        	 // Degrees
