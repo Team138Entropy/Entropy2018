@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonomousCommand extends CommandGroup {
 
-	public AutonomousCommand(String team, String startPos, String autoMode, String gameData) {
+	public AutonomousCommand(String team, String startPos, String autoMode, String gameData, String tacticalOverride) {
 		
 		String sameSide;
 		String oppositeSide;
@@ -21,7 +21,8 @@ public class AutonomousCommand extends CommandGroup {
 //			depositCubeRightSwitch("right");
 		}
 		
-		// This auto mode does the "proper action" depending on the starting position and gameData
+		// This auto mode does the "proper action" depending on the starting position and gameData,
+		// however tacticalOverride can change this
 		if (autoMode == "auto")
 		{
 			if (startPos.equals("left")) {
@@ -29,19 +30,40 @@ public class AutonomousCommand extends CommandGroup {
 				sameSide = "left";
 				oppositeSide = "right";
 				
-				if (gameData.equals("LLL") || gameData.equals("RLR") ) 
-					depositCubeScale(startPos, sameSide);
-				
-				if (gameData.equals("RRR") ) 
-					depositCubeScale(startPos, oppositeSide);
-								
-				if (gameData.equals("LRL") )
-					depositCubeSwitch(startPos, sameSide);
+				if (tacticalOverride == "noOverride") {
+					if (gameData.equals("LLL") || gameData.equals("RLR") ) 
+						depositCubeScale(startPos, sameSide);
+					
+					if (gameData.equals("RRR") ) 
+						depositCubeScale(startPos, oppositeSide);
+									
+					if (gameData.equals("LRL") )
+						depositCubeSwitch(startPos, sameSide);
+					
+				} else if (tacticalOverride == "switchOverride") {
+					if (gameData.equals("LLL") || gameData.equals("RLR") ) 
+						depositCubeSwitch(startPos, sameSide);
+					
+					if (gameData.equals("RRR") || gameData.equals("LRL")) 
+						depositCubeSwitch(startPos, oppositeSide);
+					
+				} else if (tacticalOverride == "scaleOverride") {
+					if (gameData.equals("LLL") || gameData.equals("RLR") ) 
+						depositCubeScale(startPos, sameSide);
+					
+					if (gameData.equals("RRR") || gameData.equals("LRL")) 
+						depositCubeScale(startPos, oppositeSide);
+					
+				} else {
+					// Some error happened, so just cross the auto line
+					crossAutoLine();
+				}
 				
 			}
 			
 			if (startPos.equals( "middle") ) {
-				
+				// Middle position ignores tactical override, as the switch is always the best option and it is
+				// very difficult to pull off a scale from mid.
 				if (gameData.equals("LLL") || gameData.equals("LRL") ) 					
 					depositCubeSwitch(startPos, "left"); // Left Switch
 								
@@ -55,23 +77,43 @@ public class AutonomousCommand extends CommandGroup {
 				sameSide = "right";
 				oppositeSide = "left";
 				
-				if (gameData.equals("LLL") ) {
-					depositCubeScale(startPos, oppositeSide);
+				if (tacticalOverride == "noOverride") {
+					if (gameData.equals("LLL") ) {
+						depositCubeScale(startPos, oppositeSide);
+					}
+					
+					if (gameData.equals("RRR") || gameData.equals("LRL") ) {
+						depositCubeScale(startPos, sameSide);
+					}
+					
+					if (gameData.equals( "RLR") ) {
+						depositCubeSwitch(startPos, sameSide);
+					}
+				} else if (tacticalOverride == "switchOverride") {
+					if (gameData.equals("LLL") || gameData.equals("RLR") ) 
+						depositCubeSwitch(startPos, oppositeSide);
+					
+					if (gameData.equals("RRR") || gameData.equals("LRL")) 
+						depositCubeSwitch(startPos, sameSide);
+					
+				} else if (tacticalOverride == "scaleOverride") {
+					if (gameData.equals("LLL") || gameData.equals("RLR") ) 
+						depositCubeScale(startPos, oppositeSide);
+					
+					if (gameData.equals("RRR") || gameData.equals("LRL")) 
+						depositCubeScale(startPos, sameSide);
+					
+				} else {
+					// Some error happened, so just cross the auto line
+					crossAutoLine();
 				}
 				
-				if (gameData.equals("RRR") || gameData.equals("LRL") ) {
-					depositCubeScale(startPos, sameSide);
-				}
-				
-				if (gameData.equals( "RLR") ) {
-					depositCubeSwitch(startPos, sameSide);
-				}
 			}
 		}
 	}
 
 	private void crossAutoLine() {
-		// "Off" position
+		// Left or right positions position
 		addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceBaseLine));
 	}
 
@@ -173,7 +215,15 @@ public class AutonomousCommand extends CommandGroup {
 		
 		else if (startingPosition == "right")
 		{
-			// Nothing here, this is a very very bad idea
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceToCrossPoint));
+			addSequential(new AutoDrive(Constants.left90Degrees));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitchCross));
+			addSequential(new AutoDrive(Constants.left90Degrees));
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
 		}
 		else
 		{
@@ -205,7 +255,15 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else if (startingPosition == "left")
 		{
-			// Nothing here, this is a very very bad idea
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceToCrossPoint));
+			addSequential(new AutoDrive(Constants.right90Degrees));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitchCross));
+			addSequential(new AutoDrive(Constants.right90Degrees));
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
 		}
 		else
 		{

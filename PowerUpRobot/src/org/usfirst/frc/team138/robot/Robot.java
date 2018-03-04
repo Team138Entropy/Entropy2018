@@ -27,6 +27,7 @@ public class Robot extends IterativeRobot {
     SendableChooser<String> startPosChooser;
     SendableChooser<String> autoModeChooser;
     SendableChooser<String> robotChooser;
+    SendableChooser<String> tacticalOverrideChooser;
         
     // Subsystems
     public static final Compressor compressor = new Compressor();
@@ -83,7 +84,12 @@ public class Robot extends IterativeRobot {
 		autoModeChooser.addObject("Manual", "manual");
 		autoModeChooser.addObject("Test" , "test");
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
-					
+		
+		tacticalOverrideChooser = new SendableChooser<String>();
+		tacticalOverrideChooser.addObject("None", "noOverride");
+		tacticalOverrideChooser.addObject("Switch", "switchOverride");
+		tacticalOverrideChooser.addObject("Scale", "scaleOverride");
+		SmartDashboard.putData("Tactical Override:", tacticalOverrideChooser);
 
     }
 	
@@ -114,6 +120,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Team:", teamChooser);
 		SmartDashboard.putData("Starting Position:", startPosChooser);		
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
+		SmartDashboard.putData("Tactical Override:", tacticalOverrideChooser);
     	
 		/*
     	Constants.kPRotate=prefs.getDouble("Rotate KP", .02);
@@ -128,7 +135,8 @@ public class Robot extends IterativeRobot {
         autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
         		startPosChooser.getSelected(),
         		autoModeChooser.getSelected(),
-        		gameData);
+        		gameData,
+        		tacticalOverrideChooser.getSelected());
         isPracticeRobot();
         autonomousCommand.start();
     }

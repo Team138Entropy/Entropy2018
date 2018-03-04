@@ -36,6 +36,7 @@ public class Constants {
 		public final static double distanceToCrossPoint = 589;	     // Centimeters
 		public final static double distanceCross = 467;				 // Centimeters
 		public final static double distanceFinalMoveAfterCross = 61; // Centimeters
+		public final static double distanceSwitchCross = 422;		 // Centimeters
 		
 		public final static double autoSpeed = 0.8; 				 // Fraction of full speed
 		public final static double releaseDelay = 0.5;				 // Seconds
