@@ -103,7 +103,8 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else if (startingPosition == "right")
 		{
-			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
+			// This crosses the field to the opposite scale
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceToCrossPoint));
 			addSequential(new AutoDrive(Constants.left90Degrees));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceCross));
@@ -132,7 +133,8 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else if (startingPosition == "left")
 		{
-			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
+			// This crosses the field to the opposite scale
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceToCrossPoint));
 			addSequential(new AutoDrive(Constants.right90Degrees));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceCross));

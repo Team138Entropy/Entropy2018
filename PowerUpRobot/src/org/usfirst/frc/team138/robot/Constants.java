@@ -34,7 +34,7 @@ public class Constants {
 		public final static double distanceScale = 773.0;			 // Centimeters
 		public final static double distanceBaseLine = 305.0;		 // Centimeters
 		public final static double distanceToCrossPoint = 589;	     // Centimeters
-		public final static double distanceCross = 467;				 // Centimeters
+		public final static double distanceCross = 517;				 // Centimeters
 		public final static double distanceFinalMoveAfterCross = 61; // Centimeters
 		
 		public final static double autoSpeed = 0.8; 				 // Fraction of full speed
