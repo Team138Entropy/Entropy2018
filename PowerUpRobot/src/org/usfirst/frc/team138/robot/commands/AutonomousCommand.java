@@ -33,7 +33,7 @@ public class AutonomousCommand extends CommandGroup {
 					depositCubeScale(startPos, sameSide);
 				
 				if (gameData.equals("RRR") ) 
-					crossAutoLine();
+					depositCubeScale(startPos, oppositeSide);
 								
 				if (gameData.equals("LRL") )
 					depositCubeSwitch(startPos, sameSide);
@@ -56,7 +56,7 @@ public class AutonomousCommand extends CommandGroup {
 				oppositeSide = "left";
 				
 				if (gameData.equals("LLL") ) {
-					crossAutoLine();
+					depositCubeScale(startPos, oppositeSide);
 				}
 				
 				if (gameData.equals("RRR") || gameData.equals("LRL") ) {
@@ -93,7 +93,7 @@ public class AutonomousCommand extends CommandGroup {
 			// Scale on left
 			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
-			addParallel(new AutoDrive(-1 * Constants.rotateToScore));
+			addParallel(new AutoDrive(Constants.right90Degrees));
 			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			// Use vision to drive to scale?
 			addSequential(new StartRelease());
@@ -103,17 +103,27 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else if (startingPosition == "right")
 		{
-			// Not yet
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceToCrossPoint));
+			addSequential(new AutoDrive(Constants.left90Degrees));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceCross));
+			addSequential(new AutoDrive(Constants.right90Degrees));
+			addParallel(new AutoDrive(Constants.autoSpeed, Constants.distanceFinalMoveAfterCross));
+			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.softReleaseDelay));
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
 		}
 	}
 	
 	private void depositCubeRightScale(String startingPosition)
 	{
 		if (startingPosition == "right") {
-			// Scale on rkight
+			// Scale on right
 			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceScale));
-			addParallel(new AutoDrive(Constants.rotateToScore));
+			addParallel(new AutoDrive(Constants.left90Degrees));
 			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
@@ -122,7 +132,17 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else if (startingPosition == "left")
 		{
-			// Not yet
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceToCrossPoint));
+			addSequential(new AutoDrive(Constants.right90Degrees));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceCross));
+			addSequential(new AutoDrive(Constants.left90Degrees));
+			addParallel(new AutoDrive(Constants.autoSpeed, Constants.distanceFinalMoveAfterCross));
+			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.softReleaseDelay));
+			addSequential(new CompleteRelease());
+			addSequential(new CloseGrasper());
 		}
 	}
 	
@@ -144,7 +164,7 @@ public class AutonomousCommand extends CommandGroup {
 			// Switch on left
 			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
-			addSequential(new AutoDrive(-Constants.rotateToScore));
+			addSequential(new AutoDrive(Constants.right90Degrees));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());	
@@ -177,7 +197,7 @@ public class AutonomousCommand extends CommandGroup {
 			// Switch on right
 			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceSwitch));
-			addSequential(new AutoDrive(Constants.rotateToScore));
+			addSequential(new AutoDrive(Constants.left90Degrees));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
@@ -201,4 +221,5 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new CloseGrasper());
 		}
 	}
+	
 }

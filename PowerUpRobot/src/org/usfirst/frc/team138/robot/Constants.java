@@ -33,10 +33,16 @@ public class Constants {
 		public final static double distanceSwitch = 377.0;		     // Centimeters
 		public final static double distanceScale = 773.0;			 // Centimeters
 		public final static double distanceBaseLine = 305.0;		 // Centimeters
+		public final static double distanceToCrossPoint = 589;	     // Centimeters
+		public final static double distanceCross = 467;				 // Centimeters
+		public final static double distanceFinalMoveAfterCross = 61; // Centimeters
+		
 		public final static double autoSpeed = 0.8; 				 // Fraction of full speed
 		public final static double releaseDelay = 0.5;				 // Seconds
+		public final static double softReleaseDelay = 0.25;			 // Seconds
 		public final static double startingBoxDistance = 92.0;		 // Centimeters
-		public final static double rotateToScore = 90.0;        	 // Degrees
+		public final static double left90Degrees = 90.0;        	 // Degrees
+		public final static double right90Degrees = -90.0;        	 // Degrees
 		public final static double centerTransitionDistance = 427.0; // Centimeters
 		public final static double leftFarToLeftScale = 183.0;		 // Centimeters
 		public final static double rightFarToRightScale = 137.0;	 // Centimeters
