@@ -107,10 +107,10 @@ public class AutonomousCommand extends CommandGroup {
 			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceToCrossPoint));
 			addSequential(new AutoDrive(Constants.left90Degrees));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceCross));
-			addSequential(new AutoDrive(Constants.right90Degrees));
-			addParallel(new AutoDrive(Constants.autoSpeed, Constants.distanceFinalMoveAfterCross));
+			addParallel(new AutoDrive(Constants.autoSpeed, Constants.distanceCross));
 			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
+			addSequential(new AutoDrive(Constants.right90Degrees));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceFinalMoveAfterCross));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.softReleaseDelay));
 			addSequential(new CompleteRelease());
@@ -137,10 +137,10 @@ public class AutonomousCommand extends CommandGroup {
 			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceToCrossPoint));
 			addSequential(new AutoDrive(Constants.right90Degrees));
-			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceCross));
-			addSequential(new AutoDrive(Constants.left90Degrees));
-			addParallel(new AutoDrive(Constants.autoSpeed, Constants.distanceFinalMoveAfterCross));
+			addParallel(new AutoDrive(Constants.autoSpeed, Constants.distanceCross));
 			addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
+			addSequential(new AutoDrive(Constants.left90Degrees));
+			addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceFinalMoveAfterCross));
 			addSequential(new StartRelease());
 			addSequential(new Wait(Constants.softReleaseDelay));
 			addSequential(new CompleteRelease());
