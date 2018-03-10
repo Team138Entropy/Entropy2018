@@ -20,6 +20,7 @@ public class Grasper extends Subsystem{
 	private WPI_TalonSRX _leftRollerTalon = new WPI_TalonSRX(RobotMap.LEFT_CUBE_CAN_GRASPER_PORT);
 	private WPI_TalonSRX _rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
 	
+	
 	// Master
 	 SpeedControllerGroup _rollerSpeedController = new SpeedControllerGroup(_leftRollerTalon, _rightRollerTalon);
 	
@@ -30,6 +31,17 @@ public class Grasper extends Subsystem{
 	public void initialize() {
     	_leftRollerTalon.setInverted(true);
     }
+	
+	// Grasper Functions
+	
+	public void toggleGrasper() {
+		if (grasperIsOpen()){
+			closeGrasper();
+		}
+		else {
+			openGrasper();
+		}
+	}
 	
 	public void openGrasper() {
     	_grasperSolenoid.set(Constants.grasperSolenoidActiveOpen);
@@ -43,6 +55,17 @@ public class Grasper extends Subsystem{
 		return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
 	}
     
+    // Wrist Functions
+    
+    public void toggleWrist() {
+    	if (wristIsUp()) {
+    		lowerWrist();
+    	}
+    	else {
+    		raiseWrist();
+    	}
+    }
+    
     public void raiseWrist() {
     	_wristSolenoid.set(Constants.wristSolenoidActiveRaised);
     }
@@ -54,6 +77,8 @@ public class Grasper extends Subsystem{
 	public boolean wristIsUp() {
 		return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
 	}
+	
+	// Acquisition Roller Functions
 	
 	public void acquireRollers() {
 		_rollerSpeedController.set(Constants.aquireSpeed);
@@ -70,6 +95,9 @@ public class Grasper extends Subsystem{
 	private void stopRollers() {
 		_rollerSpeedController.set(0);
 	}
+	
+	// Command Functions
+	
 	public void StartAcquire() {
 		SmartDashboard.putString("Acquire Release","Start Acquire");
 		closeGrasper();
@@ -92,5 +120,20 @@ public class Grasper extends Subsystem{
 		SmartDashboard.putString("Acquire Release","Complete Release");
 		stopRollers();
 		openGrasper();
+	}
+	public void updateSmartDashboard()
+	{
+		if (grasperIsOpen()) {
+			SmartDashboard.putString("Grasper", "open");
+		}
+		else {
+			SmartDashboard.putString("Grasper", "closed");
+		}
+		if (wristIsUp()) {
+			SmartDashboard.putString("Wrist", "raised");
+		}
+		else {
+			SmartDashboard.putString("Wrist", "lowered");
+		}
 	}
 }

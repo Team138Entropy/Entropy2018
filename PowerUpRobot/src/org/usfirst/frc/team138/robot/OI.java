@@ -75,10 +75,8 @@ public final class OI {
     static Button elevateToScaleButton = new JoystickButton(operatorStick, nykoButton4);
     static Button acquireButton = new JoystickButton(operatorStick, nykoLeftTrigger);
     static Button releaseButton = new JoystickButton(operatorStick, nykoRightTrigger);
-    static Button openGrasperButton = new JoystickButton(operatorStick, nykoLeftBumper);
-    static Button closeGrasperButton = new JoystickButton(operatorStick, nykoRightBumper);
-    static Button lowerWristButton = new JoystickButton(operatorStick, nykoMiddle9);
-    static Button raiseWristButton = new JoystickButton(operatorStick, nykoMiddle10);
+    static Button toggleGrasperButton = new JoystickButton(operatorStick, nykoLeftBumper);
+    static Button toggleWristButton = new JoystickButton(operatorStick, nykoRightBumper);
     static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
     static Button cancelElevatorMoveButton = new JoystickButton(operatorStick, nykoRightStick);
     static Button alternateElevatorTargetButton = new JoystickButton(operatorStick, nykoButton3);
@@ -94,10 +92,8 @@ public final class OI {
     	acquireButton.whenReleased(new CompleteAcquire());
     	releaseButton.whenPressed(new StartRelease());
     	releaseButton.whenReleased(new CompleteRelease());
-    	openGrasperButton.whenPressed(new OpenGrasper());
-    	closeGrasperButton.whenPressed(new CloseGrasper());
-    	lowerWristButton.whenPressed(new LowerWrist());
-    	raiseWristButton.whenPressed(new RaiseWrist());
+    	toggleGrasperButton.whenPressed(new ToggleGrasper());
+    	toggleWristButton.whenPressed(new ToggleWrist());
     	homeElevatorButton.whileHeld(new HomeElevator());
     	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
     	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
