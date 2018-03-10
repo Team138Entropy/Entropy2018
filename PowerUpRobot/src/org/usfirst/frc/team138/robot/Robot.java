@@ -172,6 +172,7 @@ public class Robot extends IterativeRobot {
         Sensors.updateSmartDashboard();
         elevator.updateSmartDashboard();
         // climber.updateSmartDashboard();
+        grasper.updateSmartDashboard();
     }
     
     /**
