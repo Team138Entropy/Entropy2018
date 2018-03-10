@@ -55,7 +55,7 @@ public class Grasper extends Subsystem{
 		return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
 	}
 	
-	private void acquireRollers() {
+	public void acquireRollers() {
 		_rollerSpeedController.set(Constants.aquireSpeed);
 	}
 	
