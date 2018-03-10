@@ -80,6 +80,7 @@ public final class OI {
     static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
     static Button cancelElevatorMoveButton = new JoystickButton(operatorStick, nykoRightStick);
     static Button alternateElevatorTargetButton = new JoystickButton(operatorStick, nykoButton3);
+    static Button testButton = new JoystickButton(operatorStick, nykoMiddle9);
     
     static double lastX=0;
     static double LastY=0;
@@ -97,6 +98,7 @@ public final class OI {
     	homeElevatorButton.whileHeld(new HomeElevator());
     	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
     	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
+    	testButton.whenPressed(new RaiseWrist());
     }
     
     

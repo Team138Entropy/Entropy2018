@@ -15,7 +15,8 @@ public class RaiseWrist extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.grasper.raiseWrist();
+//    	Robot.grasper.raiseWrist();
+    	Robot.grasper.toggleCube();
     }
 
     // Called repeatedly when this Command is scheduled to run
