@@ -148,12 +148,14 @@ public class Drivetrain extends Subsystem{
 		SmartDashboard.putNumber("R Talon Vel (M/S)", -frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 
 		SmartDashboard.putNumber("L Position (M)", -Constants.MetersPerPulse*frontLeftTalon.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("R Position (M)",-Constants.MetersPerPulse*frontRightTalon.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("R Position (M)", -Constants.MetersPerPulse*frontRightTalon.getSelectedSensorPosition(0));
 	}
 
 	public void Relax(){
 		frontLeftTalon.set(ControlMode.PercentOutput, 0);
 		frontRightTalon.set(ControlMode.PercentOutput, 0);
+		SmartDashboard.putNumber("L PWM", -frontLeftTalon.getMotorOutputPercent());
+		SmartDashboard.putNumber("R PWM", -frontRightTalon.getMotorOutputPercent());
 	}
 
 

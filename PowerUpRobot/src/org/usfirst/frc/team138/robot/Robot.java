@@ -38,6 +38,8 @@ public class Robot extends IterativeRobot {
     public static final OI oi = new OI();
 	
     Preferences prefs = Preferences.getInstance();
+    
+    public static float accumulatedHeading = 0f;
 	
     // Commands
     AutonomousCommand autonomousCommand;
@@ -99,6 +101,11 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 	}
+	
+	private double getWheelAngle() {
+		double wheelAngle = (AutoDrive.rightDistance() - AutoDrive.leftDistance()) / Constants.driveWheelSpacing;
+		return wheelAngle * (180 / Math.PI);
+	}
 
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select between different autonomous modes
@@ -115,14 +122,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Starting Position:", startPosChooser);		
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
     	
-		/*
-    	Constants.kPRotate=prefs.getDouble("Rotate KP", .02);
-    	Constants.kDRotate=prefs.getDouble("Rotate KD", .0);
-    	Constants.kIRotate=prefs.getDouble("Rotate KI", .001);
-    	Constants.AutoDriveRotateOvershoot=prefs.getDouble("AutoDrive Overshoot", 4); // Degrees
-    	*/
-
-
+		Constants.kPRotate=prefs.getDouble("Rotate KP", Constants.kPRotate);
+    	Constants.kDRotate=prefs.getDouble("Rotate KD", Constants.kDRotate);
+    	Constants.kIRotate=prefs.getDouble("Rotate KI", Constants.kIRotate);
+    	
+    	Constants.kPDrive=prefs.getDouble("Drive KP", Constants.kPDrive);
+    	Constants.kDDrive=prefs.getDouble("Drive KD", Constants.kDDrive);
+    	Constants.kIDrive=prefs.getDouble("Drive KI", Constants.kIDrive);
+//    	Constants.AutoDriveRotateOvershoot=prefs.getDouble("AutoDrive Overshoot", 4); // Degrees
     	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();
         autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
@@ -130,6 +137,8 @@ public class Robot extends IterativeRobot {
         		autoModeChooser.getSelected(),
         		gameData);
         isPracticeRobot();
+        accumulatedHeading = 0;
+        Sensors.gyro.reset();
         autonomousCommand.start();
     }
 
@@ -139,6 +148,7 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
         Sensors.updateSmartDashboard();
+        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
     }
 
     public void teleopInit() {
@@ -148,6 +158,7 @@ public class Robot extends IterativeRobot {
         }        
         Constants.practiceBot = isPracticeRobot();
     	Sensors.resetEncoders();
+        Sensors.gyro.reset();
     	elevator.StopMoving();
     	
     }
@@ -172,6 +183,7 @@ public class Robot extends IterativeRobot {
         Sensors.updateSmartDashboard();
         elevator.updateSmartDashboard();
         // climber.updateSmartDashboard();
+        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
     }
     
     /**

@@ -17,13 +17,15 @@ public class AutonomousCommand extends CommandGroup {
 		// Test Modes
 		if (autoMode == "test")
 		{
-			
-//			depositCubeRightSwitch("right");
+			SmartDashboard.putString("Auto", "test");
+			addSequential(new AutoDrive(Constants.left90Degrees));
+			addSequential(new AutoDrive(Constants.autoSpeed, 200));
 		}
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData
 		if (autoMode == "auto")
 		{
+			SmartDashboard.putString("Auto", "auto");
 			if (startPos.equals("left")) {
 				
 				sameSide = "left";
