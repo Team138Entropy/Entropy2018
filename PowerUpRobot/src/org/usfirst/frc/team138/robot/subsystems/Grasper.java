@@ -1,5 +1,7 @@
 package org.usfirst.frc.team138.robot.subsystems;
 
+import java.awt.Robot;
+
 import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.RobotMap;
 
@@ -20,6 +22,7 @@ public class Grasper extends Subsystem{
 	private WPI_TalonSRX _leftRollerTalon = new WPI_TalonSRX(RobotMap.LEFT_CUBE_CAN_GRASPER_PORT);
 	private WPI_TalonSRX _rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
 	
+	private static boolean _isAcquiring = false;
 	
 	// Master
 	 SpeedControllerGroup _rollerSpeedController = new SpeedControllerGroup(_leftRollerTalon, _rightRollerTalon);
@@ -80,6 +83,10 @@ public class Grasper extends Subsystem{
 	
 	// Acquisition Roller Functions
 	
+	public boolean isCubeDetected() {
+		return true;
+	}
+	
 	public void acquireRollers() {
 		_rollerSpeedController.set(Constants.aquireSpeed);
 	}
@@ -98,8 +105,13 @@ public class Grasper extends Subsystem{
 	
 	// Command Functions
 	
+	public boolean isAcquiring() {
+		return _isAcquiring;
+	}
+	
 	public void StartAcquire() {
 		SmartDashboard.putString("Acquire Release","Start Acquire");
+		_isAcquiring = true;
 		closeGrasper();
 		acquireRollers(); 
 	}
@@ -112,6 +124,7 @@ public class Grasper extends Subsystem{
 
 	public void StartRelease() {
 		SmartDashboard.putString("Acquire Release","Start Release");
+		_isAcquiring = false;
 		lowerWrist();
 		deployRollers();
 	}
