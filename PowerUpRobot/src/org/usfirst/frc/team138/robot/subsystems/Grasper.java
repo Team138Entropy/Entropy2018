@@ -21,6 +21,11 @@ public class Grasper extends Subsystem{
 	private Solenoid _grasperSolenoid = new Solenoid(RobotMap.SOLENOID_GRASPER_PORT);
 	private Solenoid _wristSolenoid = new Solenoid(RobotMap.SOLENOID_WRIST_PORT);
 	
+	// Used for Simulation
+	private static boolean _isGrasperOpen = true;
+	private static boolean _isWristRaised = true;
+	private static String _acquisitionState = "off";
+	
 	private WPI_TalonSRX _leftRollerTalon = new WPI_TalonSRX(RobotMap.LEFT_CUBE_CAN_GRASPER_PORT);
 	private WPI_TalonSRX _rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
 	
@@ -51,14 +56,19 @@ public class Grasper extends Subsystem{
 	
 	public void openGrasper() {
     	_grasperSolenoid.set(Constants.grasperSolenoidActiveOpen);
+		_isGrasperOpen = true;
     }
     
     public void closeGrasper() {
     	_grasperSolenoid.set(!Constants.grasperSolenoidActiveOpen);
+    	_isGrasperOpen = false;
     }
     
     public boolean grasperIsOpen() {
 		return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
+
+		// For Simulation
+		//return _isGrasperOpen;
 	}
     
     // Wrist Functions
@@ -74,14 +84,19 @@ public class Grasper extends Subsystem{
     
     public void raiseWrist() {
     	_wristSolenoid.set(Constants.wristSolenoidActiveRaised);
+    	_isWristRaised = true;
     }
     
     public void lowerWrist() {
     	_wristSolenoid.set(!Constants.wristSolenoidActiveRaised);
+    	_isWristRaised = false;
     }
 	
 	public boolean wristIsUp() {
 		return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
+		
+		// For simulation
+		// return _isWristRaised;
 	}
 	
 	// Acquisition Roller Functions
@@ -101,18 +116,23 @@ public class Grasper extends Subsystem{
 	
 	public void acquireRollers() {
 		_rollerSpeedController.set(Constants.aquireSpeed);
+		_acquisitionState = "Acquire";
+		
 	}
 	
 	private void deployRollers() {
 		_rollerSpeedController.set(Constants.deploySpeed);
+		_acquisitionState = "Deploy";
 	}
 	
 	private void holdRollers() {
 		_rollerSpeedController.set(Constants.holdSpeed);
+		_acquisitionState = "Hold";
 	}
 	
 	private void stopRollers() {
 		_rollerSpeedController.set(0);
+		_acquisitionState = "off";
 	}
 	
 	// Command Functions
@@ -127,7 +147,6 @@ public class Grasper extends Subsystem{
 	public void CompleteAcquire() {
 		SmartDashboard.putString("Acquire Release", "Complete Acquire");
 		holdRollers();
-		raiseWrist();
 	}
 
 	public void StartRelease() {
@@ -150,11 +169,14 @@ public class Grasper extends Subsystem{
 		else {
 			SmartDashboard.putString("Grasper", "closed");
 		}
+		
 		if (wristIsUp()) {
 			SmartDashboard.putString("Wrist", "raised");
 		}
 		else {
 			SmartDashboard.putString("Wrist", "lowered");
 		}
+		
+		SmartDashboard.putString("Acquisition", _acquisitionState );
 	}
 }

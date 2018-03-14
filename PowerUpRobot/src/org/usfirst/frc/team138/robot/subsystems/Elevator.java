@@ -53,6 +53,7 @@ public class Elevator extends Subsystem{
 	private double _targetPosition = 0.0;
 	private double _currentPosition = 0.0;
 	private ElevatorTarget _alternateElevatorTarget = ElevatorTarget.NONE;
+	private boolean _isAtFloor = true;
 	
 	private int _currentJogDirection = 0;
 	
@@ -185,6 +186,7 @@ public class Elevator extends Subsystem{
 	
 	// Elevate to a specific target position
 	public void Elevate (ElevatorTarget target) {
+		_isAtFloor = false; 
 		if (target == ElevatorTarget.NONE)
 		{
 			StopMoving();
@@ -196,6 +198,7 @@ public class Elevator extends Subsystem{
 			case ACQUIRE:
 				_targetPosition = 0;	// Acquire Height is Cube Level 1
 				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+				_isAtFloor = true;
 				break;
 			case EXCHANGE:
 				_targetPosition = 500;	// Alternate Acquire position is Exchange
@@ -225,6 +228,7 @@ public class Elevator extends Subsystem{
 			case ACQUIRE:
 				_targetPosition = 0;	// Acquire Height is Cube Level 1
 				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+				_isAtFloor = true;
 				break;
 			case EXCHANGE:
 				_targetPosition = 200;	// Alternate Acquire position is Exchange
@@ -268,6 +272,10 @@ public class Elevator extends Subsystem{
 	// Return the elevator position in encoder counts
 	public double GetElevatorPosition() {
 		 return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
+	}
+	
+	public boolean IsAtFloor() {
+		return _isAtFloor;
 	}
 	
 	// Execute to move

@@ -1,6 +1,7 @@
 package org.usfirst.frc.team138.robot.commands;
 
 import org.usfirst.frc.team138.robot.Robot;
+import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -11,12 +12,19 @@ public class CompleteAcquire extends Command {
 
     public CompleteAcquire() {
         requires(Robot.grasper);
+        requires(Robot.elevator);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.grasper.CompleteAcquire();
+    	
+    	// If we're acquiring from the floor, lift the cube to the exchange level
+    	if (Robot.elevator.IsAtFloor()) {
+    		Robot.elevator.Elevate(ElevatorTarget.EXCHANGE);
+    	}
     }
+   
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
