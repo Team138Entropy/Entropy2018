@@ -16,7 +16,7 @@ public class LowerWrist extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.grasper.lowerWrist();
-    	Robot.grasper.acquireRollers();
+    	Robot.grasper.acquireRollers(true);
     }
 
     // Called repeatedly when this Command is scheduled to run

@@ -27,9 +27,16 @@ public class ElevateToTarget extends Command {
 	
 
 	protected void initialize() {
+		// Supports auto acquire
+		if (elevatorTarget == ElevatorTarget.ACQUIRE) {
+			Robot.grasper.acquireRollers(true);
+		}
+		
+		// Supports release from scale
 		if (elevatorTarget == ElevatorTarget.LOWER_SCALE || elevatorTarget == ElevatorTarget.UPPER_SCALE) {
 			Robot.grasper.raiseWrist();
 		}
+		
 		Robot.elevator.Elevate(elevatorTarget);
 		_currentCommandTime = 0;
 		}

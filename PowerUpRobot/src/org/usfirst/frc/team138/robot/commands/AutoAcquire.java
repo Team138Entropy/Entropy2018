@@ -4,6 +4,7 @@ import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -25,14 +26,15 @@ public class AutoAcquire extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if(Robot.grasper.isCubeDetected() && !_isAcquiring) {
+    	if(Robot.grasper.isCubeDetected() && Robot.grasper.isReadyforAutoAcquire() && !_isAcquiring) {
     		_currentAcquireTime = 0;
     		_isAcquiring = true;
-    		Robot.grasper.StartAcquire();
+    		Robot.grasper.StartAcquire(true);
     	}
+    	
     	if(_isAcquiring) {
     		_currentAcquireTime += Constants.commandLoopIterationSeconds;
-    		
+    		SmartDashboard.putNumber("Acquire Timer", _currentAcquireTime);
     		if (_currentAcquireTime > _acquireTimeSeconds) {
     			Robot.grasper.CompleteAcquire();
     			_isAcquiring = false;

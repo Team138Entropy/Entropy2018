@@ -29,8 +29,8 @@ public class Grasper extends Subsystem{
 	private WPI_TalonSRX _leftRollerTalon = new WPI_TalonSRX(RobotMap.LEFT_CUBE_CAN_GRASPER_PORT);
 	private WPI_TalonSRX _rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
 	
-	private static boolean _isAcquiring = false;
 	private static boolean _isCubeDetected = false;
+	private static boolean _isReadyforAutoAcquire = false;
 	
 	// Master
 	 SpeedControllerGroup _rollerSpeedController = new SpeedControllerGroup(_leftRollerTalon, _rightRollerTalon);
@@ -68,7 +68,7 @@ public class Grasper extends Subsystem{
 		return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
 
 		// For Simulation
-		//return _isGrasperOpen;
+		// return _isGrasperOpen;
 	}
     
     // Wrist Functions
@@ -114,10 +114,10 @@ public class Grasper extends Subsystem{
 		}
 	}
 	
-	public void acquireRollers() {
+	public void acquireRollers(boolean allowAutoAcquire) {
 		_rollerSpeedController.set(Constants.aquireSpeed);
 		_acquisitionState = "Acquire";
-		
+		_isReadyforAutoAcquire = allowAutoAcquire;
 	}
 	
 	private void deployRollers() {
@@ -137,21 +137,24 @@ public class Grasper extends Subsystem{
 	
 	// Command Functions
 	
-	public void StartAcquire() {
+	public boolean isReadyforAutoAcquire() {
+		return _isReadyforAutoAcquire;
+	}
+	
+	public void StartAcquire(boolean autoAcquire) {
 		SmartDashboard.putString("Acquire Release","Start Acquire");
-		_isAcquiring = true;
 		closeGrasper();
-		acquireRollers(); 
+		acquireRollers(autoAcquire); 
 	}
 	
 	public void CompleteAcquire() {
 		SmartDashboard.putString("Acquire Release", "Complete Acquire");
+		_isReadyforAutoAcquire = false;
 		holdRollers();
 	}
 
 	public void StartRelease() {
 		SmartDashboard.putString("Acquire Release","Start Release");
-		_isAcquiring = false;
 		lowerWrist();
 		deployRollers();
 	}
@@ -177,6 +180,8 @@ public class Grasper extends Subsystem{
 			SmartDashboard.putString("Wrist", "lowered");
 		}
 		
+		SmartDashboard.putBoolean("Cube", _isCubeDetected);
+		SmartDashboard.putBoolean("Auto Acquire", _isReadyforAutoAcquire);
 		SmartDashboard.putString("Acquisition", _acquisitionState );
 	}
 }
