@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team138.robot.subsystems.*;
 import org.usfirst.frc.team138.robot.commands.*;
+
 //import edu.wpi.first.wpilibj.Preferences;
 
 /**
@@ -25,12 +26,14 @@ public class Robot extends IterativeRobot {
     SendableChooser<String> teamChooser;
     SendableChooser<String> startPosChooser;
     SendableChooser<String> autoModeChooser;
+    SendableChooser<String> robotChooser;
         
     // Subsystems
     public static final Compressor compressor = new Compressor();
     public static final Drivetrain drivetrain = new Drivetrain();
     public static final Grasper grasper = new Grasper();
     public static final Elevator elevator = new Elevator();
+    // public static final Climber climber = new Climber();
 
     public static final OI oi = new OI();
 	
@@ -58,6 +61,11 @@ public class Robot extends IterativeRobot {
 		Sensors.updateSmartDashboard();
 		SmartDashboard.putData(Scheduler.getInstance());
 		
+		robotChooser = new SendableChooser<String>();
+		robotChooser.addDefault("Competition robot", Constants.competitionRobot);
+		robotChooser.addDefault("Practice robot", Constants.practiceRobot);
+		SmartDashboard.putData("Robot:", robotChooser);		
+		
 		teamChooser = new SendableChooser<String>();
 		teamChooser.addDefault("Red Alliance", "red");
 		teamChooser.addObject("Blue Alliance", "blue");
@@ -75,7 +83,7 @@ public class Robot extends IterativeRobot {
 		autoModeChooser.addObject("Manual", "manual");
 		autoModeChooser.addObject("Test" , "test");
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
-			
+					
 
     }
 	
@@ -103,11 +111,25 @@ public class Robot extends IterativeRobot {
 	 */
     public void autonomousInit() {
     	mode = "auto";
+		SmartDashboard.putData("Team:", teamChooser);
+		SmartDashboard.putData("Starting Position:", startPosChooser);		
+		SmartDashboard.putData("Auto Mode:", autoModeChooser);
+    	
+		/*
+    	Constants.kPRotate=prefs.getDouble("Rotate KP", .02);
+    	Constants.kDRotate=prefs.getDouble("Rotate KD", .0);
+    	Constants.kIRotate=prefs.getDouble("Rotate KI", .001);
+    	Constants.AutoDriveRotateOvershoot=prefs.getDouble("AutoDrive Overshoot", 4); // Degrees
+    	*/
+
+
+    	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();
         autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
         		startPosChooser.getSelected(),
         		autoModeChooser.getSelected(),
         		gameData);
+        isPracticeRobot();
         autonomousCommand.start();
     }
 
@@ -124,9 +146,19 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) {
         	autonomousCommand.cancel();        	
         }        
+        Constants.practiceBot = isPracticeRobot();
     	Sensors.resetEncoders();
     	elevator.StopMoving();
     	
+    }
+    
+    public boolean isPracticeRobot() {
+    	if ((robotChooser.getSelected() == Constants.practiceRobot) && !Constants.competitionOverride) {
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
     }
 
     /**
@@ -140,6 +172,7 @@ public class Robot extends IterativeRobot {
         Sensors.updateSmartDashboard();
         elevator.updateSmartDashboard();
         OI.updateSmartDashboard();
+        // climber.updateSmartDashboard();
     }
     
     /**

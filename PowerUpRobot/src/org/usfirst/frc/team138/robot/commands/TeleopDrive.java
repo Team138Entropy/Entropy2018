@@ -5,22 +5,57 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.OI;
 import org.usfirst.frc.team138.robot.Robot;
+import org.usfirst.frc.team138.robot.Sensors;
 
 //import org.usfirst.frc.team138.robot.subsystems.Claw;
 
 public class TeleopDrive extends Command{
 	
-	float clawUpPoint = 0.1f;
 	
 	public TeleopDrive(){
 		requires(Robot.drivetrain);
 	}
 
 	protected void initialize() {
+		Sensors.resetEncoders();
+		Sensors.gyro.reset();	
 	}
 
 	protected void execute() {
-		Robot.drivetrain.drive(OI.getMoveSpeed(), OI.getRotateSpeed());
+		double moveSpeed,rotateSpeed;
+		moveSpeed=OI.getMoveSpeed();
+		rotateSpeed= OI.getRotateSpeed();
+		// Full speed or slow speed?
+		if (OI.isFullSpeed()) {
+			// Full speed
+			moveSpeed=moveSpeed*Constants.ClosedLoopCruiseVelocity;
+			rotateSpeed=rotateSpeed*Constants.ClosedLoopTurnSpeed;
+		}
+		else { 
+			// Slow speed
+			moveSpeed=moveSpeed*Constants.ClosedLoopSlowVelocity;
+			rotateSpeed=rotateSpeed*Constants.ClosedLoopSlowRotateSpeed;
+		}
+		// Limit rate of change of moveSpeed
+		moveSpeed=Robot.drivetrain.limitDriveAccel(moveSpeed);
+		rotateSpeed=Robot.drivetrain.limitRotateAccel(rotateSpeed);
+		if (!OI.isFullSpeed())
+		{
+			// Send to driveTrain in Meters/sec units.
+			Robot.drivetrain.drive(moveSpeed,rotateSpeed);
+		}
+		else {
+			// Send to driveTrain in Meters/sec units.
+			Robot.drivetrain.drive(moveSpeed,rotateSpeed);
+			
+			/*
+			// Full Speed - use "old fashioned" driveWithTable
+			// Convert back to % throttle for backwards compatibility
+			moveSpeed=moveSpeed/Constants.ClosedLoopCruiseVelocity;
+			rotateSpeed=rotateSpeed/Constants.ClosedLoopTurnSpeed;
+			Robot.drivetrain.driveWithTable(moveSpeed, rotateSpeed);
+			*/
+		}
 	}
 
 	protected boolean isFinished() {

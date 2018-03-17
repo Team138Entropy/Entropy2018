@@ -1,0 +1,6 @@
+practice
+ - width 71.12cm (78.74cm)
+ - length 76.62cm (84.24cm)
+ - bumpers 7.62cm
+
+competition

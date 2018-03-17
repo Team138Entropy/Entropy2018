@@ -1,18 +1,17 @@
 package org.usfirst.frc.team138.robot.commands;
 
 import org.usfirst.frc.team138.robot.Robot;
-
 import edu.wpi.first.wpilibj.command.Command;
 
-public class HomeElevator extends Command {
+public class ElevateToAlternateTarget extends Command {
 	
-	public HomeElevator()
+	public ElevateToAlternateTarget()
 	{
 		requires(Robot.elevator);
 	}
-
+	
 	protected void initialize() {
-		Robot.elevator.HomeElevator();
+		Robot.elevator.ElevateToAlternateTarget();
 	}
 
 	protected void execute() {
@@ -20,17 +19,17 @@ public class HomeElevator extends Command {
 	}
 
 	protected boolean isFinished() {
-		return false;
+		return Robot.elevator.IsMoveComplete();
 	}
 
 	protected void end() {
-		Robot.elevator.StopHoming();
+		Robot.elevator.StopMoving();
 		
 	}
 
 	protected void interrupted() {
 		
-		Robot.elevator.StopHoming();
+		Robot.elevator.CancelMove();
 	}
 
 }

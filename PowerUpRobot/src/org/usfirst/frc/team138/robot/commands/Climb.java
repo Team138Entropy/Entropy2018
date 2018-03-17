@@ -1,5 +1,6 @@
 package org.usfirst.frc.team138.robot.commands;
 
+import org.usfirst.frc.team138.robot.OI;
 import org.usfirst.frc.team138.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -7,29 +8,34 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class StartRelease extends Command {
-	int timer;
+public class Climb extends Command {
 
-    public StartRelease() {
-        requires(Robot.grasper);
+    public Climb() {
+        //requires(Robot.climber);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.grasper.StartRelease();
-    	timer=0;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	if (OI.isWinchEnabled()) {
+    		//Robot.climber.climb(OI.getClimbSpeed());
+    	} else {
+    		//Robot.climber.climb(0.0);
+    	}
+    	
+    	if (OI.isHookRotationEnabled()) {
+    		//Robot.climber.rotateHook(OI.getHookRotation());
+    	} else {
+    		//Robot.climber.rotateHook(0.0);
+    	}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	if (timer++>2)
-    		return true;
-    	else
-    		return false;
+        return false;
     }
 
     // Called once after isFinished returns true
