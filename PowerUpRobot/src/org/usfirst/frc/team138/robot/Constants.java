@@ -10,7 +10,7 @@ public class Constants {
 		public static double commandLoopIterationSeconds = 0.020;
 	
 		public static boolean practiceBot = false;
-		public static boolean competitionOverride = true;
+		public static boolean competitionOverride = false;
 		
 		// Deadband applied to Joystick, when
 		// magnitude is less than deadBand, then set Magnitude to 0
