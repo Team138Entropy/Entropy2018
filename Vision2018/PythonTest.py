@@ -11,7 +11,9 @@ import libjevois as jevois
 import cv2
 import numpy as np
 import lineSort as ls
-
+import logging
+import traceback
+logging.basicConfig(filename='example.log',level=logging.DEBUG)
 #import matplotlib.pyplot as plt
 
 class PythonTest:
@@ -36,6 +38,8 @@ class PythonTest:
         return img1
         
     def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        self.logger.debug("some string")
         self.morphBNo2 = 2
         
         # Instantiate a JeVois Timer to measure our processing framerate:
@@ -73,9 +77,11 @@ class PythonTest:
             
             aveWidth = foundWidth/(len(xpeaks)-1)
             return aveWidth
-            #print(aveWidth)
+            # print(aveWidth)
         
     def process(self, inframe, outframe):
+        self.logger.debug("process begin")
+        
         # Get the next camera image (may block until it is captured) and convert it to OpenCV BGR (for color output):
         #img = inframe.getCvBGR()
         # Also convert it to grayscale for processing:
@@ -117,21 +123,21 @@ class PythonTest:
 
         M = cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
         img = cv2.warpAffine(img,M,(cols,rows))
-        
+        self.logger.debug("Im still here!")
         # filter by color and intensity
     
     
-    #Colors++++++++++++++++++++++++++++++++++++++++++
-    #test red or blue
+        #Colors++++++++++++++++++++++++++++++++++++++++++
+        #test red or blue
         redStart = True
         blueStart = False
-
-    #blue
+        
+        #blue
         if (blueStart):
             lower_blue = np.array([99,100,100])
             upper_blue = np.array([129,255,255])
             mask = cv2.inRange(img1, lower_blue, upper_blue)
-    #Red
+        #Red
         if (redStart):
             lower_red = np.array([0,100,100])
             upper_red = np.array([10,255,255])
@@ -143,20 +149,35 @@ class PythonTest:
         
             mask = cv2.bitwise_or(mask,mask1)
             
-        if (redStart or blueStart):
-            kernel = np.ones((7,7), np.uint8)
-            mask = cv2.dilate(mask,kernel,iterations = 5)
-            # mask off the grayscale image
-            gray = img1[:,:,2]
-            ret = cv2.bitwise_and(gray,gray, mask= mask)
-            thresholded = PythonTest.adaptiveThreshold(ret,0.95)
-            thresholded = PythonTest.cleanupImage(thresholded,9)    
-            lightContours = PythonTest.locateContours(thresholded,0,0)
-            clusters = ls.computeClusters(lightContours)
-            totalitarian = 0
-            for cluster in clusters:
-                totalitarian += cluster.avgDist()
-            aveWidth = (totalitarian/len(clusters))
+        
+        kernel = np.ones((7,7), np.uint8)
+        mask = cv2.dilate(mask,kernel,iterations = 5)
+        # mask off the grayscale image
+        gray = img1[:,:,2]
+        
+        ret = cv2.bitwise_and(gray,gray, mask= mask)
+        
+        thresholded = PythonTest.adaptiveThreshold(ret,0.95)
+        
+        thresholded = PythonTest.cleanupImage(thresholded,9)    
+        
+        lightContours = PythonTest.locateContours(thresholded,0,0)
+        
+        try:
+            
+            lc_type = type(lightContours)
+            self.logger.debug(lc_type)
+            self.logger.debug(lightContours[0])
+            self.logger.debug(lightContours[0][0])
+        except:
+            self.logger.debug("damn")
+            raise
+            
+        clusters = ls.computeClusters(lightContours[0])
+        totalitarian = 0
+        for cluster in clusters:
+            totalitarian += cluster.avgDist()
+        aveWidth = (totalitarian/len(clusters))
         """
         if lightContours is not None:
             #cnt = lightContours[0]
@@ -344,3 +365,7 @@ class PythonTest:
             ret.append((start,len(arr)-1))
             
         return ret
+
+
+
+        
