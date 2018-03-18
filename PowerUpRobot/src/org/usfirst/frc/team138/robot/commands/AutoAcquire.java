@@ -26,6 +26,12 @@ public class AutoAcquire extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	
+    	if (!Robot.grasper.wristIsUp() && Robot.grasper.isReadyforAutoAcquire())
+    	{
+    		Robot.grasper.acquireRollers(true);
+    	}
+    	
     	if(Robot.grasper.isCubeDetected() && Robot.grasper.isReadyforAutoAcquire() && !_isAcquiring) {
     		_currentAcquireTime = 0;
     		_isAcquiring = true;

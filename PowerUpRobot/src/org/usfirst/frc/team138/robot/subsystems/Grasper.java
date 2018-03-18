@@ -31,6 +31,7 @@ public class Grasper extends Subsystem{
 	
 	private static boolean _isCubeDetected = false;
 	private static boolean _isReadyforAutoAcquire = false;
+	private static boolean _isCubeAcquisitionComplete = false;
 	
 	// Master
 	 SpeedControllerGroup _rollerSpeedController = new SpeedControllerGroup(_leftRollerTalon, _rightRollerTalon);
@@ -85,11 +86,14 @@ public class Grasper extends Subsystem{
     public void raiseWrist() {
     	_wristSolenoid.set(Constants.wristSolenoidActiveRaised);
     	_isWristRaised = true;
+    	_isReadyforAutoAcquire = false;
     }
     
     public void lowerWrist() {
     	_wristSolenoid.set(!Constants.wristSolenoidActiveRaised);
     	_isWristRaised = false;
+    	
+    	_isReadyforAutoAcquire = !_isCubeAcquisitionComplete;
     }
 	
 	public boolean wristIsUp() {
@@ -102,7 +106,12 @@ public class Grasper extends Subsystem{
 	// Acquisition Roller Functions
 	
 	public boolean isCubeDetected() {
-		return _isCubeDetected;
+		return (_leftRollerTalon.getOutputCurrent() > 5 || _rightRollerTalon.getOutputCurrent() > 5);
+	}
+	
+	public boolean isCubeAcquisitionComplete ()
+	{
+		return _isCubeAcquisitionComplete;
 	}
 	
 	public void toggleCube() {
@@ -150,6 +159,7 @@ public class Grasper extends Subsystem{
 	public void CompleteAcquire() {
 		SmartDashboard.putString("Acquire Release", "Complete Acquire");
 		_isReadyforAutoAcquire = false;
+		_isCubeAcquisitionComplete = true;
 		holdRollers();
 	}
 
@@ -163,6 +173,8 @@ public class Grasper extends Subsystem{
 		SmartDashboard.putString("Acquire Release","Complete Release");
 		stopRollers();
 		openGrasper();
+		_isReadyforAutoAcquire = true;
+		_isCubeAcquisitionComplete = false;
 	}
 	public void updateSmartDashboard()
 	{
@@ -183,5 +195,7 @@ public class Grasper extends Subsystem{
 		SmartDashboard.putBoolean("Cube", _isCubeDetected);
 		SmartDashboard.putBoolean("Auto Acquire", _isReadyforAutoAcquire);
 		SmartDashboard.putString("Acquisition", _acquisitionState );
+		SmartDashboard.putNumber("L Acquisition Current", _leftRollerTalon.getOutputCurrent());
+		SmartDashboard.putNumber("R Acquisition Current", _rightRollerTalon.getOutputCurrent());
 	}
 }
