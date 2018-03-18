@@ -112,6 +112,7 @@ public class Constants {
 		// mechanism to settle (before sensors are reset at start of next move)
 		public static double AutoDrivePause = 2; // 50=1second
 		public static double AutoDriveStopTolerance = 2; // CM
+
 		
 		// Dashboard input constants
 		public final static String practiceRobot = "practice robot";

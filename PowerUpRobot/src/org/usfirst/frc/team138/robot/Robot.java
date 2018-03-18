@@ -34,12 +34,12 @@ public class Robot extends IterativeRobot {
     public static final Grasper grasper = new Grasper();
     public static final Elevator elevator = new Elevator();
     // public static final Climber climber = new Climber();
+    public static double accumulatedHeading = 0.0; // Accumulate heading angle (target)
 
     public static final OI oi = new OI();
 	
     Preferences prefs = Preferences.getInstance();
     
-    public static float accumulatedHeading = 0f;
 	
     // Commands
     AutonomousCommand autonomousCommand;
@@ -86,6 +86,7 @@ public class Robot extends IterativeRobot {
 		autoModeChooser.addObject("Test" , "test");
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
 					
+        Robot.accumulatedHeading = 0;
 
     }
 	
@@ -126,6 +127,9 @@ public class Robot extends IterativeRobot {
     	Constants.kDRotate=prefs.getDouble("Rotate KD", Constants.kDRotate);
     	Constants.kIRotate=prefs.getDouble("Rotate KI", Constants.kIRotate);
     	
+    	Constants.AutoDriveSpeed=prefs.getDouble("Auto Speed", Constants.AutoDriveSpeed);
+
+    	
     	Constants.kPDrive=prefs.getDouble("Drive KP", Constants.kPDrive);
     	Constants.kDDrive=prefs.getDouble("Drive KD", Constants.kDDrive);
     	Constants.kIDrive=prefs.getDouble("Drive KI", Constants.kIDrive);
@@ -137,8 +141,8 @@ public class Robot extends IterativeRobot {
         		autoModeChooser.getSelected(),
         		gameData);
         isPracticeRobot();
-        accumulatedHeading = 0;
         Sensors.gyro.reset();
+        Sensors.resetEncoders();
         autonomousCommand.start();
     }
 
@@ -157,9 +161,10 @@ public class Robot extends IterativeRobot {
         	autonomousCommand.cancel();        	
         }        
         Constants.practiceBot = isPracticeRobot();
-    	Sensors.resetEncoders();
+    //	Sensors.resetEncoders();
         Sensors.gyro.reset();
     	elevator.StopMoving();
+        Robot.accumulatedHeading = 0;
     	
     }
     
