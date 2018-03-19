@@ -169,11 +169,23 @@ class PythonTest:
             self.logger.debug(lc_type)
             self.logger.debug(lightContours[0])
             self.logger.debug(lightContours[0][0])
+            self.logger.debug(lightContours[0][0][0])
+            self.logger.debug(lightContours[0][0][0][0])
         except:
             self.logger.debug("damn")
             raise
-            
-        clusters = ls.computeClusters(lightContours[0])
+        
+        points = []
+        self.logger.debug(points)
+        for item in lightContours[0]:
+            primo = float(item[0][0])
+            victoria = float(item[0][1])
+            pointToAdd = (primo,victoria)
+            points.append(pointToAdd)
+        self.logger.debug(points)
+        pt_type = type(points)
+        self.logger.debug(pt_type)
+        clusters = ls.computeClusters(points)
         totalitarian = 0
         for cluster in clusters:
             totalitarian += cluster.avgDist()
