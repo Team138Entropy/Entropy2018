@@ -95,23 +95,25 @@ public class Constants {
 		public final static double holdSpeed = 0.3;
 
 		// ***** Autonomous drive parameters *******
-		public static double AutoDriveSpeed = 0.5; //was 2.0 M/sec
+		public static double AutoDriveSpeed = 2.0; //was 2.0 M/sec
 		public static double AutoDriveAccel = 1; // M/sec2 (1 ~.1G)
 		public static double AutoDriveRotateRate = .35; // Meters/second
 		// PID gains to control rotation (measured by Gyro)
 		public static double kPRotate = .2;
-		public static double kIRotate = 2;
+		public static double kIRotate = .2;
 		public static double kDRotate = 0.5;
 		
-		public static double kPDrive = 0.4;
-		public static double kIDrive = 0.5;	
-		public static double kDDrive = 0.5;
+		public static double kPDrive = 0.2;
+		public static double kIDrive = 0.0;	
+		public static double kDDrive = 0.0;
 		// Compensate AutoDrive overshoot 
 		public static double AutoDriveRotateOvershoot = 7;	// Degrees
 		// Insert delay after each autonomous move to allow
 		// mechanism to settle (before sensors are reset at start of next move)
 		public static double AutoDrivePause = 2; // 50=1second
 		public static double AutoDriveStopTolerance = 2; // CM
+		public static double AutoDriveAngleCompensation = .01; // 
+		
 
 		
 		// Dashboard input constants

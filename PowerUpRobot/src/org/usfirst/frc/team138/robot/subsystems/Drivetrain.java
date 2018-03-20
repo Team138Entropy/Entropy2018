@@ -38,7 +38,6 @@ public class Drivetrain extends Subsystem{
 	WPI_TalonSRX backRightTalon = new WPI_TalonSRX(RobotMap.RIGHT_MOTOR_CHANNEL_BACK);
 
 	protected void initDefaultCommand() {
-		SmartDashboard.putNumber("ScaleFactor", 1.0);
 		setDefaultCommand(new TeleopDrive());
 	}
 
@@ -138,8 +137,6 @@ public class Drivetrain extends Subsystem{
 			frontRightTalon.set(ControlMode.Velocity, right * Constants.SecondsTo100Milliseconds / Constants.MetersPerPulse);
 		}
 
-		SmartDashboard.putNumber("L CMD Speed (M/s)", -left);
-		SmartDashboard.putNumber("R CMD Speed (M/S)", -right);
 
 		SmartDashboard.putNumber("L PWM", -frontLeftTalon.getMotorOutputPercent());
 		SmartDashboard.putNumber("R PWM", -frontRightTalon.getMotorOutputPercent());
@@ -147,8 +144,6 @@ public class Drivetrain extends Subsystem{
 		SmartDashboard.putNumber("L Talon Vel (M/S)", -frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 		SmartDashboard.putNumber("R Talon Vel (M/S)", -frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 
-		SmartDashboard.putNumber("L Position (M)", -Constants.MetersPerPulse*frontLeftTalon.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("R Position (M)", -Constants.MetersPerPulse*frontRightTalon.getSelectedSensorPosition(0));
 	}
 
 	public void Relax(){

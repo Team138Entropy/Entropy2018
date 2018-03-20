@@ -20,8 +20,12 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new AutoDrive(Constants.left90Degrees)); //
 			addSequential(new AutoDrive(Constants.autoSpeed, 300));
 			addSequential(new AutoDrive(-180.0)); //
-			addSequential(new AutoDrive(Constants.autoSpeed, 200));
-			addSequential(new AutoDrive(90.0)); //
+			addSequential(new AutoDrive(Constants.autoSpeed, 300));
+			addSequential(new AutoDrive(-180.0)); //
+			addSequential(new AutoDrive(Constants.autoSpeed, 300));
+			addSequential(new AutoDrive(-180.0)); //
+			addSequential(new AutoDrive(Constants.autoSpeed, 300));
+			addSequential(new AutoDrive(Constants.left90Degrees)); //
 		}
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData

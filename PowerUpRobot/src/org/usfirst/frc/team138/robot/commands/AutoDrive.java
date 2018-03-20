@@ -23,8 +23,9 @@ public class AutoDrive extends Command {
 	boolean arcTurn = false;
 	double timer=0;
 	double MinDistance=.25*.025*Constants.AutoDriveSpeed*Constants.Meters2CM; // centimeter (limit to detect stall)
-	
-
+	double lclAngle=0;
+	boolean FirstTime=true;
+	int  turnDir=1; // 1=positive rotation, -1=negative rotation; 0 =straight
 	//*******************************************
 	
 	//Degree Tolerance
@@ -46,7 +47,7 @@ public class AutoDrive extends Command {
 		timer=0;
 		stallCounter=0;
 		isDone=false;
-		SmartDashboard.putString("Auto Drive", "Straight");
+		turnDir=0;
 	}	
 	/**
 	 * Rotates to an angle
@@ -57,16 +58,19 @@ public class AutoDrive extends Command {
 		requires(Robot.drivetrain);
 		rotateInPlace = true;
 		IntegralError=0;
-		Robot.accumulatedHeading = Robot.accumulatedHeading+angle;
-		SmartDashboard.putNumber("Auto Angle 1",Robot.accumulatedHeading );
-		if (angle>0)
+		lclAngle=angle;
+		if (angle>0) {
+			turnDir=1;
 			angle=angle-Constants.AutoDriveRotateOvershoot;
-		else
+		}
+		else {
 			angle=angle+Constants.AutoDriveRotateOvershoot;
+			turnDir=-1;			
+		}
 
 		stallCounter=0;
 		isDone=false;
-		SmartDashboard.putString("Auto Drive", "Turn");
+		FirstTime=true;
 	}
 	
 	
@@ -96,6 +100,11 @@ public class AutoDrive extends Command {
 		
 		// Stalled?
 		double distanceRemaining=Math.abs(driveDistance)-Math.abs(avgDistance);
+		if (FirstTime){
+			FirstTime=false;
+			Robot.accumulatedHeading = Robot.accumulatedHeading+lclAngle;
+
+		}
 //		SmartDashboard.putNumber("Auto Angle",Robot.accumulatedHeading );
 		/*
 		if (Math.abs(lastLeftDistance-leftDistance())<MinDistance || 
@@ -122,7 +131,7 @@ public class AutoDrive extends Command {
 			
 			if (rotateInPlace)
 			{
-				if (Robot.accumulatedHeading > 0)
+				if (turnDir > 0)
 					moveComplete =(diffAngle<=ToleranceDegrees);
 				else
 					moveComplete =(diffAngle>=-ToleranceDegrees);
@@ -157,8 +166,6 @@ public class AutoDrive extends Command {
 				speed=Robot.drivetrain.limitDriveAccel(Math.signum(driveDistance)*speed);
 				rotateToAngleRate=Robot.drivetrain.limitRotateAccel(rotateToAngleRate);
 				
-				SmartDashboard.putNumber("Auto Speed", speed);
-				SmartDashboard.putNumber("Auto AngleRate", rotateToAngleRate);
 				Robot.drivetrain.drive(speed, rotateToAngleRate);
 			}
 		}
@@ -168,13 +175,8 @@ public class AutoDrive extends Command {
 	}
 
 	public boolean isFinished() {
-		// Insert delay after motion complete before command is considered completer
-		// allows time for motion to settle before resetting sensors at start of next
-		// command
-		SmartDashboard.putNumber("Auto Angle",Robot.accumulatedHeading );
 		if (isDone) {
 			Robot.drivetrain.Relax();
-			SmartDashboard.putString("Auto Drive", "Done");
 			return true;
 		}
 		else
