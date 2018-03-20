@@ -15,7 +15,7 @@ public class StartAcquire extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.grasper.StartAcquire(false);
+    	Robot.grasper.StartAcquire();
     }
 
     // Called repeatedly when this Command is scheduled to run

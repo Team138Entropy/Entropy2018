@@ -1,17 +1,24 @@
 package org.usfirst.frc.team138.robot.commands;
 
-import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.Robot;
-
+import org.usfirst.frc.team138.robot.subsystems.Grasper.RollerState;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
 public class AutoAcquire extends Command {
+	
+	private enum AutoAcquireStates {
+		DISABLED,
+		DETECT_CUBE,
+		START_ACQUIRE,
+		COMPLETE_ACQUIRE,
+		HOLD_CUBE
+		
+	}
+	private AutoAcquireStates _currentState;
 
-	private boolean _isAcquiring = false;
 	private final double _acquireTimeSeconds = 1;
 	private double _currentAcquireTime = 0;
 	
@@ -26,28 +33,57 @@ public class AutoAcquire extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	
-    	if (!Robot.grasper.wristIsUp() && Robot.grasper.isReadyforAutoAcquire())
-    	{
-    		Robot.grasper.acquireRollers(true);
+    	switch(_currentState) {
+    	case DISABLED: disabled();
+    		break;
+    	case DETECT_CUBE: detectCube();
+    		break;
+    	case START_ACQUIRE: startAcquire();
+    		break;
+    	case COMPLETE_ACQUIRE: completeAcquire();
+    		break;
+    	case HOLD_CUBE: holdCube();
     	}
     	
-    	if(Robot.grasper.isCubeDetected() && Robot.grasper.isReadyforAutoAcquire() && !_isAcquiring) {
-    		_currentAcquireTime = 0;
-    		_isAcquiring = true;
-    		Robot.grasper.StartAcquire(true);
+    }
+    private void disabled() {
+    	// do nothing 
+    	
+    	// Check for transition to DETECT_CUBE state
+    	if (Robot.elevator.IsAtFloor() &&
+    		Robot.grasper.isWristDown() &&
+    		Robot.grasper.grasperIsOpen() &&
+    		Robot.grasper.isRollerState(RollerState.ACQUIRE) &&
+    		Robot.grasper.isCubeReleased()){
+    			_currentState = AutoAcquireStates.DETECT_CUBE;
+    	
     	}
     	
-    	if(_isAcquiring) {
-    		_currentAcquireTime += Constants.commandLoopIterationSeconds;
-    		SmartDashboard.putNumber("Acquire Timer", _currentAcquireTime);
-    		if (_currentAcquireTime > _acquireTimeSeconds) {
-    			Robot.grasper.CompleteAcquire();
-    			_isAcquiring = false;
-    		}
+    }
+    private void detectCube() {
+    	//check for detected threshold 
+    	if (Robot.grasper.isCubeDetected()) {
+    		_currentState = AutoAcquireStates.START_ACQUIRE;
     	}
     }
-
+    private void startAcquire() {
+    	Robot.grasper.StartAcquire();
+    	//Check for acquired threshold
+    	if (Robot.grasper.isCubeAcquired()) {
+    		_currentState = AutoAcquireStates.COMPLETE_ACQUIRE;
+    	}
+    }
+    private void completeAcquire() {
+    	Robot.grasper.CompleteAcquire();
+    	
+    	_currentState = AutoAcquireStates.HOLD_CUBE;
+    }
+    private void holdCube() {
+    	if (Robot.grasper.isCubeReleased()) {
+    		_currentState = AutoAcquireStates.DISABLED;
+    	}
+    }
+    
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
         return false;

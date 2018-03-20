@@ -1,11 +1,8 @@
 package org.usfirst.frc.team138.robot.subsystems;
 
-import java.awt.Robot;
-
 import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.RobotMap;
 import org.usfirst.frc.team138.robot.commands.AutoAcquire;
-import org.usfirst.frc.team138.robot.commands.JogElevator;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -24,14 +21,20 @@ public class Grasper extends Subsystem{
 	// Used for Simulation
 	private static boolean _isGrasperOpen = true;
 	private static boolean _isWristRaised = true;
-	private static String _acquisitionState = "off";
+	
+	public enum RollerState {
+		OFF,
+		HOLD,
+		DEPLOY,
+		ACQUIRE
+	}
+	private static RollerState _acquisitionState = RollerState.OFF;
 	
 	private WPI_TalonSRX _leftRollerTalon = new WPI_TalonSRX(RobotMap.LEFT_CUBE_CAN_GRASPER_PORT);
 	private WPI_TalonSRX _rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
 	
 	private static boolean _isCubeDetected = false;
-	private static boolean _isReadyforAutoAcquire = false;
-	private static boolean _isCubeAcquisitionComplete = false;
+	private static boolean _isCubeReleased = false;
 	
 	// Master
 	 SpeedControllerGroup _rollerSpeedController = new SpeedControllerGroup(_leftRollerTalon, _rightRollerTalon);
@@ -75,7 +78,7 @@ public class Grasper extends Subsystem{
     // Wrist Functions
     
     public void toggleWrist() {
-    	if (wristIsUp()) {
+    	if (isWristUp()) {
     		lowerWrist();
     	}
     	else {
@@ -86,32 +89,29 @@ public class Grasper extends Subsystem{
     public void raiseWrist() {
     	_wristSolenoid.set(Constants.wristSolenoidActiveRaised);
     	_isWristRaised = true;
-    	_isReadyforAutoAcquire = false;
     }
     
     public void lowerWrist() {
     	_wristSolenoid.set(!Constants.wristSolenoidActiveRaised);
     	_isWristRaised = false;
-    	
-    	_isReadyforAutoAcquire = !_isCubeAcquisitionComplete;
     }
 	
-	public boolean wristIsUp() {
+	public boolean isWristUp() {
 		return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
 		
 		// For simulation
 		// return _isWristRaised;
 	}
-	
+	public boolean isWristDown() {
+		return (!isWristUp());
+	}
 	// Acquisition Roller Functions
 	
 	public boolean isCubeDetected() {
 		return (_leftRollerTalon.getOutputCurrent() > 5 || _rightRollerTalon.getOutputCurrent() > 5);
 	}
-	
-	public boolean isCubeAcquisitionComplete ()
-	{
-		return _isCubeAcquisitionComplete;
+	public boolean isCubeAcquired() {
+		return (_leftRollerTalon.getOutputCurrent() > 15 || _rightRollerTalon.getOutputCurrent() > 15);
 	}
 	
 	public void toggleCube() {
@@ -123,59 +123,81 @@ public class Grasper extends Subsystem{
 		}
 	}
 	
-	public void acquireRollers(boolean allowAutoAcquire) {
+	public void acquireRollers() {
 		_rollerSpeedController.set(Constants.aquireSpeed);
-		_acquisitionState = "Acquire";
-		_isReadyforAutoAcquire = allowAutoAcquire;
+		_acquisitionState =  RollerState.ACQUIRE;
 	}
 	
 	private void deployRollers() {
 		_rollerSpeedController.set(Constants.deploySpeed);
-		_acquisitionState = "Deploy";
+		_acquisitionState =  RollerState.DEPLOY;
 	}
 	
 	private void holdRollers() {
 		_rollerSpeedController.set(Constants.holdSpeed);
-		_acquisitionState = "Hold";
+		_acquisitionState =  RollerState.HOLD;
 	}
 	
 	private void stopRollers() {
 		_rollerSpeedController.set(0);
-		_acquisitionState = "off";
+		_acquisitionState =  RollerState.OFF;
+	}
+	
+	public boolean isRollerState(RollerState rollerState) {
+		return (_acquisitionState == rollerState);
+	}
+	
+	private String convertAcquisitionStateString(RollerState rollerState) {
+		String acquisitionState;
+		switch (rollerState)
+		{
+		case OFF: acquisitionState = "OFF";
+			break;
+		case HOLD: acquisitionState = "HOLD";
+			break;
+		case DEPLOY: acquisitionState = "DEPLOY";
+			break;
+		case ACQUIRE: acquisitionState = "ACQUIRE";
+			break;
+		default: acquisitionState = "INVALID";
+			break;
+		}
+		return acquisitionState;
 	}
 	
 	// Command Functions
 	
-	public boolean isReadyforAutoAcquire() {
-		return _isReadyforAutoAcquire;
-	}
-	
-	public void StartAcquire(boolean autoAcquire) {
+	public void StartAcquire() {
 		SmartDashboard.putString("Acquire Release","Start Acquire");
 		closeGrasper();
-		acquireRollers(autoAcquire); 
+		acquireRollers(); 
+		_isCubeReleased = false;
 	}
 	
 	public void CompleteAcquire() {
 		SmartDashboard.putString("Acquire Release", "Complete Acquire");
-		_isReadyforAutoAcquire = false;
-		_isCubeAcquisitionComplete = true;
 		holdRollers();
+		_isCubeReleased = false;
 	}
 
 	public void StartRelease() {
 		SmartDashboard.putString("Acquire Release","Start Release");
 		lowerWrist();
 		deployRollers();
+		_isCubeReleased = false;
 	}
 	
 	public void CompleteRelease() {
 		SmartDashboard.putString("Acquire Release","Complete Release");
 		stopRollers();
 		openGrasper();
-		_isReadyforAutoAcquire = true;
-		_isCubeAcquisitionComplete = false;
+		_isCubeReleased = true;
 	}
+	
+	public boolean isCubeReleased() {
+		return _isCubeReleased;
+	}
+	
 	public void updateSmartDashboard()
 	{
 		if (grasperIsOpen()) {
@@ -185,7 +207,7 @@ public class Grasper extends Subsystem{
 			SmartDashboard.putString("Grasper", "closed");
 		}
 		
-		if (wristIsUp()) {
+		if (isWristUp()) {
 			SmartDashboard.putString("Wrist", "raised");
 		}
 		else {
@@ -193,8 +215,7 @@ public class Grasper extends Subsystem{
 		}
 		
 		SmartDashboard.putBoolean("Cube", _isCubeDetected);
-		SmartDashboard.putBoolean("Auto Acquire", _isReadyforAutoAcquire);
-		SmartDashboard.putString("Acquisition", _acquisitionState );
+		SmartDashboard.putString("Acquisition", convertAcquisitionStateString(_acquisitionState));
 		SmartDashboard.putNumber("L Acquisition Current", _leftRollerTalon.getOutputCurrent());
 		SmartDashboard.putNumber("R Acquisition Current", _rightRollerTalon.getOutputCurrent());
 	}
