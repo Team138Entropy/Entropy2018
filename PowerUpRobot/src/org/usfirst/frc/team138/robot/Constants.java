@@ -92,6 +92,8 @@ public class Constants {
 		public final static double aquireSpeed = 0.5; //= 0.75; Dialed back for testing auto acquire
 		public final static double deploySpeed = -0.7;
 		public final static double holdSpeed = 0.3;
+		public final static double cubeDetectThreshold = 5.0;		// Roller current threshold to start acquire
+		public final static double cubeAcquireThreshold = 15.0;		// Roller current threshold to complete acquire
 
 		// ***** Autonomous drive parameters *******
 		public static double AutoDriveSpeed = 2.0; // M/sec
