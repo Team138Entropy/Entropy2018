@@ -3,6 +3,7 @@ package org.usfirst.frc.team138.robot.commands;
 import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.subsystems.Grasper.RollerState;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -17,13 +18,14 @@ public class AutoAcquire extends Command {
 		HOLD_CUBE
 		
 	}
-	private AutoAcquireStates _currentState;
+	private AutoAcquireStates _currentState = AutoAcquireStates.DISABLED;
 
 	private final double _acquireTimeSeconds = 1;
 	private double _currentAcquireTime = 0;
 	
     public AutoAcquire() {
         requires(Robot.grasper);
+        _currentState = AutoAcquireStates.DISABLED;
     }
 
     // Called just before this Command runs the first time
@@ -33,6 +35,7 @@ public class AutoAcquire extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	SmartDashboard.putString("AutoAcquireState", _currentState.toString());
     	switch(_currentState) {
     	case DISABLED: disabled();
     		break;
@@ -45,7 +48,9 @@ public class AutoAcquire extends Command {
     	case HOLD_CUBE: holdCube();
     	}
     	
+    	
     }
+    
     private void disabled() {
     	// do nothing 
     	
@@ -61,8 +66,16 @@ public class AutoAcquire extends Command {
     	
     }
     private void detectCube() {
+    	//Check for transition to disabled
+    	if (!Robot.elevator.IsAtFloor() ||
+        		!Robot.grasper.isWristDown() ||
+        		!Robot.grasper.grasperIsOpen() ||
+        		!Robot.grasper.isRollerState(RollerState.ACQUIRE) ||
+        		!Robot.grasper.isCubeReleased()){
+        			_currentState = AutoAcquireStates.DISABLED;
+        		}
     	//check for detected threshold 
-    	if (Robot.grasper.isCubeDetected()) {
+    	else if (Robot.grasper.isCubeDetected()) {
     		_currentState = AutoAcquireStates.START_ACQUIRE;
     	}
     }

@@ -35,6 +35,7 @@ public class Grasper extends Subsystem{
 	
 	private static boolean _isCubeDetected = false;
 	private static boolean _isCubeReleased = false;
+	private static boolean _isCubeAcquired = false;
 	
 	// Master
 	 SpeedControllerGroup _rollerSpeedController = new SpeedControllerGroup(_leftRollerTalon, _rightRollerTalon);
@@ -69,10 +70,10 @@ public class Grasper extends Subsystem{
     }
     
     public boolean grasperIsOpen() {
-		return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
+		//return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
 
 		// For Simulation
-		// return _isGrasperOpen;
+		return _isGrasperOpen;
 	}
     
     // Wrist Functions
@@ -97,10 +98,10 @@ public class Grasper extends Subsystem{
     }
 	
 	public boolean isWristUp() {
-		return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
+		//return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
 		
 		// For simulation
-		// return _isWristRaised;
+		 return _isWristRaised;
 	}
 	public boolean isWristDown() {
 		return (!isWristUp());
@@ -108,18 +109,32 @@ public class Grasper extends Subsystem{
 	// Acquisition Roller Functions
 	
 	public boolean isCubeDetected() {
-		return (_leftRollerTalon.getOutputCurrent() > 5 || _rightRollerTalon.getOutputCurrent() > 5);
+		//return (_leftRollerTalon.getOutputCurrent() > 5 || _rightRollerTalon.getOutputCurrent() > 5);
+		
+		//For Simulation
+		return _isCubeDetected;
 	}
 	public boolean isCubeAcquired() {
-		return (_leftRollerTalon.getOutputCurrent() > 15 || _rightRollerTalon.getOutputCurrent() > 15);
+		//return (_leftRollerTalon.getOutputCurrent() > 15 || _rightRollerTalon.getOutputCurrent() > 15);
+		
+		//For Simulation
+		return _isCubeAcquired;
 	}
 	
-	public void toggleCube() {
+	public void toggleDetectCube() {
 		if (_isCubeDetected) {
 			_isCubeDetected = false;
 		}
 		else {
 			_isCubeDetected = true;
+		}
+	}
+	public void toggleAcquireCube() {
+		if (_isCubeAcquired) {
+			_isCubeAcquired = false;
+		}
+		else {
+			_isCubeAcquired = true;
 		}
 	}
 	
