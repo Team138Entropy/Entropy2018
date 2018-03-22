@@ -80,8 +80,10 @@ public final class OI {
     static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
     static Button cancelElevatorMoveButton = new JoystickButton(operatorStick, nykoRightStick);
     static Button alternateElevatorTargetButton = new JoystickButton(operatorStick, nykoButton3);
-    static Button simulateDetectCubeButton = new JoystickButton(operatorStick, nykoMiddle9);
-    static Button simulateAcquireCubeButton = new JoystickButton(operatorStick, nykoMiddle10);
+    static Button toggleGrasperButton = new JoystickButton(operatorStick, nykoMiddle9);
+    static Button toggleRollersButton = new JoystickButton(operatorStick, nykoMiddle10);
+//    static Button simulateDetectCubeButton = new JoystickButton(operatorStick, nykoMiddle9);
+//    static Button simulateAcquireCubeButton = new JoystickButton(operatorStick, nykoMiddle10);
     
     static double lastX=0;
     static double LastY=0;
@@ -99,8 +101,11 @@ public final class OI {
     	homeElevatorButton.whileHeld(new HomeElevator());
     	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
     	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
-    	simulateDetectCubeButton.whenPressed(new SimulateDetectCube());
-    	simulateAcquireCubeButton.whenPressed(new SimulateAcquireCube());
+    	toggleGrasperButton.whenPressed(new ToggleGrasper());
+    	toggleRollersButton.whenPressed(new ToggleRollers());
+    	
+    	//simulateDetectCubeButton.whenPressed(new SimulateDetectCube());
+    	//simulateAcquireCubeButton.whenPressed(new SimulateAcquireCube());
     }
     
     

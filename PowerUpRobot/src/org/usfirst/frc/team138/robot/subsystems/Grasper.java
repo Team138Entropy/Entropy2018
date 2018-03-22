@@ -164,6 +164,26 @@ public class Grasper extends Subsystem{
 		return (_acquisitionState == rollerState);
 	}
 	
+	public void toggleRollers()
+	{
+		switch (_acquisitionState) {
+			case OFF: 
+				acquireRollers();
+			break;
+			case ACQUIRE:
+				holdRollers();
+			break;
+			case HOLD:
+				releaseRollers();
+				break;
+			case RELEASE:
+			default:
+				stopRollers();
+				break;
+		}
+	}
+	
+	
 	// Command Functions
 	
 	public void StartAcquire() {

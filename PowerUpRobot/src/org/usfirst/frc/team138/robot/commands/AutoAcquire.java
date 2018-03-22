@@ -13,15 +13,16 @@ public class AutoAcquire extends Command {
 	
 	private enum AutoAcquireStates {
 		DISABLED,
+		ENABLED,
 		DETECT_CUBE,
 		START_ACQUIRE,
 		COMPLETE_ACQUIRE,
 		HOLD_CUBE
-		
 	}
 	private AutoAcquireStates _currentState = AutoAcquireStates.DISABLED;
 
 	private int _consecutiveReadingsAboveThreshold = 0;
+	private double _currentDelayTime = 0;
 	
     public AutoAcquire() {
         requires(Robot.grasper);
@@ -39,6 +40,8 @@ public class AutoAcquire extends Command {
     	switch(_currentState) {
     	case DISABLED: disabled();
     		break;
+    	case ENABLED: enabled();
+    		break;
     	case DETECT_CUBE: detectCube();
     		break;
     	case START_ACQUIRE: startAcquire();
@@ -48,8 +51,6 @@ public class AutoAcquire extends Command {
     	case HOLD_CUBE: holdCube();
     		break;
     	}
-    	
-    	
     }
     
     private void disabled() {
@@ -61,25 +62,23 @@ public class AutoAcquire extends Command {
     		Robot.grasper.grasperIsOpen() &&
     		Robot.grasper.isRollerState(RollerState.ACQUIRE) &&
     		Robot.grasper.isCubeReleased()){
-    			_currentState = AutoAcquireStates.DETECT_CUBE;
-    			_consecutiveReadingsAboveThreshold = 0;
-    	
+    			_currentState = AutoAcquireStates.ENABLED;
+    			_currentDelayTime = 0;
     	}
     	
     }
+    
+    private void enabled() {
+    	_currentDelayTime += Constants.commandLoopIterationSeconds;
+    	
+    	if (_currentDelayTime >= Constants.autoDetectionSettlingTime)
+    	{
+    		_currentState = AutoAcquireStates.DETECT_CUBE;
+    		_consecutiveReadingsAboveThreshold = 0;
+    	}
+    }
+    
     private void detectCube() {
-    	//Check for transition to disabled
-    	/*if (!Robot.elevator.IsAtFloor() ||
-        		!Robot.grasper.isWristDown() ||
-        		!Robot.grasper.grasperIsOpen() ||
-        		!Robot.grasper.isRollerState(RollerState.ACQUIRE) ||
-        		!Robot.grasper.isCubeReleased()){
-        			_currentState = AutoAcquireStates.DISABLED;
-        		}
-    	//check for detected threshold 
-    	else */
-    	
-    	
     	if (Robot.grasper.isCubeDetected()) {
     		_consecutiveReadingsAboveThreshold++;
     	}
