@@ -1,5 +1,6 @@
 package org.usfirst.frc.team138.robot.commands;
 
+import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.subsystems.Grasper.RollerState;
 import edu.wpi.first.wpilibj.command.Command;
@@ -20,8 +21,7 @@ public class AutoAcquire extends Command {
 	}
 	private AutoAcquireStates _currentState = AutoAcquireStates.DISABLED;
 
-	private final double _acquireTimeSeconds = 1;
-	private double _currentAcquireTime = 0;
+	private int _consecutiveReadingsAboveThreshold = 0;
 	
     public AutoAcquire() {
         requires(Robot.grasper);
@@ -46,6 +46,7 @@ public class AutoAcquire extends Command {
     	case COMPLETE_ACQUIRE: completeAcquire();
     		break;
     	case HOLD_CUBE: holdCube();
+    		break;
     	}
     	
     	
@@ -61,13 +62,14 @@ public class AutoAcquire extends Command {
     		Robot.grasper.isRollerState(RollerState.ACQUIRE) &&
     		Robot.grasper.isCubeReleased()){
     			_currentState = AutoAcquireStates.DETECT_CUBE;
+    			_consecutiveReadingsAboveThreshold = 0;
     	
     	}
     	
     }
     private void detectCube() {
     	//Check for transition to disabled
-    	if (!Robot.elevator.IsAtFloor() ||
+    	/*if (!Robot.elevator.IsAtFloor() ||
         		!Robot.grasper.isWristDown() ||
         		!Robot.grasper.grasperIsOpen() ||
         		!Robot.grasper.isRollerState(RollerState.ACQUIRE) ||
@@ -75,15 +77,40 @@ public class AutoAcquire extends Command {
         			_currentState = AutoAcquireStates.DISABLED;
         		}
     	//check for detected threshold 
-    	else if (Robot.grasper.isCubeDetected()) {
+    	else */
+    	
+    	
+    	if (Robot.grasper.isCubeDetected()) {
+    		_consecutiveReadingsAboveThreshold++;
+    	}
+    	else
+    	{
+    		_consecutiveReadingsAboveThreshold = 0;
+    	}
+    	
+		SmartDashboard.putNumber("Threshold Count", _consecutiveReadingsAboveThreshold);
+    	
+    	if (_consecutiveReadingsAboveThreshold >= Constants.cubeDetectThresholdCount) {
     		_currentState = AutoAcquireStates.START_ACQUIRE;
+    		_consecutiveReadingsAboveThreshold = 0;
     	}
     }
     private void startAcquire() {
     	Robot.grasper.StartAcquire();
     	//Check for acquired threshold
     	if (Robot.grasper.isCubeAcquired()) {
+    		_consecutiveReadingsAboveThreshold++;
+    	}
+    	else {
+    		_consecutiveReadingsAboveThreshold = 0;
+    	}
+   
+		SmartDashboard.putNumber("Threshold Count", _consecutiveReadingsAboveThreshold);
+		
+    	if ((_consecutiveReadingsAboveThreshold >= Constants.cubeAcquireThresholdCount))
+    	{
     		_currentState = AutoAcquireStates.COMPLETE_ACQUIRE;
+    		_consecutiveReadingsAboveThreshold = 0;
     	}
     }
     private void completeAcquire() {

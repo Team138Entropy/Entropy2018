@@ -25,7 +25,7 @@ public class Grasper extends Subsystem{
 	public enum RollerState {
 		OFF,
 		HOLD,
-		DEPLOY,
+		RELEASE,
 		ACQUIRE
 	}
 	private static RollerState _acquisitionState = RollerState.OFF;
@@ -145,9 +145,9 @@ public class Grasper extends Subsystem{
 		_acquisitionState =  RollerState.ACQUIRE;
 	}
 	
-	private void deployRollers() {
-		_rollerSpeedController.set(Constants.deploySpeed);
-		_acquisitionState =  RollerState.DEPLOY;
+	private void releaseRollers() {
+		_rollerSpeedController.set(Constants.releaseSpeed);
+		_acquisitionState =  RollerState.RELEASE;
 	}
 	
 	private void holdRollers() {
@@ -162,24 +162,6 @@ public class Grasper extends Subsystem{
 	
 	public boolean isRollerState(RollerState rollerState) {
 		return (_acquisitionState == rollerState);
-	}
-	
-	private String convertAcquisitionStateString(RollerState rollerState) {
-		String acquisitionState;
-		switch (rollerState)
-		{
-		case OFF: acquisitionState = "OFF";
-			break;
-		case HOLD: acquisitionState = "HOLD";
-			break;
-		case DEPLOY: acquisitionState = "DEPLOY";
-			break;
-		case ACQUIRE: acquisitionState = "ACQUIRE";
-			break;
-		default: acquisitionState = "INVALID";
-			break;
-		}
-		return acquisitionState;
 	}
 	
 	// Command Functions
@@ -200,7 +182,7 @@ public class Grasper extends Subsystem{
 	public void StartRelease() {
 		SmartDashboard.putString("Acquire Release","Start Release");
 		lowerWrist();
-		deployRollers();
+		releaseRollers();
 		_isCubeReleased = false;
 	}
 	
@@ -231,8 +213,9 @@ public class Grasper extends Subsystem{
 			SmartDashboard.putString("Wrist", "lowered");
 		}
 		
-		SmartDashboard.putBoolean("Cube", _isCubeDetected);
-		SmartDashboard.putString("Acquisition", convertAcquisitionStateString(_acquisitionState));
+		SmartDashboard.putBoolean("Cube Detected", isCubeDetected());
+		SmartDashboard.putBoolean("Cube Acquired", isCubeAcquired());
+		SmartDashboard.putString("Acquisition Wheels", _acquisitionState.toString());
 		SmartDashboard.putNumber("L Acquisition Current", _leftRollerTalon.getOutputCurrent());
 		SmartDashboard.putNumber("R Acquisition Current", _rightRollerTalon.getOutputCurrent());
 	}
