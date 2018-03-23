@@ -31,7 +31,7 @@ public class Constants {
 		//
 		
 		public final static double distanceSwitch = 377.0;		     // Centimeters
-		public final static double distanceScale = 773.0;			 // Centimeters
+		public final static double distanceScale = 656.0;			 //737 Centimeters
 		public final static double distanceBaseLine = 305.0;		 // Centimeters
 		public final static double distanceToCrossPoint = 589;	     // Centimeters
 		public final static double distanceCross = 517;				 // Centimeters
@@ -101,13 +101,11 @@ public class Constants {
 		// PID gains to control rotation (measured by Gyro)
 		public static double kPRotate = .2;
 		public static double kIRotate = .2;
-		public static double kDRotate = 0.5;
+		public static double kDRotate = 0.2;
 		
 		public static double kPDrive = 0.2;
 		public static double kIDrive = 0.0;	
 		public static double kDDrive = 0.0;
-		// Compensate AutoDrive overshoot 
-		public static double AutoDriveRotateOvershoot = 7;	// Degrees
 		// Insert delay after each autonomous move to allow
 		// mechanism to settle (before sensors are reset at start of next move)
 		public static double AutoDrivePause = 2; // 50=1second

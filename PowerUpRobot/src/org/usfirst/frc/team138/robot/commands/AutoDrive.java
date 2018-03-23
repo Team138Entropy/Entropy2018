@@ -24,7 +24,7 @@ public class AutoDrive extends Command {
 	double timer=0;
 	double MinDistance=.25*.025*Constants.AutoDriveSpeed*Constants.Meters2CM; // centimeter (limit to detect stall)
 	double lclAngle=0;
-	boolean FirstTime=true;
+	boolean FirstTime=false;
 	int  turnDir=1; // 1=positive rotation, -1=negative rotation; 0 =straight
 	//*******************************************
 	
@@ -61,10 +61,8 @@ public class AutoDrive extends Command {
 		lclAngle=angle;
 		if (angle>0) {
 			turnDir=1;
-			angle=angle-Constants.AutoDriveRotateOvershoot;
 		}
 		else {
-			angle=angle+Constants.AutoDriveRotateOvershoot;
 			turnDir=-1;			
 		}
 
@@ -102,7 +100,7 @@ public class AutoDrive extends Command {
 		double distanceRemaining=Math.abs(driveDistance)-Math.abs(avgDistance);
 		if (FirstTime){
 			FirstTime=false;
-			Robot.accumulatedHeading = Robot.accumulatedHeading+lclAngle;
+			Robot.accumulatedHeading = lclAngle;
 
 		}
 //		SmartDashboard.putNumber("Auto Angle",Robot.accumulatedHeading );
@@ -152,9 +150,9 @@ public class AutoDrive extends Command {
 				double speed;
 				IntegralError+=diffAngle*.025;
 				if (driveSpeed == 0) {
-					rate=Constants.kPRotate*diffAngle+IntegralError*Constants.kIRotate;
+					rate=Constants.kPRotate*diffAngle+IntegralError*Constants.kIRotate-Constants.kDRotate*Sensors.gyro.getRate();
 				} else {
-					rate=Constants.kPDrive*diffAngle;
+					rate=Constants.kPDrive*diffAngle-Constants.kDDrive*Sensors.gyro.getRate();
 				}
 				// Scale to Meters/second
 				rotateToAngleRate=Utility.limitValue(rate,-1,1)*Constants.AutoDriveRotateRate;	

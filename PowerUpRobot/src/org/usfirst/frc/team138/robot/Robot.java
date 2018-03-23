@@ -133,7 +133,6 @@ public class Robot extends IterativeRobot {
     	Constants.kPDrive=prefs.getDouble("Drive KP", Constants.kPDrive);
     	Constants.kDDrive=prefs.getDouble("Drive KD", Constants.kDDrive);
     	Constants.kIDrive=prefs.getDouble("Drive KI", Constants.kIDrive);
-//    	Constants.AutoDriveRotateOvershoot=prefs.getDouble("AutoDrive Overshoot", 4); // Degrees
     	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();
         autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
@@ -165,6 +164,7 @@ public class Robot extends IterativeRobot {
         Sensors.gyro.reset();
     	elevator.StopMoving();
         Robot.accumulatedHeading = 0;
+		Robot.drivetrain.Relax();
     	
     }
     
