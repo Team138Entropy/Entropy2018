@@ -136,6 +136,11 @@ public class Robot extends IterativeRobot {
     	Constants.kIDrive=prefs.getDouble("Drive KI", Constants.kIDrive);
     	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();
+    	
+    	autoLocations = new AutoLocations(startPosChooser.getSelected(),
+        		autoModeChooser.getSelected(),
+        		gameData);
+    	
         autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
         		startPosChooser.getSelected(),
         		autoModeChooser.getSelected(),
