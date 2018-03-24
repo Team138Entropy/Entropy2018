@@ -177,11 +177,11 @@ public class Elevator extends Subsystem{
 				_targetPosition = 2100;	// Alternate Switch position is Cube Level 2
 				break;
 			case LOWER_SCALE:
-				_targetPosition = 2500;	// Default scale position is lower scale
+				_targetPosition = 2000;	// Default scale position is lower scale
 				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
 				break;
 			case UPPER_SCALE:
-				_targetPosition = 2700;	// Alternate scale position is upper scale
+				_targetPosition = 2300;	// Alternate scale position is upper scale
 			default:
 				// Error 
 				break;

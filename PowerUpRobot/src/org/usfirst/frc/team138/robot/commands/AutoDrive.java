@@ -98,10 +98,12 @@ public class AutoDrive extends Command {
 		
 		// Stalled?
 		double distanceRemaining=Math.abs(driveDistance)-Math.abs(avgDistance);
-		if (FirstTime){
+		if (FirstTime ){
 			FirstTime=false;
-			Robot.accumulatedHeading = lclAngle;
-
+			if (rotateInPlace)
+				Robot.accumulatedHeading = lclAngle;
+			else
+				Sensors.resetEncoders();
 		}
 //		SmartDashboard.putNumber("Auto Angle",Robot.accumulatedHeading );
 		/*
@@ -129,10 +131,7 @@ public class AutoDrive extends Command {
 			
 			if (rotateInPlace)
 			{
-				if (turnDir > 0)
-					moveComplete =(diffAngle<=ToleranceDegrees);
-				else
-					moveComplete =(diffAngle>=-ToleranceDegrees);
+				moveComplete =(Math.abs(diffAngle))<=ToleranceDegrees;
 				driveSpeed=0;
 			}
 			else

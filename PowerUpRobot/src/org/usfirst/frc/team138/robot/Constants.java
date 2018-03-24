@@ -97,7 +97,7 @@ public class Constants {
 
 		// Auto Cube Acquisition
 		public final static double autoDetectionSettlingTime = 0.5;	// Time to delay after turning acquisition wheels on to start detection
-		public final static int cubeDetectThresholdCount = 10;		// Consecutive readings above threshold to trigger acquire
+		public final static int cubeDetectThresholdCount = 3;		// Consecutive readings above threshold to trigger acquire
 		public final static double cubeDetectThreshold = 4.0;		// Roller current threshold to start acquire
 		public final static int cubeAcquireThresholdCount = 10;		// Consecutive readings above threshold to trigger complete acquire
 		public final static double cubeAcquireThreshold = 7.0;		// Roller current threshold to complete acquire
