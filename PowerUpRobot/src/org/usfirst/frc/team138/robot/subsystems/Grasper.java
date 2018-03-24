@@ -70,10 +70,10 @@ public class Grasper extends Subsystem{
     }
     
     public boolean grasperIsOpen() {
-		return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
+		//return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
 
 		// For Simulation
-		//return _isGrasperOpen;
+		return _isGrasperOpen;
 	}
     
     // Wrist Functions
@@ -98,10 +98,10 @@ public class Grasper extends Subsystem{
     }
 	
 	public boolean isWristUp() {
-		return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
+		//return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
 		
 		// For simulation
-		//return _isWristRaised;
+		return _isWristRaised;
 	}
 	public boolean isWristDown() {
 		return (!isWristUp());
@@ -109,18 +109,18 @@ public class Grasper extends Subsystem{
 	// Acquisition Roller Functions
 	
 	public boolean isCubeDetected() {
-		return (_leftRollerTalon.getOutputCurrent() > Constants.cubeDetectThreshold || 
-				_rightRollerTalon.getOutputCurrent() > Constants.cubeDetectThreshold);
+		//return (_leftRollerTalon.getOutputCurrent() > Constants.cubeDetectThreshold || 
+				//_rightRollerTalon.getOutputCurrent() > Constants.cubeDetectThreshold);
 		
 		//For Simulation
-		//return _isCubeDetected;
+		return _isCubeDetected;
 	}
 	public boolean isCubeAcquired() {
-		return (_leftRollerTalon.getOutputCurrent() > Constants.cubeAcquireThreshold || 
-				_rightRollerTalon.getOutputCurrent() > Constants.cubeAcquireThreshold);
+		///return (_leftRollerTalon.getOutputCurrent() > Constants.cubeAcquireThreshold || 
+				//_rightRollerTalon.getOutputCurrent() > Constants.cubeAcquireThreshold);
 		
 		//For Simulation
-		//return _isCubeAcquired;
+		return _isCubeAcquired;
 	}
 	
 	public void toggleDetectCube() {
@@ -155,7 +155,7 @@ public class Grasper extends Subsystem{
 		_acquisitionState =  RollerState.HOLD;
 	}
 	
-	private void stopRollers() {
+	public void stopRollers() {
 		_rollerSpeedController.set(0);
 		_acquisitionState =  RollerState.OFF;
 	}

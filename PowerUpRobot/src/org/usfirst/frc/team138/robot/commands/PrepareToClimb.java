@@ -1,38 +1,37 @@
 package org.usfirst.frc.team138.robot.commands;
 
-import org.usfirst.frc.team138.robot.OI;
 import org.usfirst.frc.team138.robot.Robot;
+import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class Climb extends Command {
+public class PrepareToClimb extends Command {
 
-    public Climb() {
-        requires(Robot.climber);
+    public PrepareToClimb() {
+        requires(Robot.grasper);
         requires(Robot.elevator);
+        requires(Robot.climber);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.grasper.openGrasper();
+    	Robot.grasper.raiseWrist();
+    	Robot.grasper.stopRollers();
+    	Robot.elevator.Elevate(ElevatorTarget.RUNG);
+    	Robot.climber.set_isClimbAllowed(true);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (Robot.climber.isClimbAllowed()) {
-    		Robot.climber.climb(OI.getClimbSpeed());
-    		Robot.elevator.JogElevator(-1, OI.getClimbSpeed());
-    	} else {
-    		Robot.climber.climb(0.0);
-    		Robot.elevator.JogElevator(0, 0.0);
-    	}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+    		return true;
     }
 
     // Called once after isFinished returns true
