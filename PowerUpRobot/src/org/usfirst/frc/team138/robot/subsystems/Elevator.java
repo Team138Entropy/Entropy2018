@@ -174,7 +174,7 @@ public class Elevator extends Subsystem{
 				break;
 				
 			case RUNG:
-				_targetPosition = 700;	// Alternate Switch position is Cube Level 2
+				_targetPosition = 2100;	// Alternate Switch position is Cube Level 2
 				break;
 			case LOWER_SCALE:
 				_targetPosition = 2500;	// Default scale position is lower scale

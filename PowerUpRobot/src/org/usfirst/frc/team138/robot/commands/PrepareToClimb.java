@@ -1,15 +1,20 @@
 package org.usfirst.frc.team138.robot.commands;
 
+import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
 public class PrepareToClimb extends Command {
 
+	private final double commandTimeoutSeconds = 7;
+	private double _currentCommandTime = 0;
+	
     public PrepareToClimb() {
         requires(Robot.grasper);
         requires(Robot.elevator);
@@ -32,22 +37,33 @@ public class PrepareToClimb extends Command {
     	}
     }
 
-    // Called repeatedly when this Command is scheduled to run
-    protected void execute() {
-    	
-    }
+	protected void execute() {
+		if (Robot.climber.isClimbAllowed())
+		{
+			Robot.elevator.Execute();
+			_currentCommandTime += Constants.commandLoopIterationSeconds;
+			SmartDashboard.putNumber("Timer", _currentCommandTime);
+		}
+	}
 
-    // Make this return true when this Command no longer needs to run execute()
-    protected boolean isFinished() {
-    		return true;
-    }
+	protected boolean isFinished() {
+		if (_currentCommandTime >= commandTimeoutSeconds)
+		{
+			return true;
+		}
+		else
+		{
+			return Robot.elevator.IsMoveComplete();
+		}
+	}
 
-    // Called once after isFinished returns true
-    protected void end() {
-    }
+	protected void end() {
+		Robot.elevator.StopMoving();
+		
+	}
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
-    protected void interrupted() {
-    }
+	protected void interrupted() {
+		
+		Robot.elevator.CancelMove();
+	}
 }
