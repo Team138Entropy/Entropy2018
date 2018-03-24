@@ -24,11 +24,19 @@ public class Climber extends Subsystem {
 
 	public void set_isClimbAllowed(boolean isClimbAllowed) {
 		this._isClimbAllowed = isClimbAllowed;
+		
+		if (_isClimbAllowed)
+		{
+			setDefaultCommand(new Climb());
+		} else
+		{
+			setDefaultCommand(null);
+		}
 	}
 
 	public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        setDefaultCommand(new Climb());
+        //setDefaultCommand(new Climb());
     }
     
     public boolean isClimbAllowed() {
@@ -36,10 +44,11 @@ public class Climber extends Subsystem {
     }
     
     // Takes values from -1.0 to 1.0
-    public void climb(double winchSpeed)
+    public void climb(double climbSpeed)
     {
-    	if (winchSpeed >= -1.0 && winchSpeed <= 1.0) {
-    		_winchMotor.set(ControlMode.PercentOutput, winchSpeed);
+    	if (climbSpeed >= -1.0 && climbSpeed <= 1.0) {
+    		_winchMotor.set(ControlMode.PercentOutput, climbSpeed);
+    		SmartDashboard.putNumber("Climb Speed", climbSpeed);
     	}
     }
     

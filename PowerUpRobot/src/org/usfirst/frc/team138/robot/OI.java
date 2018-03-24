@@ -82,7 +82,7 @@ public final class OI {
     static Button alternateElevatorTargetButton = new JoystickButton(operatorStick, nykoButton3);
     static Button toggleGrasperButton = new JoystickButton(operatorStick, nykoMiddle9);
     static Button toggleRollersButton = new JoystickButton(operatorStick, nykoMiddle10);
-    static Button prepareToClimb = new JoystickButton(operatorStick,nykoRightStick);
+    static Button toggleToClimb = new JoystickButton(operatorStick,nykoLeftStick);
 //    static Button simulateDetectCubeButton = new JoystickButton(operatorStick, nykoMiddle9);
 //    static Button simulateAcquireCubeButton = new JoystickButton(operatorStick, nykoMiddle10);
     
@@ -104,7 +104,7 @@ public final class OI {
     	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
     	toggleGrasperButton.whenPressed(new ToggleGrasper());
     	toggleRollersButton.whenPressed(new ToggleRollers());
-    	prepareToClimb.whenPressed(new PrepareToClimb());
+    	toggleToClimb.whenPressed(new PrepareToClimb());
     	
     	//simulateDetectCubeButton.whenPressed(new SimulateDetectCube());
     	//simulateAcquireCubeButton.whenPressed(new SimulateAcquireCube());
@@ -131,15 +131,10 @@ public final class OI {
 		return rotateSpeed;
 	}
 	
-	public static double getHookRotation()
-	{
-		return (0.75 * operatorStick.getRawAxis(nykoLeftYAxis));
-	}
-	
 	public static double getClimbSpeed()
 	{
 		// Joystick up returns negative axis values, so inverted
-		return (-1 * operatorStick.getRawAxis(nykoRightYAxis));
+		return (-1 * operatorStick.getRawAxis(nykoLeftYAxis));
 	}
 	
 	// Return the jog direction: 1 for up, -1 for down

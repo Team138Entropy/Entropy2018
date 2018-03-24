@@ -18,15 +18,23 @@ public class PrepareToClimb extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.grasper.openGrasper();
-    	Robot.grasper.raiseWrist();
-    	Robot.grasper.stopRollers();
-    	Robot.elevator.Elevate(ElevatorTarget.RUNG);
-    	Robot.climber.set_isClimbAllowed(true);
+    	
+    	if (Robot.climber.isClimbAllowed()) {
+//    		Robot.grasper.lowerWrist();
+//    		Robot.elevator.Elevate(ElevatorTarget.ACQUIRE);
+    		Robot.climber.set_isClimbAllowed(false);
+    	} else {
+    		Robot.grasper.openGrasper();
+    		Robot.grasper.raiseWrist();
+    		Robot.grasper.stopRollers();
+    		Robot.elevator.Elevate(ElevatorTarget.RUNG);
+    		Robot.climber.set_isClimbAllowed(true);
+    	}
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	
     }
 
     // Make this return true when this Command no longer needs to run execute()
