@@ -23,7 +23,7 @@ public class Climb extends Command {
     protected void execute() {
     	if (Robot.climber.isClimbAllowed()) {
     		Robot.climber.climb(OI.getClimbSpeed());
-    		Robot.elevator.JogElevator(-1, OI.getClimbSpeed());
+    		Robot.elevator.JogElevator(-1, 0.25 * OI.getClimbSpeed());
     	} else {
     		Robot.climber.climb(0.0);
     		Robot.elevator.JogElevator(0, 0.0);
