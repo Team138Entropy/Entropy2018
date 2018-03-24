@@ -155,7 +155,7 @@ public class Grasper extends Subsystem{
 		_acquisitionState =  RollerState.HOLD;
 	}
 	
-	private void stopRollers() {
+	public void stopRollers() {
 		_rollerSpeedController.set(0);
 		_acquisitionState =  RollerState.OFF;
 	}

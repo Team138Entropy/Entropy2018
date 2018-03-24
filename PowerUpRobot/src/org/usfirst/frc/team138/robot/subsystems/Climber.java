@@ -15,42 +15,46 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Climber extends Subsystem {
 
 	public WPI_TalonSRX _winchMotor = new WPI_TalonSRX(RobotMap.WINCH_PORT);
-	public WPI_TalonSRX _hookMotor = new WPI_TalonSRX(RobotMap.HOOK_PORT);
 	
-	private static double _winchSpeed = 0.0;
-	private static double _hookSpeed = 0.0;
+	private boolean _isClimbAllowed = false;
 	
 	
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-    public void initDefaultCommand() {
+	public void set_isClimbAllowed(boolean isClimbAllowed) {
+		this._isClimbAllowed = isClimbAllowed;
+		
+		if (_isClimbAllowed)
+		{
+			setDefaultCommand(new Climb());
+		} else
+		{
+			setDefaultCommand(null);
+		}
+	}
+
+	public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        setDefaultCommand(new Climb());
+        //setDefaultCommand(new Climb());
+    }
+    
+    public boolean isClimbAllowed() {
+    	return _isClimbAllowed;
     }
     
     // Takes values from -1.0 to 1.0
-    public void climb(double winchSpeed)
+    public void climb(double climbSpeed)
     {
-    	_winchSpeed = winchSpeed;
-    	if (winchSpeed >= -1.0 && winchSpeed <= 1.0) {
-    		_winchMotor.set(ControlMode.PercentOutput, winchSpeed);
-    	}
-    }
-    
-    // Takes values from -1.0 to 1.0
-    public void rotateHook(double hookSpeed)
-    {
-    	_hookSpeed = hookSpeed;
-    	if (hookSpeed >= -1.0 && hookSpeed <= 1.0) {
-    		_hookMotor.set(ControlMode.PercentOutput, hookSpeed);
+    	if (climbSpeed >= -1.0 && climbSpeed <= 1.0) {
+    		_winchMotor.set(ControlMode.PercentOutput, climbSpeed);
+    		SmartDashboard.putNumber("Climb Speed", climbSpeed);
     	}
     }
     
     public void updateSmartDashboard()
 	{
 		SmartDashboard.putNumber("Winch Speed", _winchMotor.getMotorOutputPercent());
-		SmartDashboard.putNumber("Hook Speed", _hookMotor.getMotorOutputPercent());
 	}
     
 }
