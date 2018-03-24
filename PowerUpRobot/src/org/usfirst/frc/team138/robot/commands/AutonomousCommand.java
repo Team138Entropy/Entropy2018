@@ -12,9 +12,11 @@ public class AutonomousCommand extends CommandGroup {
 		
 		
 		// Test Modes
-		if (autoMode == "test")
+		if (autoMode == "test" && Constants.AutoEnable)
 		{
 			int Dir=1;
+			// Only allow Autonomous to execute once
+			Constants.AutoEnable=false;
 			String Target2="Switch";
 			// Near Scale
 			//addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
@@ -33,7 +35,9 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new AutoDrive(Dir*148.7));
 			addSequential(new AutoDrive(Constants.autoSpeed, 158));
 			addSequential(new Wait(1));			
-			addSequential(new AutoDrive(Constants.autoSpeed, 12));
+			addSequential(new AutoDrive(Constants.autoSpeed, 14));
+			// Turn to deposit on Switch
+			addSequential(new AutoDrive(Dir*175));
 /*
  * //			addSequential(new StartAcquire());
 //			addSequential(new CompleteAcquire());
@@ -58,8 +62,9 @@ public class AutonomousCommand extends CommandGroup {
 
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData
-		if (autoMode == "auto")
+		if (autoMode == "auto" && Constants.AutoEnable)
 		{
+			Constants.AutoEnable=false;
 			SmartDashboard.putString("Auto", "auto");
 			if (startPos.equals("left")) {
 				
@@ -125,8 +130,8 @@ public class AutonomousCommand extends CommandGroup {
 	{
 		// Near Scale
 		addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
-		addSequential(new AutoDrive(Dir*3));				
-		addSequential(new AutoDrive(Constants.autoSpeed, 656));
+		addSequential(new AutoDrive(Dir*3.3));				
+		addSequential(new AutoDrive(Constants.autoSpeed, 663));
 		addParallel(new AutoDrive(Dir*35));
 		addSequential(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 		// Use vision to drive to scale?
@@ -137,16 +142,16 @@ public class AutonomousCommand extends CommandGroup {
 		// Grab 2nd cube at end of near switch
 		// drop elevator to acquire position
 		addParallel(new ElevateToTarget(ElevatorTarget.ACQUIRE));
-		addSequential(new AutoDrive(Dir*145));
-		addSequential(new AutoDrive(Constants.autoSpeed, 156));			
-		addSequential(new AutoDrive(Dir*175));
+		addSequential(new AutoDrive(Dir*148.7));
+		addSequential(new AutoDrive(Constants.autoSpeed, 158));
 		addSequential(new StartAcquire());
 		addSequential(new CompleteAcquire());
 		if (Target2=="Switch") {
-			addSequential(new ElevateToTarget(ElevatorTarget.SWITCH));
+			addParallel(new ElevateToTarget(ElevatorTarget.SWITCH));
 			// Drive a little closer
-			addSequential(new AutoDrive(Constants.autoSpeed, 12));
-			// Deposit on Switch
+			addSequential(new AutoDrive(Constants.autoSpeed, 14));
+			// Rotate and Deposit on Switch
+			addSequential(new AutoDrive(Dir*175));
 		}
 		else
 		{ // Deposit on Scale

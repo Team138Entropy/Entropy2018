@@ -6,6 +6,7 @@ package org.usfirst.frc.team138.robot;
 public class Constants {
 
 	// System Constants
+		public static boolean AutoEnable=true;
 	
 		public static double commandLoopIterationSeconds = 0.020;
 	

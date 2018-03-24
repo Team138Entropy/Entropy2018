@@ -87,6 +87,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
 					
         Robot.accumulatedHeading = 0;
+        Constants.AutoEnable=true;
 
     }
 	
@@ -165,6 +166,9 @@ public class Robot extends IterativeRobot {
     	elevator.StopMoving();
         Robot.accumulatedHeading = 0;
 		Robot.drivetrain.Relax();
+
+		Constants.AutoEnable=true;
+
     	
     }
     
