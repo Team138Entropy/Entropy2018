@@ -15,6 +15,7 @@ public class ElevateToTarget extends Command {
 	
 	public ElevateToTarget(String target){
 		requires(Robot.elevator);
+		requires(Robot.grasper);
 		elevatorTarget = Robot.elevator.ConvertToTarget(target);
 		}
 	
@@ -26,6 +27,12 @@ public class ElevateToTarget extends Command {
 	
 
 	protected void initialize() {
+		
+		// Supports release from scale
+		if (elevatorTarget == ElevatorTarget.LOWER_SCALE || elevatorTarget == ElevatorTarget.UPPER_SCALE) {
+			Robot.grasper.raiseWrist();
+		}
+		
 		Robot.elevator.Elevate(elevatorTarget);
 		_currentCommandTime = 0;
 		}

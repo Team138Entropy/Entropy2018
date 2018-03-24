@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.command.Command;
 public class Climb extends Command {
 
     public Climb() {
-        //requires(Robot.climber);
+        requires(Robot.climber);
+        requires(Robot.elevator);
     }
 
     // Called just before this Command runs the first time
@@ -20,16 +21,12 @@ public class Climb extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (OI.isWinchEnabled()) {
-    		//Robot.climber.climb(OI.getClimbSpeed());
+    	if (Robot.climber.isClimbAllowed()) {
+    		Robot.climber.climb(OI.getClimbSpeed());
+    		Robot.elevator.JogElevator(-1, 0.25 * OI.getClimbSpeed());
     	} else {
-    		//Robot.climber.climb(0.0);
-    	}
-    	
-    	if (OI.isHookRotationEnabled()) {
-    		//Robot.climber.rotateHook(OI.getHookRotation());
-    	} else {
-    		//Robot.climber.rotateHook(0.0);
+    		Robot.climber.climb(0.0);
+    		Robot.elevator.JogElevator(0, 0.0);
     	}
     }
 

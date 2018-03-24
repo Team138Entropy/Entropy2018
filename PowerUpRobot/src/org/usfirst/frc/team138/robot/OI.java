@@ -75,13 +75,16 @@ public final class OI {
     static Button elevateToScaleButton = new JoystickButton(operatorStick, nykoButton4);
     static Button acquireButton = new JoystickButton(operatorStick, nykoLeftTrigger);
     static Button releaseButton = new JoystickButton(operatorStick, nykoRightTrigger);
-    static Button openGrasperButton = new JoystickButton(operatorStick, nykoLeftBumper);
-    static Button closeGrasperButton = new JoystickButton(operatorStick, nykoRightBumper);
-    static Button lowerWristButton = new JoystickButton(operatorStick, nykoMiddle9);
-    static Button raiseWristButton = new JoystickButton(operatorStick, nykoMiddle10);
+    static Button readyToAcquireButton = new JoystickButton(operatorStick, nykoLeftBumper);
+    static Button toggleWristButton = new JoystickButton(operatorStick, nykoRightBumper);
     static Button homeElevatorButton = new JoystickButton(operatorStick, nykoMiddle11);
     static Button cancelElevatorMoveButton = new JoystickButton(operatorStick, nykoRightStick);
     static Button alternateElevatorTargetButton = new JoystickButton(operatorStick, nykoButton3);
+    static Button toggleGrasperButton = new JoystickButton(operatorStick, nykoMiddle9);
+    static Button toggleRollersButton = new JoystickButton(operatorStick, nykoMiddle10);
+    static Button toggleToClimb = new JoystickButton(operatorStick,nykoLeftStick);
+//    static Button simulateDetectCubeButton = new JoystickButton(operatorStick, nykoMiddle9);
+//    static Button simulateAcquireCubeButton = new JoystickButton(operatorStick, nykoMiddle10);
     
     static double lastX=0;
     static double LastY=0;
@@ -94,13 +97,17 @@ public final class OI {
     	acquireButton.whenReleased(new CompleteAcquire());
     	releaseButton.whenPressed(new StartRelease());
     	releaseButton.whenReleased(new CompleteRelease());
-    	openGrasperButton.whenPressed(new OpenGrasper());
-    	closeGrasperButton.whenPressed(new CloseGrasper());
-    	lowerWristButton.whenPressed(new LowerWrist());
-    	raiseWristButton.whenPressed(new RaiseWrist());
+    	readyToAcquireButton.whenPressed(new ReadyToAcquire());
+    	toggleWristButton.whenPressed(new ToggleWrist());
     	homeElevatorButton.whileHeld(new HomeElevator());
     	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
     	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
+    	toggleGrasperButton.whenPressed(new ToggleGrasper());
+    	toggleRollersButton.whenPressed(new ToggleRollers());
+    	toggleToClimb.whenPressed(new PrepareToClimb());
+    	
+    	//simulateDetectCubeButton.whenPressed(new SimulateDetectCube());
+    	//simulateAcquireCubeButton.whenPressed(new SimulateAcquireCube());
     }
     
     
@@ -124,25 +131,10 @@ public final class OI {
 		return rotateSpeed;
 	}
 	
-	public static double getHookRotation()
-	{
-		return (0.75 * operatorStick.getRawAxis(nykoLeftYAxis));
-	}
-	
 	public static double getClimbSpeed()
 	{
 		// Joystick up returns negative axis values, so inverted
-		return (-1 * operatorStick.getRawAxis(nykoRightYAxis));
-	}
-	
-	public static boolean isHookRotationEnabled()
-	{
-		return (operatorStick.getPOV() == 270);
-	}
-	
-	public static boolean isWinchEnabled()
-	{
-		return (operatorStick.getPOV() == 90);
+		return (-1 * operatorStick.getRawAxis(nykoLeftYAxis));
 	}
 	
 	// Return the jog direction: 1 for up, -1 for down

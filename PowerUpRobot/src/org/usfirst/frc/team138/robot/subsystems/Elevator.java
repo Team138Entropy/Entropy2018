@@ -40,7 +40,7 @@ public class Elevator extends Subsystem{
 		NONE,
 		ACQUIRE,		// Acquire Cube Level 1 (Floor)
 		EXCHANGE,		// Deposit Exchange
-		CUBE_LEVEL_2,	// Acquire Cube Level 2
+		RUNG,	// Elevate To Rung For Climb
 		SWITCH,			// Deposit Switch / Acquire Cube Level 3 
 		LOWER_SCALE,	// Deposit Lower Scale
 		UPPER_SCALE		// Deposit Upper Scale
@@ -53,6 +53,7 @@ public class Elevator extends Subsystem{
 	private double _targetPosition = 0.0;
 	private double _currentPosition = 0.0;
 	private ElevatorTarget _alternateElevatorTarget = ElevatorTarget.NONE;
+	private boolean _isAtFloor = true;
 	
 	private int _currentJogDirection = 0;
 	
@@ -116,8 +117,8 @@ public class Elevator extends Subsystem{
 		case "Exchange": 
 			elevatorTarget = ElevatorTarget.EXCHANGE;
 			break;
-		case "CubeLevel2": 
-			elevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
+		case "Rung": 
+			elevatorTarget = ElevatorTarget.RUNG;
 			break;
 		case "Switch":
 			elevatorTarget = ElevatorTarget.SWITCH;
@@ -135,41 +136,6 @@ public class Elevator extends Subsystem{
 		return elevatorTarget;
 	}
 	
-	// Convert the Elevator Target to its string representation
-	public String ConvertToString(ElevatorTarget target)
-	{
-		String elevatorTarget;
-		
-		switch (target) {
-		case NONE: 
-			elevatorTarget = "None";
-			break;
-		case ACQUIRE:
-			elevatorTarget = "Acquire";
-			break;
-		case EXCHANGE:
-			elevatorTarget = "Exchange";
-			break;
-		case CUBE_LEVEL_2:
-			elevatorTarget = "Cube Level 2";
-			break;
-		case SWITCH:
-			elevatorTarget = "Switch";
-			break;
-		case LOWER_SCALE:
-			elevatorTarget = "Scale";
-			break;
-		case UPPER_SCALE:
-			elevatorTarget = "Upper Scale";
-			break;
-		default:
-			elevatorTarget = "Invalid";
-			break;
-		}
-		return elevatorTarget;
-		
-	}
-	
 	// Start jogging the elevator
 	public void JogElevator(int jogDirection, double jogSpeed)
 	{
@@ -185,6 +151,7 @@ public class Elevator extends Subsystem{
 	
 	// Elevate to a specific target position
 	public void Elevate (ElevatorTarget target) {
+		_isAtFloor = false; 
 		if (target == ElevatorTarget.NONE)
 		{
 			StopMoving();
@@ -196,17 +163,18 @@ public class Elevator extends Subsystem{
 			case ACQUIRE:
 				_targetPosition = 0;	// Acquire Height is Cube Level 1
 				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+				_isAtFloor = true;
 				break;
 			case EXCHANGE:
 				_targetPosition = 500;	// Alternate Acquire position is Exchange
 				break;
 			case SWITCH:
 				_targetPosition = 1200; // Switch height is also Cube Level 3
-				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
+				_alternateElevatorTarget = ElevatorTarget.RUNG;
 				break;
 				
-			case CUBE_LEVEL_2:
-				_targetPosition = 700;	// Alternate Switch position is Cube Level 2
+			case RUNG:
+				_targetPosition = 2100;	// Alternate Switch position is Cube Level 2
 				break;
 			case LOWER_SCALE:
 				_targetPosition = 2500;	// Default scale position is lower scale
@@ -225,16 +193,17 @@ public class Elevator extends Subsystem{
 			case ACQUIRE:
 				_targetPosition = 0;	// Acquire Height is Cube Level 1
 				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+				_isAtFloor = true;
 				break;
 			case EXCHANGE:
 				_targetPosition = 200;	// Alternate Acquire position is Exchange
 				break;
-			case CUBE_LEVEL_2:
-				_targetPosition = 300;	// Alternate Switch position is Cube Level 2
+			case RUNG:
+				_targetPosition = 300;	// Alternate Switch position is Rung
 				break;
 			case SWITCH:
 				_targetPosition = 1000; // Switch height is also Cube Level 3
-				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
+				_alternateElevatorTarget = ElevatorTarget.RUNG;
 				break;
 			case LOWER_SCALE:
 				_targetPosition = 2000;	// Default scale position is lower scale
@@ -270,6 +239,10 @@ public class Elevator extends Subsystem{
 		 return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
 	}
 	
+	public boolean IsAtFloor() {
+		return _isAtFloor;
+	}
+	
 	// Execute to move
 	public void Execute() {
 		_currentPosition = GetElevatorPosition();
@@ -290,7 +263,7 @@ public class Elevator extends Subsystem{
 		SmartDashboard.putNumber("Current Position", GetElevatorPosition());
 		SmartDashboard.putNumber("Target Position", _targetPosition);
 		SmartDashboard.putNumber("Direction", _direction);
-		SmartDashboard.putString("Alternate Target", ConvertToString(_alternateElevatorTarget));
+		SmartDashboard.putString("Alternate Target", _alternateElevatorTarget.toString());
 		SmartDashboard.putNumber("Jog Direction", _currentJogDirection);
 		SmartDashboard.putNumber("Elevate Output:",_elevatorMotor.getMotorOutputPercent());
 		SmartDashboard.putNumber("Count", _count);
