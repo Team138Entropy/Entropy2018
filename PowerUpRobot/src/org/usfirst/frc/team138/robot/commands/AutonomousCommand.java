@@ -32,12 +32,12 @@ public class AutonomousCommand extends CommandGroup {
 			// Grab 2nd cube at end of near switch
 			// drop elevator to acquire position
 			//addParallel(new ElevateToTarget(ElevatorTarget.ACQUIRE));
-			addSequential(new AutoDrive(Dir*148.7));
-			addSequential(new AutoDrive(Constants.autoSpeed, 158));
+			addSequential(new AutoDrive(Dir*156));
+			addSequential(new AutoDrive(Constants.autoSpeed, 148));
 			addSequential(new Wait(1));			
-			addSequential(new AutoDrive(Constants.autoSpeed, 14));
+//			addSequential(new AutoDrive(Constants.autoSpeed, 14));
 			// Turn to deposit on Switch
-			addSequential(new AutoDrive(Dir*175));
+//			addSequential(new AutoDrive(Dir*175));
 /*
  * //			addSequential(new StartAcquire());
 //			addSequential(new CompleteAcquire());
