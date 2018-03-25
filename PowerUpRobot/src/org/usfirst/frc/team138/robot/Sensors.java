@@ -3,13 +3,13 @@ package org.usfirst.frc.team138.robot;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.wpilibj.CameraServer;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-
 
 import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.Servo;
@@ -26,6 +26,8 @@ public class Sensors {
 	static UsbCamera Camera0;
 	
 	public static double gyroBias=0;
+
+	public static DigitalInput practiceRobotJumperPin;
 	
 	public static void initialize() {
 		Robot.drivetrain.frontLeftTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
@@ -43,8 +45,9 @@ public class Sensors {
 	   SmartDashboard.putString("PixelFormat", "MJPEG");
 	   SmartDashboard.putNumber("x-resolution", 320);
 	   SmartDashboard.putNumber("y-resolution",240);     
-	   SmartDashboard.putNumber("framerate",30);     
-
+	   SmartDashboard.putNumber("framerate",30);
+	   
+	   practiceRobotJumperPin = new DigitalInput(5);
 	}
 	
 	public static double getLeftDistance() {
