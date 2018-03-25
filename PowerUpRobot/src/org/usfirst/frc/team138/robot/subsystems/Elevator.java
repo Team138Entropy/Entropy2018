@@ -236,7 +236,14 @@ public class Elevator extends Subsystem{
 	
 	// Return the elevator position in encoder counts
 	public double GetElevatorPosition() {
-		 return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
+		if (Constants.isSimulated)
+		{
+			return (_targetPosition);
+		}
+		else
+		{
+			return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
+		}
 	}
 	
 	public boolean IsAtFloor() {
