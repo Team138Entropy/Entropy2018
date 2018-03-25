@@ -51,26 +51,24 @@ public class AutoLocations {
 		
 		this.startPosition = startPosition;
 		
-		
-		
-		
 	}
 							
 	public double getDistanceByStep(int autoStep) {
 		
-		switch (routine) {
+		//switch (routine) {
 		
 		
 		
 		
-		}
+		//}
 		
-		return getDistanceByLocations()
+		//return getDistanceByLocations()
+		return 0.0;
 		
 	}
 	
 	public double getHeadingByStep(int autoStep, String routine) {
-		
+		return 0.0;
 	}
 	
 	public double getDistanceByLocations(int start, int end) {
