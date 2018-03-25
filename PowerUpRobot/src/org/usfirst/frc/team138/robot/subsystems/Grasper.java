@@ -87,6 +87,12 @@ public class Grasper extends Subsystem{
     	}
     }
     
+    public void InitializeForAuto() {
+    	raiseWrist();
+    	closeGrasper();
+    	holdRollers();
+    }
+    
     public void raiseWrist() {
     	_wristSolenoid.set(Constants.wristSolenoidActiveRaised);
     	_isWristRaised = true;
@@ -121,6 +127,10 @@ public class Grasper extends Subsystem{
 		
 		//For Simulation
 		//return _isCubeAcquired;
+	}
+	
+	public boolean isCubeManuallyAcquired() {
+		return _isCubeAcquired;
 	}
 	
 	public void toggleDetectCube() {
@@ -191,12 +201,14 @@ public class Grasper extends Subsystem{
 		closeGrasper();
 		acquireRollers(); 
 		_isCubeReleased = false;
+		_isCubeAcquired = false;
 	}
 	
 	public void CompleteAcquire() {
 		SmartDashboard.putString("Acquire Release", "Complete Acquire");
 		holdRollers();
 		_isCubeReleased = false;
+		_isCubeAcquired = true;
 	}
 
 	public void StartRelease() {
@@ -204,6 +216,7 @@ public class Grasper extends Subsystem{
 		lowerWrist();
 		releaseRollers();
 		_isCubeReleased = false;
+		_isCubeAcquired = false;
 	}
 	
 	public void CompleteRelease() {
@@ -211,6 +224,7 @@ public class Grasper extends Subsystem{
 		stopRollers();
 		openGrasper();
 		_isCubeReleased = true;
+		_isCubeAcquired = false;
 	}
 	
 	public boolean isCubeReleased() {

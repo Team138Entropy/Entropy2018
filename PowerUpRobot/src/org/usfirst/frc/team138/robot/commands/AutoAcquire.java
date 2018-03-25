@@ -79,6 +79,13 @@ public class AutoAcquire extends Command {
     }
     
     private void detectCube() {
+    	
+    	// Check for manual acquire - bypass auto acquire in this case
+    	if (Robot.grasper.isCubeManuallyAcquired())
+    	{
+    		_currentState = AutoAcquireStates.HOLD_CUBE;
+    	}
+    	
     	if (Robot.grasper.isCubeDetected()) {
     		_consecutiveReadingsAboveThreshold++;
     	}
@@ -94,8 +101,16 @@ public class AutoAcquire extends Command {
     		_consecutiveReadingsAboveThreshold = 0;
     	}
     }
+    
     private void startAcquire() {
     	Robot.grasper.StartAcquire();
+    	
+    	// Check for manual acquire - bypass auto acquire in this case
+    	if (Robot.grasper.isCubeManuallyAcquired())
+    	{
+    		_currentState = AutoAcquireStates.HOLD_CUBE;
+    	}
+    	
     	//Check for acquired threshold
     	if (Robot.grasper.isCubeAcquired()) {
     		_consecutiveReadingsAboveThreshold++;
@@ -112,11 +127,13 @@ public class AutoAcquire extends Command {
     		_consecutiveReadingsAboveThreshold = 0;
     	}
     }
+    
     private void completeAcquire() {
     	Robot.grasper.CompleteAcquire();
     	
     	_currentState = AutoAcquireStates.HOLD_CUBE;
     }
+    
     private void holdCube() {
     	if (Robot.grasper.isCubeReleased()) {
     		_currentState = AutoAcquireStates.DISABLED;
