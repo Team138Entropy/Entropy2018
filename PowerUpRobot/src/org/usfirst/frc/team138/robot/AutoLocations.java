@@ -2,24 +2,16 @@ package org.usfirst.frc.team138.robot;
 
 public class AutoLocations {
 	
+	public enum Routine {SCALENEAR, SCALEFAR, CENTERLSW, CENTERRSW, OVERRIDESW}
+
 	private static final int[][] overrideSw = new int[][] {{2, 3}};
     private static final int[][] scaleNear  = new int[][] {{0, 1}, {1, 2}, {2, 3}, {2, 4}};
 	private static final int[][] scaleFar   = new int[][] {{1, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 7}, {8, 9}};
 	private static final int[][] centerLSw  = new int[][] {{10, 13}, {13, 14}, {14, 11}};
 	private static final int[][] centerRSw  = new int[][] {{10, 13}, {13, 15}, {15, 12}};
 	
-	public double angleModifier = 1.0;
-	
-	public int currentStep = 0;
-	
-	public enum Routine {SCALENEAR, SCALEFAR, CENTERLSW, CENTERRSW}
-	
-	public Routine currentRoutine;
-	
-	private String startPosition;
-	
 	private static final double[][] locations =
-	                       //X cm   Y cm   Angle degrees
+                           //X cm   Y cm   Angle degrees
 			new double[][] {{45.0,  119.0, 0.0},    // 0  - Start Position - Right
 							{707.0, 157.0, 35.0},   // 1  - Place Near Scale
 							{572.0, 239.0, 175.0},  // 2  - Pickup End Cube Near Switch
@@ -36,8 +28,15 @@ public class AutoLocations {
 							{100.0, 350.0, 0.0},    // 13 - Step Away From Center Start Position
 							{175.0, 547.0, 0.0},    // 14 - Waypoint to Left Switch from Center
 							{250.0, 275.0, 0.0}};   // 15 - Waypoint to Right Switch from Center
-	
-	public AutoLocations(String startPosition, String autoMode, String gameData){
+
+	private  int[][] currentRoutine;
+	private  int     lastStep;
+	private  int     currentStep   = 0;
+	private  double  angleModifier = 1.0;
+	private  Routine routineSelector;
+
+	//Main Constructor
+	public AutoLocations(String startPosition){
 		
 		// Since our default scalar is 1.0 we only need 
 		// to change our modifier to -1.0
@@ -48,27 +47,69 @@ public class AutoLocations {
 		    default :
 		    	break;
 		}
-		
-		this.startPosition = startPosition;
-		
 	}
-							
+	
+	private int[][] getRoutine(Routine currentRoutine) {
+		switch (this.routineSelector) {
+    		case SCALENEAR :
+    			return AutoLocations.scaleNear;
+    		case SCALEFAR :
+    			return AutoLocations.scaleFar;
+    		case CENTERLSW :
+    			return AutoLocations.centerLSw;
+    		case CENTERRSW :
+    			return AutoLocations.centerRSw;
+    		case OVERRIDESW :
+    			return AutoLocations.overrideSw;
+    		default :
+    			return null;
+		}	
+	}
+	
+//	public double getNextDistance() {
+//		if (this.routineSelector != null &&
+//			this.currentRoutine  !=	null &&
+//			this.currentStep < this.lastStep) {
+//			double value = getDistanceByLocations(currentRoutine[currentStep][0], currentRoutine[currentStep][1]);
+//			this.currentStep++;
+//			
+//			return value;
+//		}
+//		return 0.0;
+//	}
+
 	public double getDistanceByStep(int autoStep) {
-		
-		//switch (routine) {
-		
-		
-		
-		
-		//}
-		
-		//return getDistanceByLocations()
-		return 0.0;
-		
+		if (this.routineSelector != null) {
+			currentRoutine = getRoutine(routineSelector);
+		    return getDistanceByLocations(currentRoutine[autoStep][0], currentRoutine[autoStep][1]);
+		} else {
+			//The user made an invalid call and needs to set the routine
+			return 0.0;
+	    }
 	}
 	
 	public double getHeadingByStep(int autoStep, String routine) {
-		return 0.0;
+		if (this.routineSelector != null) {
+			int[][] currentRoutine = getRoutine(routineSelector);
+		    return getHeadingByLocations(currentRoutine[autoStep][0], currentRoutine[autoStep][1]);
+		} else {
+			//The user made an invalid call and needs to set the routine
+			return 0.0;
+	    }
+	}
+
+	public void setNewRoutine(Routine newRoutine) {
+		this.routineSelector = newRoutine;
+		this.currentRoutine  = getRoutine(newRoutine); 
+		this.currentStep     = 0;
+		this.lastStep        = this.currentRoutine.length-1;
+	}
+	
+	public void setRoutineAndStep(Routine newRoutine, int nextStep) {
+		this.routineSelector = newRoutine;
+		this.currentRoutine  = getRoutine(newRoutine);
+		this.currentStep     = nextStep;
+		this.lastStep        = this.currentRoutine.length-1;
 	}
 	
 	public double getDistanceByLocations(int start, int end) {
@@ -93,5 +134,4 @@ public class AutoLocations {
 		return this.angleModifier * locations[position][2];
 	}
 	
-
 }
