@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
     Preferences prefs = Preferences.getInstance();
     
     // Location lookup
-    AutoLocations autoLocations;
+    public static AutoLocations autoLocations;
 	
     // Commands
     AutonomousCommand autonomousCommand;
