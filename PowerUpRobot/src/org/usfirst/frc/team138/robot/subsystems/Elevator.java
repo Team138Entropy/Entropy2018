@@ -234,6 +234,11 @@ public class Elevator extends Subsystem{
 		Elevate(_alternateElevatorTarget);
 	}
 	
+	public ElevatorTarget getAlternateTarget()
+	{
+		return _alternateElevatorTarget;
+	}
+	
 	// Return the elevator position in encoder counts
 	public double GetElevatorPosition() {
 		if (Constants.isSimulated)
