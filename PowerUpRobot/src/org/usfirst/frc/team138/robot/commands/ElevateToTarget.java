@@ -28,9 +28,9 @@ public class ElevateToTarget extends Command {
 
 	protected void initialize() {
 		
-		// Supports release from scale
+		// Supports elevate to scale with hook interference
 		if (elevatorTarget == ElevatorTarget.LOWER_SCALE || elevatorTarget == ElevatorTarget.UPPER_SCALE) {
-			Robot.grasper.raiseWrist();
+			Robot.grasper.lowerWrist();
 		}
 		
 		Robot.elevator.Elevate(elevatorTarget);
@@ -57,6 +57,10 @@ public class ElevateToTarget extends Command {
 	protected void end() {
 		Robot.elevator.StopMoving();
 		
+		// Supports release from scale
+		if (elevatorTarget == ElevatorTarget.LOWER_SCALE || elevatorTarget == ElevatorTarget.UPPER_SCALE) {
+			Robot.grasper.raiseWrist();
+		}		
 	}
 
 	protected void interrupted() {
