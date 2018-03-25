@@ -172,7 +172,7 @@ public class AutoDrive extends Command {
 	}
 
 	public boolean isFinished() {
-		if (isDone) {
+		if (isDone && Robot.elevator.IsMoveComplete()) {
 			Robot.drivetrain.Relax();
 			return true;
 		}

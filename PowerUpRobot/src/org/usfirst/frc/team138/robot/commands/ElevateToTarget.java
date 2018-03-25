@@ -30,7 +30,7 @@ public class ElevateToTarget extends Command {
 		
 		// Supports release from scale
 		if (elevatorTarget == ElevatorTarget.LOWER_SCALE || elevatorTarget == ElevatorTarget.UPPER_SCALE) {
-			Robot.grasper.raiseWrist();
+			Robot.grasper.lowerWrist();
 		}
 		
 		Robot.elevator.Elevate(elevatorTarget);
@@ -56,7 +56,9 @@ public class ElevateToTarget extends Command {
 
 	protected void end() {
 		Robot.elevator.StopMoving();
-		
+		if (elevatorTarget == ElevatorTarget.LOWER_SCALE || elevatorTarget == ElevatorTarget.UPPER_SCALE) {
+			Robot.grasper.raiseWrist();
+		}		
 	}
 
 	protected void interrupted() {

@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
     Preferences prefs = Preferences.getInstance();
     
     // Location lookup
-    AutoLocations autoLocations;
+    public static AutoLocations autoLocations;
 	
     // Commands
     AutonomousCommand autonomousCommand;
@@ -150,7 +150,9 @@ public class Robot extends IterativeRobot {
         isPracticeRobot();
         Sensors.gyro.reset();
         Sensors.resetEncoders();
-        autonomousCommand.start();
+        // Force wrist and gripper to known state
+       	Robot.grasper.InitializeForAuto();
+    	autonomousCommand.start();
     }
 
     /**

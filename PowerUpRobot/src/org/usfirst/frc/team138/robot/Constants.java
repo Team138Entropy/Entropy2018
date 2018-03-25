@@ -92,13 +92,13 @@ public class Constants {
 		public final static boolean wristSolenoidActiveRaised = false;
 		public final static double acquisitionWheelsPercent = 50.0;
 		public final static double aquireSpeed = 0.5; //= 0.75; Dialed back for testing auto acquire
-		public final static double releaseSpeed = -0.7;
+		public final static double releaseSpeed = -1.0;
 		public final static double holdSpeed = 0.3;
 
 		// Auto Cube Acquisition
 		public final static double autoDetectionSettlingTime = 0.5;	// Time to delay after turning acquisition wheels on to start detection
 		public final static int cubeDetectThresholdCount = 3;		// Consecutive readings above threshold to trigger acquire
-		public final static double cubeDetectThreshold = 4.0;		// Roller current threshold to start acquire
+		public final static double cubeDetectThreshold = 3.0;		// Roller current threshold to start acquire
 		public final static int cubeAcquireThresholdCount = 10;		// Consecutive readings above threshold to trigger complete acquire
 		public final static double cubeAcquireThreshold = 7.0;		// Roller current threshold to complete acquire
 
