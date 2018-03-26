@@ -13,6 +13,8 @@ public class Constants {
 		public static boolean practiceBot = true;
 		public static boolean competitionOverride = false;
 		
+		public static boolean isSimulated = false;
+		
 		// Deadband applied to Joystick, when
 		// magnitude is less than deadBand, then set Magnitude to 0
 		public final static double joystickDeadband = 0.09;
@@ -92,13 +94,14 @@ public class Constants {
 		public final static boolean wristSolenoidActiveRaised = false;
 		public final static double acquisitionWheelsPercent = 50.0;
 		public final static double aquireSpeed = 0.5; //= 0.75; Dialed back for testing auto acquire
-		public final static double releaseSpeed = -0.7;
+		public final static double releaseSpeed = -1.0;
 		public final static double holdSpeed = 0.3;
+		public final static double releaseSpeedReduced = -0.7;
 
 		// Auto Cube Acquisition
 		public final static double autoDetectionSettlingTime = 0.5;	// Time to delay after turning acquisition wheels on to start detection
-		public final static int cubeDetectThresholdCount = 10;		// Consecutive readings above threshold to trigger acquire
-		public final static double cubeDetectThreshold = 4.0;		// Roller current threshold to start acquire
+		public final static int cubeDetectThresholdCount = 3;		// Consecutive readings above threshold to trigger acquire
+		public final static double cubeDetectThreshold = 3.0;		// Roller current threshold to start acquire
 		public final static int cubeAcquireThresholdCount = 10;		// Consecutive readings above threshold to trigger complete acquire
 		public final static double cubeAcquireThreshold = 7.0;		// Roller current threshold to complete acquire
 

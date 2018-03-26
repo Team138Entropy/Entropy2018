@@ -70,10 +70,15 @@ public class Grasper extends Subsystem{
     }
     
     public boolean grasperIsOpen() {
-		return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
-
-		// For Simulation
-		//return _isGrasperOpen;
+    	if (Constants.isSimulated)
+    	{
+    		// For Simulation
+    		return _isGrasperOpen;
+    	}
+    	else
+    	{
+    		return (_grasperSolenoid.get() == Constants.grasperSolenoidActiveOpen);
+    	}
 	}
     
     // Wrist Functions
@@ -87,6 +92,12 @@ public class Grasper extends Subsystem{
     	}
     }
     
+    public void InitializeForAuto() {
+    	raiseWrist();
+    	closeGrasper();
+    	holdRollers();
+    }
+    
     public void raiseWrist() {
     	_wristSolenoid.set(Constants.wristSolenoidActiveRaised);
     	_isWristRaised = true;
@@ -98,29 +109,48 @@ public class Grasper extends Subsystem{
     }
 	
 	public boolean isWristUp() {
-		return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);
-		
-		// For simulation
-		//return _isWristRaised;
+		if (Constants.isSimulated)
+		{
+			// For simulation
+			return _isWristRaised;
+		}
+		else
+		{
+			return (_wristSolenoid.get() == Constants.wristSolenoidActiveRaised);	
+		}
 	}
 	public boolean isWristDown() {
 		return (!isWristUp());
 	}
-	// Acquisition Roller Functions
 	
+	// Acquisition Roller Functions
 	public boolean isCubeDetected() {
-		return (_leftRollerTalon.getOutputCurrent() > Constants.cubeDetectThreshold || 
-				_rightRollerTalon.getOutputCurrent() > Constants.cubeDetectThreshold);
-		
-		//For Simulation
-		//return _isCubeDetected;
+		if (Constants.isSimulated)
+		{
+			//For Simulation
+			return _isCubeDetected;
+		}
+		else
+		{
+			return (_leftRollerTalon.getOutputCurrent() > Constants.cubeDetectThreshold || 
+					_rightRollerTalon.getOutputCurrent() > Constants.cubeDetectThreshold);
+		}	
 	}
 	public boolean isCubeAcquired() {
-		return (_leftRollerTalon.getOutputCurrent() > Constants.cubeAcquireThreshold || 
-				_rightRollerTalon.getOutputCurrent() > Constants.cubeAcquireThreshold);
-		
-		//For Simulation
-		//return _isCubeAcquired;
+		if (Constants.isSimulated)
+		{
+			//For Simulation
+			return _isCubeAcquired;
+		}
+		else
+		{
+			return (_leftRollerTalon.getOutputCurrent() > Constants.cubeAcquireThreshold || 
+					_rightRollerTalon.getOutputCurrent() > Constants.cubeAcquireThreshold);
+		}
+	}
+	
+	public boolean isCubeManuallyAcquired() {
+		return _isCubeAcquired;
 	}
 	
 	public void toggleDetectCube() {
@@ -146,7 +176,14 @@ public class Grasper extends Subsystem{
 	}
 	
 	private void releaseRollers() {
-		_rollerSpeedController.set(Constants.releaseSpeed);
+		if (isWristDown())
+		{
+			_rollerSpeedController.set(Constants.releaseSpeedReduced);
+		}
+		else
+		{
+			_rollerSpeedController.set(Constants.releaseSpeed);
+		}
 		_acquisitionState =  RollerState.RELEASE;
 	}
 	
@@ -191,19 +228,22 @@ public class Grasper extends Subsystem{
 		closeGrasper();
 		acquireRollers(); 
 		_isCubeReleased = false;
+		_isCubeAcquired = false;
 	}
 	
 	public void CompleteAcquire() {
 		SmartDashboard.putString("Acquire Release", "Complete Acquire");
 		holdRollers();
 		_isCubeReleased = false;
+		_isCubeAcquired = true;
 	}
 
 	public void StartRelease() {
 		SmartDashboard.putString("Acquire Release","Start Release");
-		lowerWrist();
 		releaseRollers();
+		lowerWrist();
 		_isCubeReleased = false;
+		_isCubeAcquired = false;
 	}
 	
 	public void CompleteRelease() {
@@ -211,6 +251,7 @@ public class Grasper extends Subsystem{
 		stopRollers();
 		openGrasper();
 		_isCubeReleased = true;
+		_isCubeAcquired = false;
 	}
 	
 	public boolean isCubeReleased() {
@@ -236,6 +277,7 @@ public class Grasper extends Subsystem{
 		SmartDashboard.putBoolean("Cube Detected", isCubeDetected());
 		SmartDashboard.putBoolean("Cube Acquired", isCubeAcquired());
 		SmartDashboard.putString("Acquisition Wheels", _acquisitionState.toString());
+		SmartDashboard.putNumber("Roller Speed", _rollerSpeedController.get());
 		SmartDashboard.putNumber("L Acquisition Current", _leftRollerTalon.getOutputCurrent());
 		SmartDashboard.putNumber("R Acquisition Current", _rightRollerTalon.getOutputCurrent());
 	}
