@@ -13,6 +13,8 @@ public class Constants {
 		public static boolean practiceBot = true;
 		public static boolean competitionOverride = false;
 		
+		public static boolean isSimulated = false;
+		
 		// Deadband applied to Joystick, when
 		// magnitude is less than deadBand, then set Magnitude to 0
 		public final static double joystickDeadband = 0.09;
@@ -94,6 +96,7 @@ public class Constants {
 		public final static double aquireSpeed = 0.5; //= 0.75; Dialed back for testing auto acquire
 		public final static double releaseSpeed = -1.0;
 		public final static double holdSpeed = 0.3;
+		public final static double releaseSpeedReduced = -0.7;
 
 		// Auto Cube Acquisition
 		public final static double autoDetectionSettlingTime = 0.5;	// Time to delay after turning acquisition wheels on to start detection

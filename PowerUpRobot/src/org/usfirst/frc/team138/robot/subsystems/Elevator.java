@@ -166,7 +166,7 @@ public class Elevator extends Subsystem{
 				_isAtFloor = true;
 				break;
 			case EXCHANGE:
-				_targetPosition = 200;	// Alternate Acquire position is Exchange
+				_targetPosition = 500;	// Alternate Acquire position is Exchange
 				break;
 			case SWITCH:
 				_targetPosition = 1200; // Switch height is also Cube Level 3
@@ -177,11 +177,11 @@ public class Elevator extends Subsystem{
 				_targetPosition = 2100;	// Alternate Switch position is Cube Level 2
 				break;
 			case LOWER_SCALE:
-				_targetPosition = 2200;	// Default scale position is lower scale
+				_targetPosition = 2500;	// Default scale position is lower scale
 				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
 				break;
 			case UPPER_SCALE:
-				_targetPosition = 2500;	// Alternate scale position is upper scale
+				_targetPosition = 2700;	// Alternate scale position is upper scale
 			default:
 				// Error 
 				break;
@@ -234,9 +234,21 @@ public class Elevator extends Subsystem{
 		Elevate(_alternateElevatorTarget);
 	}
 	
+	public ElevatorTarget getAlternateTarget()
+	{
+		return _alternateElevatorTarget;
+	}
+	
 	// Return the elevator position in encoder counts
 	public double GetElevatorPosition() {
-		 return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
+		if (Constants.isSimulated)
+		{
+			return (_targetPosition);
+		}
+		else
+		{
+			return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
+		}
 	}
 	
 	public boolean IsAtFloor() {
