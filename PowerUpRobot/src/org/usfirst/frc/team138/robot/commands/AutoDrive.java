@@ -126,6 +126,7 @@ public class AutoDrive extends Command {
 			stallCounter = 0;
 			
 			// Angular difference between target and current heading
+			// diffAgnles returns "short way 'round" between 2 angles.
 			double diffAngle=Robot.accumulatedHeading-Sensors.gyro.getAngle();
 			SmartDashboard.putNumber("Diff Angle", diffAngle);
 			

@@ -50,20 +50,16 @@ public class AutonomousCommand extends CommandGroup {
 			else
 			{ // Deposit on Scale
 				// Rotate back towards scale
-				addParallel(new AutoDrive(Robot.autoLocations.getHeadingByLocations(2, 4)));
-				addSequential(new ElevateToTarget(ElevatorTarget.SWITCH)); // LOWER_SCALE
-				// Drive towards scale
+				addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(2, 4)));
+				addParallel(new ElevateToTarget(ElevatorTarget.SWITCH)); // LOWER_SCALE
+				// Drive towards scale while raising elevator
 				addSequential(new AutoDrive(Constants.autoSpeed, Robot.autoLocations.getDistanceByLocations(2,4)));
 				// Re-orient - may remove to save time
 				addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(4)));
 			}
 			addSequential(new StartRelease());
-			addSequential(new Wait(1));
+			addSequential(new Wait(Constants.releaseDelay));
 			addSequential(new CompleteRelease());
-//			addSequential(new CloseGrasper());
-
-
-
 		}
 
 		
@@ -158,6 +154,7 @@ public class AutonomousCommand extends CommandGroup {
 		addSequential(new Wait(1));
 		addSequential(new CompleteAcquire());
 		if (Target2=="Switch") {
+			// Elevate
 			addSequential(new ElevateToTarget(ElevatorTarget.SWITCH));
 			// Drive a little closer
 			addSequential(new AutoDrive(Constants.autoSpeed, Robot.autoLocations.getDistanceByLocations(2,3)));
@@ -166,18 +163,17 @@ public class AutonomousCommand extends CommandGroup {
 		else
 		{ // Deposit on Scale
 			// Rotate back towards scale
-			addParallel(new AutoDrive(Robot.autoLocations.getHeadingByLocations(2, 4)));
-			addSequential(new ElevateToTarget(ElevatorTarget.LOWER_SCALE)); // LOWER_SCALE
-			// Drive towards scale
+			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(2, 4)));
+			// Drive towards scale, while raising elevator
+			addParallel(new ElevateToTarget(ElevatorTarget.LOWER_SCALE)); // LOWER_SCALE
 			addSequential(new AutoDrive(Constants.autoSpeed, Robot.autoLocations.getDistanceByLocations(2,4)));
 			// Re-orient - may remove to save time
 			addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(4)));
 		}
+		// Deposit cube
 		addSequential(new StartRelease());
-		addSequential(new Wait(1));
+		addSequential(new Wait(Constants.releaseDelay));
 		addSequential(new CompleteRelease());
-//		addSequential(new CloseGrasper());
-
 	}
 
 	
@@ -185,6 +181,7 @@ public class AutonomousCommand extends CommandGroup {
 	{
 			// Far Scale
 			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(0, 5)));
+			// Elevate while driving towards first waypoint
 			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			addSequential(new AutoDrive(Constants.autoSpeed, Robot.autoLocations.getDistanceByLocations(0,5)));
 			// Turn towards far side
