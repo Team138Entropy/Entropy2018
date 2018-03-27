@@ -9,9 +9,8 @@ public class Constants {
 		public static boolean AutoEnable=true;
 	
 		public static double commandLoopIterationSeconds = 0.020;
-	
-		public static boolean practiceBot = true;
-		public static boolean competitionOverride = false;
+			
+		public static boolean practiceBot = false;
 		
 		public static boolean isSimulated = false;
 		
