@@ -68,9 +68,9 @@ public class Constants {
 		// Allow for slower turn speed when in slow mode,
 		public final static double ClosedLoopSlowRotateSpeed = 0.5;
 		
-		public final static double MaxSpeedChange = 2 * 0.025; // Meters/sec2 * .025 seconds
+		public final static double MaxSpeedChange = 4 * 0.025; // Meters/sec2 * .025 seconds
 		public final static double MaxRotateSpeedChange = 5 * 0.025; // Meters/sec2 * .025 seconds
-		public final static double MaxSlowSpeedChange = 1 * 0.025;
+		public final static double MaxSlowSpeedChange = 4 * 0.025;
 		public final static double CloseLoopJoystickDeadband = 0.1;
 		
 		// This is our encoder constant for distance (in METERS) per  encoder pulse
