@@ -139,9 +139,7 @@ public class Robot extends IterativeRobot {
     	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();
     	
-    	autoLocations = new AutoLocations(startPosChooser.getSelected(),
-        		autoModeChooser.getSelected(),
-        		gameData);
+    	autoLocations = new AutoLocations(startPosChooser.getSelected());
     	
         autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
         		startPosChooser.getSelected(),

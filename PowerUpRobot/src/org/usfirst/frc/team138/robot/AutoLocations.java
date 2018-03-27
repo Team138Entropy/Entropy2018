@@ -30,7 +30,7 @@ public class AutoLocations {
 							{175.0, 547.0, 0.0},    //14 Waypoint to Left Switch from Center
 							{250.0, 275.0, 0.0}};   //15 Waypoint to Right Switch from Center
 	
-	public AutoLocations(String startPosition, String autoMode, String gameData){
+	public AutoLocations(String startPosition){
 		
 		// Since our default scalar is 1.0 we only need 
 		// to change our modifier to -1.0
