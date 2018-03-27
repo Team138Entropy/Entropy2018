@@ -159,7 +159,7 @@ public class Elevator extends Subsystem{
 		}
 		else
 		{		
-		if (Robot.isPracticeRobot()) {
+		if (Constants.practiceBot) {
 			switch (target) {
 			case ACQUIRE:
 				_targetPosition = 0;	// Acquire Height is Cube Level 1

@@ -86,6 +86,7 @@ public class Robot extends IterativeRobot {
         Robot.accumulatedHeading = 0;
         Constants.AutoEnable=true;
 
+        Constants.practiceBot = isPracticeRobot();
     }
 	
 	/**

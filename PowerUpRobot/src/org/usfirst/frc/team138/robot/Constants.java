@@ -10,6 +10,8 @@ public class Constants {
 	
 		public static double commandLoopIterationSeconds = 0.020;
 			
+		public static boolean practiceBot = false;
+		
 		public static boolean isSimulated = false;
 		
 		// Deadband applied to Joystick, when
