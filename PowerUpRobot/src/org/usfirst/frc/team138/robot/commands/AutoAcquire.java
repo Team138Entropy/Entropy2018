@@ -16,6 +16,7 @@ public class AutoAcquire extends Command {
 		ENABLED,
 		DETECT_CUBE,
 		START_ACQUIRE,
+		ACQUIRE_CUBE,
 		COMPLETE_ACQUIRE,
 		HOLD_CUBE
 	}
@@ -46,6 +47,8 @@ public class AutoAcquire extends Command {
     		break;
     	case START_ACQUIRE: startAcquire();
     		break;
+    	case ACQUIRE_CUBE: acquireCube();
+    		break;
     	case COMPLETE_ACQUIRE: completeAcquire();
     		break;
     	case HOLD_CUBE: holdCube();
@@ -53,6 +56,7 @@ public class AutoAcquire extends Command {
     	}
     }
     
+    // Transition to enabled when ready to acquire cube
     private void disabled() {
     	// do nothing 
     	
@@ -68,6 +72,7 @@ public class AutoAcquire extends Command {
     	
     }
     
+    // Allow settling time after the rollers are started to avoid current spikes causing false cube detection
     private void enabled() {
     	_currentDelayTime += Constants.commandLoopIterationSeconds;
     	
@@ -78,6 +83,7 @@ public class AutoAcquire extends Command {
     	}
     }
     
+    // Check for conditions to start the acquire
     private void detectCube() {
     	
     	// Check for manual acquire - bypass auto acquire in this case
@@ -102,9 +108,16 @@ public class AutoAcquire extends Command {
     	}
     }
     
+    // Transitory state, because we only want to issue StartAcquire once
     private void startAcquire() {
     	Robot.grasper.StartAcquire();
     	
+    	_currentState = AutoAcquireStates.ACQUIRE_CUBE;
+    }
+    
+    // Check for conditions to complete the acquire
+    private void acquireCube()
+    {    	
     	// Check for manual acquire - bypass auto acquire in this case
     	if (Robot.grasper.isCubeManuallyAcquired())
     	{
@@ -128,12 +141,14 @@ public class AutoAcquire extends Command {
     	}
     }
     
+    // Transitory state, because we only want to issue CompleteAcquire once
     private void completeAcquire() {
     	Robot.grasper.CompleteAcquire();
     	
     	_currentState = AutoAcquireStates.HOLD_CUBE;
     }
     
+    // Do nothing while holding the cube, transition to disable when the cube is released
     private void holdCube() {
     	if (Robot.grasper.isCubeReleased()) {
     		_currentState = AutoAcquireStates.DISABLED;
