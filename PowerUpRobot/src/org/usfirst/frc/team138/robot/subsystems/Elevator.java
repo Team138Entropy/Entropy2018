@@ -1,6 +1,7 @@
 package org.usfirst.frc.team138.robot.subsystems;
 
 import org.usfirst.frc.team138.robot.Constants;
+import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.RobotMap;
 import org.usfirst.frc.team138.robot.commands.JogElevator;
 
@@ -158,7 +159,7 @@ public class Elevator extends Subsystem{
 		}
 		else
 		{		
-		if (Constants.practiceBot) {
+		if (Robot.isPracticeRobot()) {
 			switch (target) {
 			case ACQUIRE:
 				_targetPosition = 0;	// Acquire Height is Cube Level 1

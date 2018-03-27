@@ -141,13 +141,12 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) {
         	autonomousCommand.cancel();        	
         }        
-        Constants.practiceBot = isPracticeRobot();
     	Sensors.resetEncoders();
     	elevator.StopMoving();
     	
     }
     
-    public boolean isPracticeRobot() {
+    public static boolean isPracticeRobot() {
     	return (! Sensors.practiceRobotJumperPin.get());
     }
 
