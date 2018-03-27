@@ -17,8 +17,7 @@ public class TeleopDrive extends Command{
 	}
 
 	protected void initialize() {
-		Sensors.resetEncoders();
-		Sensors.gyro.reset();	
+	//	Sensors.resetEncoders();
 	}
 
 	protected void execute() {
