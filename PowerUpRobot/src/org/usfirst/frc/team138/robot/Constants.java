@@ -6,6 +6,7 @@ package org.usfirst.frc.team138.robot;
 public class Constants {
 
 	// System Constants
+		public static boolean AutoEnable=true;
 	
 		public static double commandLoopIterationSeconds = 0.020;
 			
@@ -30,7 +31,7 @@ public class Constants {
 		//
 		
 		public final static double distanceSwitch = 377.0;		     // Centimeters
-		public final static double distanceScale = 773.0;			 // Centimeters
+		public final static double distanceScale = 656.0;			 //737 Centimeters
 		public final static double distanceBaseLine = 305.0;		 // Centimeters
 		public final static double distanceToCrossPoint = 589;	     // Centimeters
 		public final static double distanceCross = 517;				 // Centimeters
@@ -52,6 +53,7 @@ public class Constants {
 		
 		// Drivetrain
 		public final static boolean useClosedLoopDrivetrain = true;
+		public final static double driveWheelSpacing = (23.65 / 39.37) * 100; // Centimeters (from 22 inches)
 		// Full joystick motion equates to following actual move speeds:
 		public final static double ClosedLoopCruiseVelocity = 2.25; // meters / second
 		public final static double ClosedLoopSlowVelocity = 0.6; // M/sec
@@ -63,9 +65,9 @@ public class Constants {
 		// Allow for slower turn speed when in slow mode,
 		public final static double ClosedLoopSlowRotateSpeed = 0.5;
 		
-		public final static double MaxSpeedChange = 2 * 0.025; // Meters/sec2 * .025 seconds
+		public final static double MaxSpeedChange = 4 * 0.025; // Meters/sec2 * .025 seconds
 		public final static double MaxRotateSpeedChange = 5 * 0.025; // Meters/sec2 * .025 seconds
-		public final static double MaxSlowSpeedChange = 1 * 0.025;
+		public final static double MaxSlowSpeedChange = 4 * 0.025;
 		public final static double CloseLoopJoystickDeadband = 0.1;
 		
 		// This is our encoder constant for distance (in METERS) per  encoder pulse
@@ -101,19 +103,24 @@ public class Constants {
 		public final static double cubeAcquireThreshold = 7.0;		// Roller current threshold to complete acquire
 
 		// ***** Autonomous drive parameters *******
-		public static double AutoDriveSpeed = 2.0; // M/sec
+		public static double AutoDriveSpeed = 2.0; //was 2.0 M/sec
 		public static double AutoDriveAccel = 1; // M/sec2 (1 ~.1G)
 		public static double AutoDriveRotateRate = .35; // Meters/second
 		// PID gains to control rotation (measured by Gyro)
 		public static double kPRotate = .2;
-		public static double kIRotate = 2;
-		public static double kDRotate = 0.5;
-		// Compensate AutoDrive overshoot 
-		public static double AutoDriveRotateOvershoot = 7;	// Degrees
+		public static double kIRotate = .2;
+		public static double kDRotate = 0.2;
+		
+		public static double kPDrive = 0.2;
+		public static double kIDrive = 0.0;	
+		public static double kDDrive = 0.0;
 		// Insert delay after each autonomous move to allow
 		// mechanism to settle (before sensors are reset at start of next move)
-		public static double AutoDrivePause = 10; // 40=1second
+		public static double AutoDrivePause = 2; // 50=1second
 		public static double AutoDriveStopTolerance = 2; // CM
+		public static double AutoDriveAngleCompensation = .01; // 
+		
+
 		
 		// Dashboard input constants
 		public final static String practiceRobot = "practice robot";

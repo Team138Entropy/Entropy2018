@@ -71,7 +71,8 @@ public class Sensors {
 		SmartDashboard.putNumber("Elev Position", Robot.elevator._elevatorMotor.getSelectedSensorPosition(0));     
 		SmartDashboard.putNumber("Elev Velocity", Robot.elevator._elevatorMotor.getSelectedSensorVelocity(0));
 		
-		SmartDashboard.putNumber("Heading", gyro.getAngle());
+		SmartDashboard.putNumber("Target Heading", Robot.accumulatedHeading);		
+		SmartDashboard.putNumber("Robot Heading", gyro.getAngle());
 		SmartDashboard.putNumber("Left Velocity",-Robot.drivetrain.frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 		SmartDashboard.putNumber("Right Velocity",-Robot.drivetrain.frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 
