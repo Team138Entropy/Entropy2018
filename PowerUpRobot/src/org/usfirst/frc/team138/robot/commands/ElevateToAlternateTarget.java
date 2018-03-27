@@ -23,6 +23,7 @@ public class ElevateToAlternateTarget extends Command {
 			Robot.grasper.lowerWrist();
 		}
 		Robot.elevator.ElevateToAlternateTarget();
+		_currentCommandTime = 0;
 	}
 
 	protected void execute() {
