@@ -1,25 +1,22 @@
 package org.usfirst.frc.team138.robot.commands;
 
 import org.usfirst.frc.team138.robot.Robot;
-import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class CompleteAcquire extends Command {
+public class ToggleWrist extends Command {
 
-    public CompleteAcquire() {
+    public ToggleWrist() {
         requires(Robot.grasper);
-        requires(Robot.elevator);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.grasper.CompleteAcquire();
+    	Robot.grasper.toggleWrist();
     }
-   
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {

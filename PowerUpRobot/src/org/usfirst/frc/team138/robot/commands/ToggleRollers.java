@@ -1,25 +1,22 @@
 package org.usfirst.frc.team138.robot.commands;
 
 import org.usfirst.frc.team138.robot.Robot;
-import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class CompleteAcquire extends Command {
+public class ToggleRollers extends Command {
 
-    public CompleteAcquire() {
+    public ToggleRollers() {
         requires(Robot.grasper);
-        requires(Robot.elevator);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.grasper.CompleteAcquire();
+    	Robot.grasper.toggleRollers();
     }
-   
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
@@ -27,7 +24,7 @@ public class CompleteAcquire extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+    		return true;
     }
 
     // Called once after isFinished returns true
