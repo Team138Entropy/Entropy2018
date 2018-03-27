@@ -34,7 +34,7 @@ public class Grasper extends Subsystem{
 	private WPI_TalonSRX _rightRollerTalon = new WPI_TalonSRX(RobotMap.RIGHT_CUBE_CAN_GRASPER_PORT);
 	
 	private static boolean _isCubeDetected = false;
-	private static boolean _isCubeReleased = false;
+	private static boolean _isCubeReleased = true;
 	private static boolean _isCubeAcquired = false;
 	
 	// Master
