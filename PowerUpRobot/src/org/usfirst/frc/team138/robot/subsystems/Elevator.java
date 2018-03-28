@@ -27,7 +27,7 @@ public class Elevator extends Subsystem{
 	double _liftKi = 0;
 	double _liftKd = 5;
 	
-	double _cruiseVelocity = 90;
+	double _cruiseVelocity = 100;
 	double _acceleration = 40; 
 	
 	// Talon SRX/ Victor SPX will support multiple (cascaded) PID loops
@@ -200,7 +200,7 @@ public class Elevator extends Subsystem{
 				_targetPosition = 200;	// Alternate Acquire position is Exchange
 				break;
 			case RUNG:
-				_targetPosition = 300;	// Alternate Switch position is Rung
+				_targetPosition = 1900;	// Alternate Switch position is Rung
 				break;
 			case SWITCH:
 				_targetPosition = 1000; // Switch height is also Cube Level 3

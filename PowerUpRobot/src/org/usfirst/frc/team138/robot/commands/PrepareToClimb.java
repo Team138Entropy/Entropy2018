@@ -23,7 +23,7 @@ public class PrepareToClimb extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	
+    	_currentCommandTime = 0;
     	if (Robot.climber.isClimbAllowed()) {
 //    		Robot.grasper.lowerWrist();
 //    		Robot.elevator.Elevate(ElevatorTarget.ACQUIRE);
