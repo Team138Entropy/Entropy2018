@@ -92,7 +92,7 @@ public class Constants {
 		public final static boolean wristSolenoidActiveRaised = false;
 		public final static double acquisitionWheelsPercent = 50.0;
 		public final static double aquireSpeed = 0.5; //= 0.75; Dialed back for testing auto acquire
-		public final static double releaseSpeed = -1.0;
+		public final static double releaseSpeed = -0.85;
 		public final static double holdSpeed = 0.3;
 		public final static double releaseSpeedReduced = -0.7;
 
