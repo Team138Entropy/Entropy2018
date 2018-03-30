@@ -26,6 +26,7 @@ public class Robot extends IterativeRobot {
     SendableChooser<String> teamChooser;
     SendableChooser<String> startPosChooser;
     SendableChooser<String> autoModeChooser;
+    SendableChooser<String> debugModeChooser;
         
     // Subsystems
     public static final Compressor compressor = new Compressor();
@@ -82,6 +83,11 @@ public class Robot extends IterativeRobot {
 		autoModeChooser.addObject("Test" , "test");
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
 					
+		debugModeChooser = new SendableChooser<String>();
+		debugModeChooser.addObject("Debug", "debug");
+		debugModeChooser.addObject("Competition", "competition");
+		SmartDashboard.putData("Debug Mode:", debugModeChooser);
+		
 		SmartDashboard.putBoolean("practiceBot", isPracticeRobot());		
         Robot.accumulatedHeading = 0;
         Constants.AutoEnable=true;
@@ -156,6 +162,7 @@ public class Robot extends IterativeRobot {
         Scheduler.getInstance().run();
         Sensors.updateSmartDashboard();
         SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
+        SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
     }
 
     public void teleopInit() {
@@ -186,11 +193,16 @@ public class Robot extends IterativeRobot {
 //		LiveWindow.run();
         
 		
-        Sensors.updateSmartDashboard();
-        elevator.updateSmartDashboard();
-        climber.updateSmartDashboard();
-        grasper.updateSmartDashboard();
-        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
+        if (debugModeChooser.getSelected() == "debug") 
+        {
+	        Sensors.updateSmartDashboard();
+	        elevator.updateSmartDashboard();
+	        climber.updateSmartDashboard();
+	        grasper.updateSmartDashboard();
+	        
+	        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
+	        SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
+        }
     }
     
     /**
