@@ -9,8 +9,6 @@ public class AutoLocations {
 	
 	public double angleModifier = 1.0;
 	
-	public int curentStep = 0;
-	
 	private static final double[][] locations =
 	                       //X cm   Y cm   Angle degrees
 			new double[][] {{45.0,  119.0, 0.0},    //0 Start Position - Right

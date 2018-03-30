@@ -39,7 +39,6 @@ public class Constants {
 		public final static double distanceCross = 517;				 // Centimeters
 		public final static double distanceFinalMoveAfterCross = 61; // Centimeters
 		
-		public final static double autoSpeed = 0.8; 				 // Fraction of full speed
 		public final static double releaseDelay = 0.5;				 // Seconds
 		public final static double softReleaseDelay = 0.25;			 // Seconds
 		public final static double startingBoxDistance = 92.0;		 // Centimeters
@@ -105,6 +104,7 @@ public class Constants {
 		public final static double cubeAcquireThreshold = 7.0;		// Roller current threshold to complete acquire
 
 		// ***** Autonomous drive parameters *******
+		public final static double AutoStraighLineSpeedFactor = 1.0; 				 // Fraction of full autonomous speed
 		public static double AutoDriveSpeed = 2.0; //was 2.0 M/sec
 		public static double AutoDriveAccel = 1; // M/sec2 (1 ~.1G)
 		public static double AutoDriveRotateRate = .35; // Meters/second
@@ -121,9 +121,7 @@ public class Constants {
 		public static double AutoDrivePause = 2; // 50=1second
 		public static double AutoDriveStopTolerance = 2; // CM
 		public static double AutoDriveAngleCompensation = .01; // 
-		
 
-		
 		// Dashboard input constants
 		public final static String practiceRobot = "practice robot";
 		public final static String competitionRobot = "comp robot";

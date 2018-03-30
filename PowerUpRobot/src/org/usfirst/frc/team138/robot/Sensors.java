@@ -75,8 +75,5 @@ public class Sensors {
 		SmartDashboard.putNumber("Robot Heading", gyro.getAngle());
 		SmartDashboard.putNumber("Left Velocity",-Robot.drivetrain.frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 		SmartDashboard.putNumber("Right Velocity",-Robot.drivetrain.frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
-
-				
-		
 	}
 }
