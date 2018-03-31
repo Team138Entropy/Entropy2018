@@ -105,7 +105,7 @@ public class AutoDrive extends Command {
 			else
 				Sensors.resetEncoders();
 		}
-//		SmartDashboard.putNumber("Auto Angle",Robot.accumulatedHeading );
+		SmartDashboard.putNumber("Auto Angle",Robot.accumulatedHeading );
 		/*
 		if (Math.abs(lastLeftDistance-leftDistance())<MinDistance || 
 				Math.abs(lastRightDistance-rightDistance())<MinDistance ) 
