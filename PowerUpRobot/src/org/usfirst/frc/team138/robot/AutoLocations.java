@@ -12,7 +12,7 @@ public class AutoLocations {
 	private static final double[][] locations =
 	                       //X cm   Y cm   Angle degrees
 			new double[][] {{45.0,  119.0, 0.0},    //0 Start Position - Right
-							{707.0, 157.0, 35.0},   //1 Place Near Scale
+							{690.0, 157.0, 35.0},   //1 Place Near Scale
 							{567.0, 222.0, 175.0},  //2 Pickup End Cube Near Switch
 							{560.0, 246.3, 175.0},  //3 Deposit Second Cube Near Switch
 							{675.0, 246.3, 0.0},    //4 Deposit Second Cube Near Scale
