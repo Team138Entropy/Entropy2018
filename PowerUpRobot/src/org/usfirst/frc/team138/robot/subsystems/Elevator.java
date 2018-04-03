@@ -200,7 +200,7 @@ public class Elevator extends Subsystem{
 				_targetPosition = 200;	// Alternate Acquire position is Exchange
 				break;
 			case RUNG:
-				_targetPosition = 1900;	// Alternate Switch position is Rung
+				_targetPosition = 2200;	// Alternate Switch position is Rung
 				break;
 			case SWITCH:
 				_targetPosition = 1000; // Switch height is also Cube Level 3

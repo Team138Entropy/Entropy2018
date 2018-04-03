@@ -41,7 +41,7 @@ public class Grasper extends Subsystem{
 	 SpeedControllerGroup _rollerSpeedController = new SpeedControllerGroup(_leftRollerTalon, _rightRollerTalon);
 	
 	protected void initDefaultCommand() {
-		setDefaultCommand(new AutoAcquire());
+		//setDefaultCommand(new AutoAcquire());
 	}
 	
 	public void initialize() {
