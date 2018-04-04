@@ -72,25 +72,15 @@ public class AutonomousCommand extends CommandGroup {
 			SmartDashboard.putString("Auto", "auto");
 			if (startPos.equals("left")) {
 				
-				if (gameData.equals("LLL")) { 
+				if (gameData.equals("LLL") || gameData.equals("RRR")) { 
 					// Cubes on near scale and switch
 					// "Left" angles are inverted
-					depositCubeNearScale(-1, "Switch");
+					depositCubeNearScale("Switch");
 				}		
 				
-				if (gameData.equals("RLR")) {
+				if (gameData.equals("RLR") || gameData.equals("LRL")) {
 					// Put 2 cubes on near scale
-					depositCubeNearScale(-1, "Scale");
-				}
-				
-				if (gameData.equals("RRR") ) {
-					// Cubes on Far scale and Switch
-					depositCubeFarScale(-1, "Switch");
-				}
-				
-				if (gameData.equals("LRL") ) {
-					// 2 cubes on Far scale
-					depositCubeFarScale(-1, "Scale");
+					depositCubeNearScale("Scale");
 				}
 				
 			}
@@ -106,21 +96,14 @@ public class AutonomousCommand extends CommandGroup {
 			}
 			
 			if (startPos.equals("right") ) {
-				if (gameData.equals("LLL") ) {
-					depositCubeFarScale(1, "Switch");
+				if (gameData.equals("LLL") || gameData.equals("RRR")) {
+					depositCubeFarScale("Switch");
 				}
 				
-				if (gameData.equals("RRR")) {
-					depositCubeNearScale(1, "Switch");
+				if (gameData.equals("LRL") || gameData.equals( "RLR")) {
+					depositCubeNearScale("Scale");
 				}
-				
-				if (gameData.equals("LRL") ) {
-					depositCubeNearScale(1, "Scale");
-				}
-				
-				if (gameData.equals( "RLR") ) {
-					depositCubeFarScale(1, "Scale");
-				}
+
 			}
 		}
 	}
@@ -130,7 +113,7 @@ public class AutonomousCommand extends CommandGroup {
 		addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceBaseLine));
 	}
 */
-	private void depositCubeNearScale(double Dir, String Target2)
+	private void depositCubeNearScale(String Target2)
 	{
 		// Near Scale
 		// Lift and 
@@ -179,7 +162,7 @@ public class AutonomousCommand extends CommandGroup {
 	}
 
 	
-	private void depositCubeFarScale(double Dir, String Target2)
+	private void depositCubeFarScale(String Target2)
 	{
 			// Far Scale
 			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(0, 5)));

@@ -25,10 +25,7 @@ public class Elevator extends Subsystem{
 	double _liftKf = 0.2;
 	double _liftKp = 1;
 	double _liftKi = 0;
-	double _liftKd = 5;
-	
-	double _cruiseVelocity = 100;
-	double _acceleration = 40; 
+	double _liftKd = 5; 
 	
 	// Talon SRX/ Victor SPX will support multiple (cascaded) PID loops
 	// For now we just want the primary one.
@@ -88,19 +85,16 @@ public class Elevator extends Subsystem{
 		// battery.  Actual motor current at stall is sqrt(Watts/R)
 		// 775 Motor resistance ~0.15 Ohms.  So 20 Amps input equates to 40 Amps in motor
 		// at Stall.
-		_elevatorMotor.configContinuousCurrentLimit(20, 5000);
-		_elevatorMotor.configPeakCurrentLimit(30, 2000);
-		_elevatorMotor.enableCurrentLimit(true);
+// Current limiting disabled as it causes the moves to operate at reduced power
+//		_elevatorMotor.configContinuousCurrentLimit(20, 5000);
+//		_elevatorMotor.configPeakCurrentLimit(30, 2000);
+//		_elevatorMotor.enableCurrentLimit(true);
 		
 		// Set brake mode to hold at position
 		_elevatorMotor.setNeutralMode(NeutralMode.Brake);		
 		
 		// Integral control only applies when the error is small; this avoids integral windup
 		_elevatorMotor.config_IntegralZone(0, 200, kElevatorTimeoutMs);
-
-		// Set cruise velocity and acceleration
-		_elevatorMotor.configMotionCruiseVelocity((int) _cruiseVelocity, kElevatorTimeoutMs);
-		_elevatorMotor.configMotionAcceleration((int) _acceleration, kElevatorTimeoutMs);
 	}
 	
 	protected void initDefaultCommand() {
@@ -226,7 +220,7 @@ public class Elevator extends Subsystem{
 				_direction = -1;
 			}
 			
-			_elevatorMotor.set(ControlMode.PercentOutput , _direction *_cruiseVelocity / 100);
+			_elevatorMotor.set(ControlMode.PercentOutput , _direction * Constants.elevatorMoveSpeed);
 		}
 	}
 	
