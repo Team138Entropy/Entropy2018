@@ -147,7 +147,7 @@ public class Robot extends IterativeRobot {
         		startPosChooser.getSelected(),
         		autoModeChooser.getSelected(),
         		gameData);
-        isPracticeRobot();
+
         Sensors.gyro.reset();
         Sensors.resetEncoders();
         // Force wrist and gripper to known state
