@@ -106,9 +106,9 @@ public class Constants {
 
 		// ***** Autonomous drive parameters *******
 		public final static double AutoStraighLineSpeedFactor = 1.0; 				 // Fraction of full autonomous speed
-		public static double AutoDriveSpeed = 2.0; //was 2.0 M/sec
-		public static double AutoDriveAccel = 1; // M/sec2 (1 ~.1G)
-		public static double AutoDriveRotateRate = .35; // Meters/second
+		public static double AutoDriveSpeed = 0.5; //was 2.0 M/sec
+		public static double AutoDriveAccel = 0.75; // M/sec2 (1 ~.1G)
+		public static double AutoDriveRotateRate = 0.5; // Meters/second
 		// PID gains to control rotation (measured by Gyro)
 		public static double kPRotate = .2;
 		public static double kIRotate = .2;

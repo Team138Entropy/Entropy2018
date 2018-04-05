@@ -133,6 +133,7 @@ public class Robot extends IterativeRobot {
     	Constants.kIRotate=prefs.getDouble("Rotate KI", Constants.kIRotate);
     	
     	Constants.AutoDriveSpeed=prefs.getDouble("Auto Speed", Constants.AutoDriveSpeed);
+    	Constants.AutoDriveRotateRate = prefs.getDouble("Auto Rotate", Constants.AutoDriveRotateRate);
 
     	
     	Constants.kPDrive=prefs.getDouble("Drive KP", Constants.kPDrive);
@@ -193,8 +194,8 @@ public class Robot extends IterativeRobot {
 //		LiveWindow.run();
         
 		
-        if (debugModeChooser.getSelected() == "debug") 
-        {
+        //if (debugModeChooser.getSelected() == "debug") 
+        //{
 	        Sensors.updateSmartDashboard();
 	        elevator.updateSmartDashboard();
 	        climber.updateSmartDashboard();
@@ -202,7 +203,7 @@ public class Robot extends IterativeRobot {
 	        
 	        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
 	        SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
-        }
+        //}
     }
     
     /**

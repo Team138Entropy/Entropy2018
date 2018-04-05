@@ -35,11 +35,11 @@ public class AutoLocations {
 							{567.0, 222.0, 175.0},  //2 Pickup End Cube Near Switch
 							{560.0, 246.3, 175.0},  //3 Deposit Second Cube Near Switch
 							{675.0, 246.3, 0.0},    //4 Deposit Second Cube Near Scale
-							{611.0, 150.0, 90.0},   //5 1st Waypoint Crossfield Traverse
-							{611.0, 250.0, 0.0},    //6 2nd Waypoint Crossfield Traverse
-							{690.0, 250.0, 0.0},    //7 Deposit Scale Opp Side
-							{568.0, 220.0, -170.0}, //8 Acquire 2nd Cube at Opp Side
-							{549.0, 217.0, -170.0}, //9 Deposit 2nd Cube Far Switch
+							{100.0, 150.0, 90.0},   //5 1st Waypoint Crossfield Traverse
+							{100.0, 620.0, 0.0},    //6 2nd Waypoint Crossfield Traverse
+							{200.0, 620.0, 0.0},    //7 Deposit Scale Opp Side
+							{568.0, 590.0, -170.0}, //8 Acquire 2nd Cube at Opp Side
+							{549.0, 317.0, -170.0}, //9 Deposit 2nd Cube Far Switch
 							{45.0,  350.0, 0.0},    //10 Center Start
 							{295.0, 547.0, 0.0},    //11 Deposit 1st Cube Left Switch
 							{295.0, 275.0, 0.0},    //12 Deposit 1st Cube Right Switch

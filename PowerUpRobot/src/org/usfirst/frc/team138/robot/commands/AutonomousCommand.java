@@ -14,53 +14,9 @@ public class AutonomousCommand extends CommandGroup {
 		
 		// Test Modes
 		// Never go into test mode on competition robot
-		if (autoMode == "test" && Constants.AutoEnable && Constants.practiceBot)
+		if (autoMode == "test" && Constants.AutoEnable) //&& Constants.practiceBot)
 		{
-			String Target2="Scale";
-			// Only allow Autonomous to execute once
-			Constants.AutoEnable=false;
-			// Near Scale
-			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
-			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(0, 1)));									
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,Robot.autoLocations.getDistanceByLocations(0, 1)));				 
-			// Point towards Scale
-			addParallel(new ElevateToTarget(ElevatorTarget.LOWER_SCALE)); //LOWER_SCALE
-			addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(1)));
-			// Deposit on Scale
-			addSequential(new StartRelease());
-			addSequential(new Wait(1));
-			addSequential(new CompleteRelease());
-			// Grab 2nd cube at end of near switch
-			// drop elevator to acquire position
-			addParallel(new ElevateToTarget(ElevatorTarget.ACQUIRE));
-			// Change heading to point towards 2nd cube pickup
-			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(1, 2)));
-			
-			addParallel( new ReadyToAcquire());
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(1,2)));
-			// Grab cube
-			addSequential(new StartAcquire());
-			addSequential(new Wait(1));
-			addSequential(new CompleteAcquire());
-			if (Target2=="Switch") {
-				addSequential(new ElevateToTarget(ElevatorTarget.SWITCH));
-				// Drive a little closer
-				addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(2,3)));
-				// Deposit on Switch
-			}
-			else
-			{ // Deposit on Scale
-				// Rotate back towards scale
-				addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(2, 4)));
-				addParallel(new ElevateToTarget(ElevatorTarget.LOWER_SCALE)); // LOWER_SCALE
-				// Drive towards scale while raising elevator
-				addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(2,4)));
-				// Re-orient - may remove to save time
-				addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(4)));
-			}
-			addSequential(new StartRelease());
-			addSequential(new Wait(Constants.releaseDelay));
-			addSequential(new CompleteRelease());
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,800.0));
 		}
 
 		
