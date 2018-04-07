@@ -67,7 +67,7 @@ public final class OI {
     static Joystick operatorStick = new Joystick(nykoController);
     
     // Driver Stick
-    static Button sampleButton 		= new JoystickButton(driverStick, xboxA);
+    static Button winchButton 		= new JoystickButton(driverStick, xboxA);
     
     // Operator Stick
     static Button elevateToAcquireButton = new JoystickButton(operatorStick, nykoButton1);
@@ -90,6 +90,10 @@ public final class OI {
     static double LastY=0;
     
     public OI(){
+    	//Driver Stick
+    	winchButton.whileHeld(new ControlWinch());
+    	
+    	//Operator Stick
     	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.ACQUIRE));
     	elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.SWITCH));
     	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.LOWER_SCALE));
@@ -105,6 +109,7 @@ public final class OI {
     	toggleGrasperButton.whenPressed(new ToggleGrasper());
     	toggleRollersButton.whenPressed(new ToggleRollers());
     	toggleToClimb.whenPressed(new PrepareToClimb());
+    	
     	
     	//simulateDetectCubeButton.whenPressed(new SimulateDetectCube());
     	//simulateAcquireCubeButton.whenPressed(new SimulateAcquireCube());
@@ -135,6 +140,16 @@ public final class OI {
 	{
 		// Joystick up returns negative axis values, so inverted
 		return (-1 * operatorStick.getRawAxis(nykoLeftYAxis));
+	}
+	
+	//Gets the winch speed based on Xbox triggers
+	public static double getWinchSpeed() {
+		double winchSpeed = 0.0;
+		
+		winchSpeed += driverStick.getRawAxis(xboxRightTriggerAxis);
+		winchSpeed -= driverStick.getRawAxis(xboxLeftTriggerAxis);
+		
+		return winchSpeed;
 	}
 	
 	// Return the jog direction: 1 for up, -1 for down

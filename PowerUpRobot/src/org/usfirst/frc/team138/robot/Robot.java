@@ -193,8 +193,8 @@ public class Robot extends IterativeRobot {
 //		LiveWindow.run();
         
 		
-        if (debugModeChooser.getSelected() == "debug") 
-        {
+        //if (debugModeChooser.getSelected() == "debug") 
+        //{
 	        Sensors.updateSmartDashboard();
 	        elevator.updateSmartDashboard();
 	        climber.updateSmartDashboard();
@@ -202,7 +202,7 @@ public class Robot extends IterativeRobot {
 	        
 	        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
 	        SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
-        }
+       //}
     }
     
     /**
