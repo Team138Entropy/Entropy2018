@@ -98,6 +98,7 @@ public class AutoDrive extends Command {
 		double distanceRemaining=Math.abs(driveDistance)-Math.abs(avgDistance);
 		if (FirstTime ){
 			FirstTime=false;
+			Constants.IntegralError=0;
 			if (rotateInPlace)
 				Robot.accumulatedHeading = lclAngle;
 			else
@@ -139,7 +140,7 @@ public class AutoDrive extends Command {
 				// Are we there yet?
 				moveComplete = (Math.abs(driveDistance) - Math.abs(avgDistance) < Constants.AutoDriveStopTolerance);
 			}
-			if (moveComplete)
+			if (moveComplete || isDone)
 			{
 				Robot.drivetrain.drive(0.0, 0.0);
 				isDone = true;

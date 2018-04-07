@@ -16,15 +16,17 @@ public class AutonomousCommand extends CommandGroup {
 		// Never go into test mode on competition robot
 		if (autoMode == "test" && Constants.AutoEnable) //&& Constants.practiceBot)
 		{
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,200.0));
+			addSequential(new LowerWrist());
+			addSequential(new OpenGrasper());
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
 			addSequential(new AutoDrive(90));
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,100.0));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
 			addSequential(new AutoDrive(180));
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,100.0));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
 			addSequential(new AutoDrive(270));
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,100.0));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
 			addSequential(new AutoDrive(360));
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,100.0));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,200.0));
 		}
 
 		
@@ -102,7 +104,7 @@ public class AutonomousCommand extends CommandGroup {
 		addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 		addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,Robot.autoLocations.getDistanceByLocations(0, 1)));				 
 		// Point towards Scale & Elevate
-//		addParallel(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
+		addParallel(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 		addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(1)));
 		// Deposit on Scale
 		addSequential(new StartRelease());
@@ -110,13 +112,12 @@ public class AutonomousCommand extends CommandGroup {
 		addSequential(new CompleteRelease());
 		// Grab 2nd cube at end of near switch
 		// drop elevator to acquire position
-//		addParallel(new ElevateToTarget(ElevatorTarget.ACQUIRE));
+		addParallel(new ElevateToTarget(ElevatorTarget.ACQUIRE));
 		// Change heading to point towards 2nd cube pickup
 		addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(1, 2)));
 		addSequential( new ReadyToAcquire());
-		/*
 		addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(1,2)));
-		// Grab cube
+		 // Grab cube
 		addSequential(new StartAcquire());
 		addSequential(new Wait(1));
 		addSequential(new CompleteAcquire());
@@ -129,6 +130,7 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else
 		{ // Deposit on Scale
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			// Rotate back towards scale
 			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(2, 4)));
 			// Drive towards scale, while raising elevator
@@ -141,7 +143,7 @@ public class AutonomousCommand extends CommandGroup {
 		addSequential(new StartRelease());
 		addSequential(new Wait(Constants.releaseDelay));
 		addSequential(new CompleteRelease());
-		*/
+		
 	}
 
 	

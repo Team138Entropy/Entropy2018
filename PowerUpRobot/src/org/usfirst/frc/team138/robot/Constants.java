@@ -55,8 +55,8 @@ public class Constants {
 		// Allow for slower turn speed when in slow mode,
 		public final static double ClosedLoopSlowRotateSpeed = 0.5;
 		
-		public final static double MaxSpeedChange = 2 * 0.025; // Meters/sec2 * .025 seconds
-		public final static double MaxRotateSpeedChange = 2 * 0.025; // Meters/sec2 * .025 seconds
+		public final static double MaxSpeedChange = 3 * 0.025; // Meters/sec2 * .025 seconds
+		public final static double MaxRotateSpeedChange = 3 * 0.025; // Meters/sec2 * .025 seconds
 		public final static double MaxSlowSpeedChange = 2 * 0.025;
 		public final static double CloseLoopJoystickDeadband = 0.1;
 		
@@ -95,14 +95,14 @@ public class Constants {
 
 		// ***** Autonomous drive parameters *******
 		public final static double AutoStraighLineSpeedFactor = 1.0; 				 // Fraction of full autonomous speed
-		public static double AutoDriveSpeed = 2.0; //was 2.0 M/sec
-		public static double AutoDriveAccel = 0.5; // M/sec2 (1 ~.1G)
+		public static double AutoDriveSpeed = 2.25; //was 2.0 M/sec
+		public static double AutoDriveAccel = 1.0; // M/sec2 (1 ~.1G)
 		public static double AutoDriveRotateRate = 0.5; // Meters/second
 		public static double IntegralError=0;
 		
 		// PID gains to control rotation (measured by Gyro)
 		public static double kPRotate = .2;
-		public static double kIRotate = .15;
+		public static double kIRotate = .2;
 		public static double kDRotate = 0.2;
 		
 		public static double kPDrive = 0.15;
