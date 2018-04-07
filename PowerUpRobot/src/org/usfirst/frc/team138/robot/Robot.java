@@ -158,6 +158,7 @@ public class Robot extends IterativeRobot {
         // Force wrist and gripper to known state
        	Robot.grasper.InitializeForAuto();
     	autonomousCommand.start();
+		Constants.IntegralError=0;
     }
 
     /**
@@ -182,6 +183,7 @@ public class Robot extends IterativeRobot {
 		Robot.drivetrain.Relax();
 
 		Constants.AutoEnable=true;
+		Constants.IntegralError=0;
 
     	
     }

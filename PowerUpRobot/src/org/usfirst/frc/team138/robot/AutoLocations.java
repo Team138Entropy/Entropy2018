@@ -57,6 +57,10 @@ public class AutoLocations {
 			case "left" :
 				this.angleModifier = -1.0;
 				break;
+			case "right" :
+			case "middle" :
+				this.angleModifier = 1.0;
+				break;
 		    default :
 		    	break;
 		}

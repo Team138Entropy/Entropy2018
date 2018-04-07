@@ -31,7 +31,7 @@ public class AutoDrive extends Command {
 	//Degree Tolerance
 	//within how many degrees will you be capable of turning
 	static double ToleranceDegrees = 2.0;
-	double IntegralError=0;
+
 	/**
 	 * Drives straight for the specified distance
 	 * @param speedArg The speed, from 0 to full in Meters/sec, the robot will drive. 
@@ -43,7 +43,6 @@ public class AutoDrive extends Command {
 		rotateInPlace = false;
 		driveSpeed = Math.abs(speedArg)*Constants.AutoDriveSpeed;
 		driveDistance = distanceArg;
-		IntegralError=0;
 		timer=0;
 		stallCounter=0;
 		isDone=false;
@@ -57,7 +56,6 @@ public class AutoDrive extends Command {
 	public AutoDrive(double angle){
 		requires(Robot.drivetrain);
 		rotateInPlace = true;
-		IntegralError=0;
 		lclAngle=angle;
 		if (angle>0) {
 			turnDir=1;
@@ -148,9 +146,10 @@ public class AutoDrive extends Command {
 			}
 			else {
 				double speed;
-				IntegralError+=diffAngle*.025;
+				Constants.IntegralError+=diffAngle*.025;
 				if (driveSpeed == 0) {
-					rate=Constants.kPRotate*diffAngle+IntegralError*Constants.kIRotate-Constants.kDRotate*Sensors.gyro.getRate();
+					rate=Constants.kPRotate*diffAngle+Constants.IntegralError*Constants.kIRotate-Constants.kDRotate*Sensors.gyro.getRate();
+//					rate=-Constants.kPRotate*Sensors.gyro.getAngle()+Constants.IntegralError*Constants.kIRotate-Constants.kDRotate*Sensors.gyro.getRate();
 				} else {
 					rate=Constants.kPDrive*diffAngle-Constants.kDDrive*Sensors.gyro.getRate();
 				}
@@ -175,6 +174,7 @@ public class AutoDrive extends Command {
 	public boolean isFinished() {
 		if (isDone && Robot.elevator.IsMoveComplete()) {
 			Robot.drivetrain.drive(0,0);
+//			Robot.drivetrain.Relax();
 			return true;
 		}
 		else

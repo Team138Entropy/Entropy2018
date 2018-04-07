@@ -16,11 +16,15 @@ public class AutonomousCommand extends CommandGroup {
 		// Never go into test mode on competition robot
 		if (autoMode == "test" && Constants.AutoEnable) //&& Constants.practiceBot)
 		{
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,400.0));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,200.0));
 			addSequential(new AutoDrive(90));
 			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,100.0));
 			addSequential(new AutoDrive(180));
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,300.0));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,100.0));
+			addSequential(new AutoDrive(270));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,100.0));
+			addSequential(new AutoDrive(360));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,100.0));
 		}
 
 		
@@ -32,15 +36,25 @@ public class AutonomousCommand extends CommandGroup {
 			SmartDashboard.putString("Auto", "auto");
 			if (startPos.equals("left")) {
 				
-				if (gameData.equals("LLL") || gameData.equals("RRR")) { 
+				if (gameData.equals("LLL")) { 
 					// Cubes on near scale and switch
 					// "Left" angles are inverted
 					depositCubeNearScale("Switch");
 				}		
 				
-				if (gameData.equals("RLR") || gameData.equals("LRL")) {
+				if (gameData.equals("RLR")) {
 					// Put 2 cubes on near scale
 					depositCubeNearScale("Scale");
+				}
+				
+				if (gameData.equals("RRR") ) {
+					// Cubes on Far scale and Switch
+					depositCubeFarScale("Switch");
+				}
+				
+				if (gameData.equals("LRL") ) {
+					// 2 cubes on Far scale
+					depositCubeFarScale("Scale");
 				}
 				
 			}
@@ -56,14 +70,21 @@ public class AutonomousCommand extends CommandGroup {
 			}
 			
 			if (startPos.equals("right") ) {
-				if (gameData.equals("LLL") || gameData.equals("RRR")) {
+				if (gameData.equals("LLL") ) {
 					depositCubeFarScale("Switch");
 				}
 				
-				if (gameData.equals("LRL") || gameData.equals( "RLR")) {
+				if (gameData.equals("RRR")) {
+					depositCubeNearScale("Switch");
+				}
+				
+				if (gameData.equals("LRL") ) {
 					depositCubeNearScale("Scale");
 				}
-
+				
+				if (gameData.equals( "RLR") ) {
+					depositCubeFarScale("Scale");
+				}
 			}
 		}
 	}
@@ -81,7 +102,7 @@ public class AutonomousCommand extends CommandGroup {
 		addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 		addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,Robot.autoLocations.getDistanceByLocations(0, 1)));				 
 		// Point towards Scale & Elevate
-		addParallel(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
+//		addParallel(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 		addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(1)));
 		// Deposit on Scale
 		addSequential(new StartRelease());
@@ -89,10 +110,11 @@ public class AutonomousCommand extends CommandGroup {
 		addSequential(new CompleteRelease());
 		// Grab 2nd cube at end of near switch
 		// drop elevator to acquire position
-		addParallel(new ElevateToTarget(ElevatorTarget.ACQUIRE));
+//		addParallel(new ElevateToTarget(ElevatorTarget.ACQUIRE));
 		// Change heading to point towards 2nd cube pickup
 		addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(1, 2)));
-		addParallel( new ReadyToAcquire());
+		addSequential( new ReadyToAcquire());
+		/*
 		addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(1,2)));
 		// Grab cube
 		addSequential(new StartAcquire());
@@ -119,6 +141,7 @@ public class AutonomousCommand extends CommandGroup {
 		addSequential(new StartRelease());
 		addSequential(new Wait(Constants.releaseDelay));
 		addSequential(new CompleteRelease());
+		*/
 	}
 
 	
