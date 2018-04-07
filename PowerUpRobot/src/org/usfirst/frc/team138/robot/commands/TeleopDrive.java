@@ -39,26 +39,6 @@ public class TeleopDrive extends Command{
 		// Limit rate of change of moveSpeed
 		moveSpeed=Robot.drivetrain.limitDriveAccel(moveSpeed);
 		rotateSpeed=Robot.drivetrain.limitRotateAccel(rotateSpeed);
-
-//		if (!OI.isFullSpeed())
-//		{
-//			// Send to driveTrain in Meters/sec units.
-//			Robot.drivetrain.drive(moveSpeed,rotateSpeed);
-//		}
-//		else {
-//			// Send to driveTrain in Meters/sec units.
-//			Robot.drivetrain.drive(moveSpeed,rotateSpeed);
-//			
-//			/*
-//			// Full Speed - use "old fashioned" driveWithTable
-//			// Convert back to % throttle for backwards compatibility
-//			moveSpeed=moveSpeed/Constants.ClosedLoopCruiseVelocity;
-//			rotateSpeed=rotateSpeed/Constants.ClosedLoopTurnSpeed;
-//			Robot.drivetrain.driveWithTable(moveSpeed, rotateSpeed);
-//			*/
-//		}
-		
-		// Redundant if statement -- added to remove unnecessary control.
 		Robot.drivetrain.drive(moveSpeed,rotateSpeed);
 		
 		SmartDashboard.putNumber("Teleop Drive Speed", moveSpeed);

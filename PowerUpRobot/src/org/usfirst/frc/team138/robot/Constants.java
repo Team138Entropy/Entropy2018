@@ -17,6 +17,10 @@ public class Constants {
 		// Deadband applied to Joystick, when
 		// magnitude is less than deadBand, then set Magnitude to 0
 		public final static double joystickDeadband = 0.09;
+		// joystick must be "zero" for zeroDelay iterations before
+		// Talon is commanded to 0 volts.  Priot to that, drivetrain Talons
+		// remain in closed loop speed control.
+		public final static int zeroDelay= 60; // Approx 40/sec;
 		
 		// Threshold beyond which high speed mode is enabled for trigger
 		public final static double highSpeedModeTriggerThreshold = 0.3;
@@ -32,25 +36,10 @@ public class Constants {
 		// These are autonomous constants useful for the autonomous commands
 		//
 		
-		public final static double distanceSwitch = 377.0;		     // Centimeters
-		public final static double distanceScale = 656.0;			 //737 Centimeters
-		public final static double distanceBaseLine = 305.0;		 // Centimeters
-		public final static double distanceToCrossPoint = 589;	     // Centimeters
-		public final static double distanceCross = 517;				 // Centimeters
-		public final static double distanceFinalMoveAfterCross = 61; // Centimeters
+	
 		
 		public final static double releaseDelay = 0.5;				 // Seconds
 		public final static double softReleaseDelay = 0.25;			 // Seconds
-		public final static double startingBoxDistance = 92.0;		 // Centimeters
-		public final static double left90Degrees = 90.0;        	 // Degrees
-		public final static double right90Degrees = -90.0;        	 // Degrees
-		public final static double centerTransitionDistance = 427.0; // Centimeters
-		public final static double leftFarToLeftScale = 183.0;		 // Centimeters
-		public final static double rightFarToRightScale = 137.0;	 // Centimeters
-		public final static double alignLeftSwitch = 145.0;			 // Degrees
-		public final static double alignRightSwitch = -140.0;		 // Degrees
-		public final static double navigateRightSwitch = -55.0;		 // Degrees
-		public final static double navigateLeftSwitch = 50.0;		 // Degrees
 		
 		// Drivetrain
 		public final static boolean useClosedLoopDrivetrain = true;
@@ -106,15 +95,15 @@ public class Constants {
 
 		// ***** Autonomous drive parameters *******
 		public final static double AutoStraighLineSpeedFactor = 1.0; 				 // Fraction of full autonomous speed
-		public static double AutoDriveSpeed = 0.5; //was 2.0 M/sec
+		public static double AutoDriveSpeed = 2.25; //was 2.0 M/sec
 		public static double AutoDriveAccel = 0.75; // M/sec2 (1 ~.1G)
 		public static double AutoDriveRotateRate = 0.5; // Meters/second
 		// PID gains to control rotation (measured by Gyro)
 		public static double kPRotate = .2;
-		public static double kIRotate = .2;
+		public static double kIRotate = .15;
 		public static double kDRotate = 0.2;
 		
-		public static double kPDrive = 0.2;
+		public static double kPDrive = 0.15;
 		public static double kIDrive = 0.0;	
 		public static double kDDrive = 0.0;
 		// Insert delay after each autonomous move to allow

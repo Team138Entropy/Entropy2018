@@ -64,7 +64,7 @@ public class AutoLocations {
 		// Override autonomous locations for the practice bot
 		if (Constants.practiceBot)
 		{
-			locations = practiceBotLocations;
+			//locations = practiceBotLocations;
 		}
 		
 	}

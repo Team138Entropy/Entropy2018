@@ -16,7 +16,11 @@ public class AutonomousCommand extends CommandGroup {
 		// Never go into test mode on competition robot
 		if (autoMode == "test" && Constants.AutoEnable) //&& Constants.practiceBot)
 		{
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,800.0));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,400.0));
+			addSequential(new AutoDrive(90));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,100.0));
+			addSequential(new AutoDrive(180));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,300.0));
 		}
 
 		
