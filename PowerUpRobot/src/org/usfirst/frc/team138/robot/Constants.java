@@ -40,6 +40,8 @@ public class Constants {
 		
 		public final static double releaseDelay = 0.5;				 // Seconds
 		public final static double softReleaseDelay = 0.25;			 // Seconds
+		public final static double acquireDelay = 0.25;				 // Seconds
+		public final static double wristDelay = 0.75;
 		
 		// Drivetrain
 		public final static boolean useClosedLoopDrivetrain = true;

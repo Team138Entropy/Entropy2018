@@ -106,9 +106,10 @@ public class AutonomousCommand extends CommandGroup {
 		// Point towards Scale & Elevate
 		addParallel(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 		addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(1)));
+		addSequential(new Wait(Constants.wristDelay));
 		// Deposit on Scale
 		addSequential(new StartRelease());
-		addSequential(new Wait(1));
+		addSequential(new Wait(Constants.releaseDelay));
 		addSequential(new CompleteRelease());
 		// Grab 2nd cube at end of near switch
 		// drop elevator to acquire position
@@ -119,7 +120,7 @@ public class AutonomousCommand extends CommandGroup {
 		addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(1,2)));
 		 // Grab cube
 		addSequential(new StartAcquire());
-		addSequential(new Wait(1));
+		addSequential(new Wait(Constants.acquireDelay));
 		addSequential(new CompleteAcquire());
 		if (Target2=="Switch") {
 			// Elevate
