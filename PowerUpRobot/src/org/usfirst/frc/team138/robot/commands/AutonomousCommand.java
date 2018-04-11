@@ -14,53 +14,19 @@ public class AutonomousCommand extends CommandGroup {
 		
 		// Test Modes
 		// Never go into test mode on competition robot
-		if (autoMode == "test" && Constants.AutoEnable && Constants.practiceBot)
+		if (autoMode == "test" && Constants.AutoEnable) //&& Constants.practiceBot)
 		{
-			String Target2="Scale";
-			// Only allow Autonomous to execute once
-			Constants.AutoEnable=false;
-			// Near Scale
-			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
-			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(0, 1)));									
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,Robot.autoLocations.getDistanceByLocations(0, 1)));				 
-			// Point towards Scale
-			addParallel(new ElevateToTarget(ElevatorTarget.LOWER_SCALE)); //LOWER_SCALE
-			addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(1)));
-			// Deposit on Scale
-			addSequential(new StartRelease());
-			addSequential(new Wait(1));
-			addSequential(new CompleteRelease());
-			// Grab 2nd cube at end of near switch
-			// drop elevator to acquire position
-			addParallel(new ElevateToTarget(ElevatorTarget.ACQUIRE));
-			// Change heading to point towards 2nd cube pickup
-			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(1, 2)));
-			
-			addParallel( new ReadyToAcquire());
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(1,2)));
-			// Grab cube
-			addSequential(new StartAcquire());
-			addSequential(new Wait(1));
-			addSequential(new CompleteAcquire());
-			if (Target2=="Switch") {
-				addSequential(new ElevateToTarget(ElevatorTarget.SWITCH));
-				// Drive a little closer
-				addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(2,3)));
-				// Deposit on Switch
-			}
-			else
-			{ // Deposit on Scale
-				// Rotate back towards scale
-				addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(2, 4)));
-				addParallel(new ElevateToTarget(ElevatorTarget.LOWER_SCALE)); // LOWER_SCALE
-				// Drive towards scale while raising elevator
-				addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(2,4)));
-				// Re-orient - may remove to save time
-				addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(4)));
-			}
-			addSequential(new StartRelease());
-			addSequential(new Wait(Constants.releaseDelay));
-			addSequential(new CompleteRelease());
+			addSequential(new LowerWrist());
+			addSequential(new OpenGrasper());
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
+			addSequential(new AutoDrive(90));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
+			addSequential(new AutoDrive(180));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
+			addSequential(new AutoDrive(270));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
+			addSequential(new AutoDrive(360));
+			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,200.0));
 		}
 
 		
@@ -75,22 +41,22 @@ public class AutonomousCommand extends CommandGroup {
 				if (gameData.equals("LLL")) { 
 					// Cubes on near scale and switch
 					// "Left" angles are inverted
-					depositCubeNearScale(-1, "Switch");
+					depositCubeNearScale("Switch");
 				}		
 				
 				if (gameData.equals("RLR")) {
 					// Put 2 cubes on near scale
-					depositCubeNearScale(-1, "Scale");
+					depositCubeNearScale("Scale");
 				}
 				
 				if (gameData.equals("RRR") ) {
 					// Cubes on Far scale and Switch
-					depositCubeFarScale(-1, "Switch");
+					depositCubeFarScale("Switch");
 				}
 				
 				if (gameData.equals("LRL") ) {
 					// 2 cubes on Far scale
-					depositCubeFarScale(-1, "Scale");
+					depositCubeFarScale("Scale");
 				}
 				
 			}
@@ -107,19 +73,19 @@ public class AutonomousCommand extends CommandGroup {
 			
 			if (startPos.equals("right") ) {
 				if (gameData.equals("LLL") ) {
-					depositCubeFarScale(1, "Switch");
+					depositCubeFarScale("Switch");
 				}
 				
 				if (gameData.equals("RRR")) {
-					depositCubeNearScale(1, "Switch");
+					depositCubeNearScale("Switch");
 				}
 				
 				if (gameData.equals("LRL") ) {
-					depositCubeNearScale(1, "Scale");
+					depositCubeNearScale("Scale");
 				}
 				
 				if (gameData.equals( "RLR") ) {
-					depositCubeFarScale(1, "Scale");
+					depositCubeFarScale("Scale");
 				}
 			}
 		}
@@ -130,7 +96,7 @@ public class AutonomousCommand extends CommandGroup {
 		addSequential(new AutoDrive(Constants.autoSpeed, Constants.distanceBaseLine));
 	}
 */
-	private void depositCubeNearScale(double Dir, String Target2)
+	private void depositCubeNearScale(String Target2)
 	{
 		// Near Scale
 		// Lift and 
@@ -140,20 +106,21 @@ public class AutonomousCommand extends CommandGroup {
 		// Point towards Scale & Elevate
 		addParallel(new ElevateToTarget(ElevatorTarget.UPPER_SCALE));
 		addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(1)));
+		addSequential(new Wait(Constants.wristDelay));
 		// Deposit on Scale
 		addSequential(new StartRelease());
-		addSequential(new Wait(1));
+		addSequential(new Wait(Constants.releaseDelay));
 		addSequential(new CompleteRelease());
 		// Grab 2nd cube at end of near switch
 		// drop elevator to acquire position
 		addParallel(new ElevateToTarget(ElevatorTarget.ACQUIRE));
 		// Change heading to point towards 2nd cube pickup
 		addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(1, 2)));
-		addParallel( new ReadyToAcquire());
+		addSequential( new ReadyToAcquire());
 		addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(1,2)));
-		// Grab cube
+		 // Grab cube
 		addSequential(new StartAcquire());
-		addSequential(new Wait(1));
+		addSequential(new Wait(Constants.acquireDelay));
 		addSequential(new CompleteAcquire());
 		if (Target2=="Switch") {
 			// Elevate
@@ -164,6 +131,7 @@ public class AutonomousCommand extends CommandGroup {
 		}
 		else
 		{ // Deposit on Scale
+			addParallel(new ElevateToTarget(ElevatorTarget.EXCHANGE));
 			// Rotate back towards scale
 			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(2, 4)));
 			// Drive towards scale, while raising elevator
@@ -176,10 +144,11 @@ public class AutonomousCommand extends CommandGroup {
 		addSequential(new StartRelease());
 		addSequential(new Wait(Constants.releaseDelay));
 		addSequential(new CompleteRelease());
+		
 	}
 
 	
-	private void depositCubeFarScale(double Dir, String Target2)
+	private void depositCubeFarScale(String Target2)
 	{
 			// Far Scale
 			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(0, 5)));

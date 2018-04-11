@@ -127,17 +127,21 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Team:", teamChooser);
 		SmartDashboard.putData("Starting Position:", startPosChooser);		
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
-    	
-		Constants.kPRotate=prefs.getDouble("Rotate KP", Constants.kPRotate);
-    	Constants.kDRotate=prefs.getDouble("Rotate KD", Constants.kDRotate);
-    	Constants.kIRotate=prefs.getDouble("Rotate KI", Constants.kIRotate);
-    	
-    	Constants.AutoDriveSpeed=prefs.getDouble("Auto Speed", Constants.AutoDriveSpeed);
+		
+		if (Constants.practiceBot) {
 
-    	
-    	Constants.kPDrive=prefs.getDouble("Drive KP", Constants.kPDrive);
-    	Constants.kDDrive=prefs.getDouble("Drive KD", Constants.kDDrive);
-    	Constants.kIDrive=prefs.getDouble("Drive KI", Constants.kIDrive);
+			Constants.kPRotate=prefs.getDouble("Rotate KP", Constants.kPRotate);
+			Constants.kDRotate=prefs.getDouble("Rotate KD", Constants.kDRotate);
+			Constants.kIRotate=prefs.getDouble("Rotate KI", Constants.kIRotate);
+
+			Constants.AutoDriveSpeed=prefs.getDouble("Auto Speed", Constants.AutoDriveSpeed);
+			Constants.AutoDriveRotateRate = prefs.getDouble("Auto Rotate", Constants.AutoDriveRotateRate);
+
+
+			Constants.kPDrive=prefs.getDouble("Drive KP", Constants.kPDrive);
+			Constants.kDDrive=prefs.getDouble("Drive KD", Constants.kDDrive);
+			Constants.kIDrive=prefs.getDouble("Drive KI", Constants.kIDrive);
+		}
     	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();
     	   	
@@ -147,12 +151,14 @@ public class Robot extends IterativeRobot {
         		startPosChooser.getSelected(),
         		autoModeChooser.getSelected(),
         		gameData);
-        isPracticeRobot();
+
+        
         Sensors.gyro.reset();
         Sensors.resetEncoders();
         // Force wrist and gripper to known state
        	Robot.grasper.InitializeForAuto();
     	autonomousCommand.start();
+		Constants.IntegralError=0;
     }
 
     /**
@@ -177,6 +183,7 @@ public class Robot extends IterativeRobot {
 		Robot.drivetrain.Relax();
 
 		Constants.AutoEnable=true;
+		Constants.IntegralError=0;
 
     	
     }
@@ -202,7 +209,7 @@ public class Robot extends IterativeRobot {
 	        
 	        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
 	        SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
-       //}
+        //}
     }
     
     /**
