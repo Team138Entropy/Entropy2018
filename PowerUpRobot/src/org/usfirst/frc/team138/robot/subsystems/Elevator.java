@@ -191,25 +191,25 @@ public class Elevator extends Subsystem{
 				_isAtFloor = true;
 				break;
 			case EXCHANGE:
-				_targetPosition = 200;	// Alternate Acquire position is Exchange
+				_targetPosition = 216;	// Alternate Acquire position is Exchange
 				_isAtFloor = false;
 				break;
 			case RUNG:
-				_targetPosition = 2200;	// Alternate Switch position is Rung
+				_targetPosition = 1700;	// Alternate Switch position is Rung
 				_isAtFloor = false;
 				break;
 			case SWITCH:
-				_targetPosition = 1000; // Switch height is also Cube Level 3
+				_targetPosition = 900; // Switch height is also Cube Level 3
 				_alternateElevatorTarget = ElevatorTarget.RUNG;
 				_isAtFloor = false;
 				break;
 			case LOWER_SCALE:
-				_targetPosition = 2200;	// Default scale position is lower scale
+				_targetPosition = 1520;	// Default scale position is lower scale
 				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
 				_isAtFloor = false;
 				break;
 			case UPPER_SCALE:
-				_targetPosition = 2800;	// Alternate scale position is upper scale
+				_targetPosition = 1935;	// Alternate scale position is upper scale
 				_isAtFloor = false;
 			default:
 				// Error 
