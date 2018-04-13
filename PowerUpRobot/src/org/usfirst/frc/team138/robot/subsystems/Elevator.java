@@ -191,21 +191,26 @@ public class Elevator extends Subsystem{
 				_isAtFloor = true;
 				break;
 			case EXCHANGE:
-				_targetPosition = 216; // Alternate Acquire position is Exchange
+				_targetPosition = 200;	// Alternate Acquire position is Exchange
+				_isAtFloor = false;
 				break;
 			case RUNG:
-				_targetPosition = 1700; // Alternate Switch position is Rung
+				_targetPosition = 2200;	// Alternate Switch position is Rung
+				_isAtFloor = false;
 				break;
 			case SWITCH:
-				_targetPosition = 900; // Switch height is also Cube Level 3
+				_targetPosition = 1000; // Switch height is also Cube Level 3
 				_alternateElevatorTarget = ElevatorTarget.RUNG;
+				_isAtFloor = false;
 				break;
 			case LOWER_SCALE:
-				_targetPosition = 1520; // Default scale position is lower scale
+				_targetPosition = 2000;	// Default scale position is lower scale
 				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
+				_isAtFloor = false;
 				break;
 			case UPPER_SCALE:
-				_targetPosition = 1935; // Alternate scale position is upper scale
+				_targetPosition = 2600;	// Alternate scale position is upper scale
+				_isAtFloor = false;
 			default:
 				// Error 
 				break;
@@ -298,7 +303,15 @@ public class Elevator extends Subsystem{
 	// Stop the current elevator move immediately
 	public void StopMoving()
 	{
-		_elevatorMotor.set(ControlMode.PercentOutput, 0);
-		_direction = 0;
+		if (!_isAtFloor)
+		{
+			_elevatorMotor.set(ControlMode.PercentOutput, Constants.elevatorHoldSpeed);
+			_direction = 0;
+		}
+		else
+		{
+			_elevatorMotor.set(ControlMode.PercentOutput, Constants.elevatorHoldSpeed);
+			_direction = 0;			
+		}
 	}
 }
