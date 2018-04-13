@@ -191,21 +191,21 @@ public class Elevator extends Subsystem{
 				_isAtFloor = true;
 				break;
 			case EXCHANGE:
-				_targetPosition = 200;	// Alternate Acquire position is Exchange
+				_targetPosition = 216; // Alternate Acquire position is Exchange
 				break;
 			case RUNG:
-				_targetPosition = 2200;	// Alternate Switch position is Rung
+				_targetPosition = 1700; // Alternate Switch position is Rung
 				break;
 			case SWITCH:
-				_targetPosition = 1000; // Switch height is also Cube Level 3
+				_targetPosition = 900; // Switch height is also Cube Level 3
 				_alternateElevatorTarget = ElevatorTarget.RUNG;
 				break;
 			case LOWER_SCALE:
-				_targetPosition = 2000;	// Default scale position is lower scale
+				_targetPosition = 1520; // Default scale position is lower scale
 				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
 				break;
 			case UPPER_SCALE:
-				_targetPosition = 2600;	// Alternate scale position is upper scale
+				_targetPosition = 1935; // Alternate scale position is upper scale
 			default:
 				// Error 
 				break;
@@ -215,12 +215,13 @@ public class Elevator extends Subsystem{
 			
 			if (_targetPosition > _currentPosition) {
 				_direction = 1;
+				_elevatorMotor.set(ControlMode.PercentOutput , _direction * Constants.elevatorMoveSpeed);
 			}
 			else {
 				_direction = -1;
+				_elevatorMotor.set(ControlMode.PercentOutput , _direction * Constants.elevatorDownMoveSpeed);
 			}
 			
-			_elevatorMotor.set(ControlMode.PercentOutput , _direction * Constants.elevatorMoveSpeed);
 		}
 	}
 	

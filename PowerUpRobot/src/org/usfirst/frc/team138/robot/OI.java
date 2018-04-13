@@ -97,15 +97,18 @@ public final class OI {
     	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.ACQUIRE));
     	elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.SWITCH));
     	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.LOWER_SCALE));
+    	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
+    	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
+    	homeElevatorButton.whileHeld(new HomeElevator());
+
+    	readyToAcquireButton.whenPressed(new ReadyToAcquire());
+    	
     	acquireButton.whenPressed(new StartAcquire());
     	acquireButton.whenReleased(new CompleteAcquire());
     	releaseButton.whenPressed(new StartRelease());
     	releaseButton.whenReleased(new CompleteRelease());
-    	readyToAcquireButton.whenPressed(new ReadyToAcquire());
+    	
     	toggleWristButton.whenPressed(new ToggleWrist());
-    	homeElevatorButton.whileHeld(new HomeElevator());
-    	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
-    	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
     	toggleGrasperButton.whenPressed(new ToggleGrasper());
     	toggleRollersButton.whenPressed(new ToggleRollers());
     	toggleToClimb.whenPressed(new PrepareToClimb());

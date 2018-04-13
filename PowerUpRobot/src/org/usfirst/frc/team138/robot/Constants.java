@@ -48,7 +48,7 @@ public class Constants {
 		public final static double driveWheelSpacing = (23.65 / 39.37) * 100; // Centimeters (from 22 inches)
 		// Full joystick motion equates to following actual move speeds:
 		public final static double ClosedLoopCruiseVelocity = 2.25; // meters / second
-		public final static double ClosedLoopSlowVelocity = 0.6; // M/sec
+		public final static double ClosedLoopSlowVelocity = 0.8; // M/sec
 		// Wheel spacing ~0.5 Meters;  For zero Turn, each wheel travels
 		// on a circle of circumference of pi*0.5 or 1.57 Meters.
 		// For 180 Degree turn in 1 second (180 Degrees/sec), each
@@ -76,14 +76,15 @@ public class Constants {
 		
 		// Elevator
 		public final static double elevatorHomingSpeed = -0.2;
-		public final static double elevatorJogSpeed = 0.8;
+		public final static double elevatorJogSpeed = 0.5;
 		public final static double elevatorMoveSpeed = 1.0;
+		public final static double elevatorDownMoveSpeed = 0.7;
 		
 		//Cube Grasper
 		public final static boolean grasperSolenoidActiveOpen = true;
 		public final static boolean wristSolenoidActiveRaised = false;
 		public final static double acquisitionWheelsPercent = 50.0;
-		public final static double aquireSpeed = 0.5; //= 0.75; Dialed back for testing auto acquire
+		public final static double aquireSpeed = 0.75; 
 		public final static double releaseSpeed = -0.85;
 		public final static double holdSpeed = 0.3;
 		public final static double releaseSpeedReduced = -0.7;
