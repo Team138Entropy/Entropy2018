@@ -204,12 +204,12 @@ public class Elevator extends Subsystem{
 				_isAtFloor = false;
 				break;
 			case LOWER_SCALE:
-				_targetPosition = 2000;	// Default scale position is lower scale
+				_targetPosition = 2200;	// Default scale position is lower scale
 				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
 				_isAtFloor = false;
 				break;
 			case UPPER_SCALE:
-				_targetPosition = 2600;	// Alternate scale position is upper scale
+				_targetPosition = 2800;	// Alternate scale position is upper scale
 				_isAtFloor = false;
 			default:
 				// Error 
