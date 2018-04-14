@@ -80,6 +80,7 @@ public class Constants {
 		public final static double elevatorMoveSpeed = 1.0;
 		public final static double elevatorDownMoveSpeed = 0.7;
 		public final static double elevatorHoldSpeed = 0.1;
+		public final static double elevatorExchangeSpeed = 0.5;
 		
 		//Cube Grasper
 		public final static boolean grasperSolenoidActiveOpen = true;

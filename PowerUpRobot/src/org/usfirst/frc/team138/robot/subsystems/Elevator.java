@@ -153,78 +153,83 @@ public class Elevator extends Subsystem{
 		}
 		else
 		{		
-		if (Constants.practiceBot) {
-			switch (target) {
-			case ACQUIRE:
-				_targetPosition = 0;	// Acquire Height is Cube Level 1
-				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
-				_isAtFloor = true;
-				break;
-			case EXCHANGE:
-				_targetPosition = 500;	// Alternate Acquire position is Exchange
-				break;
-			case SWITCH:
-				_targetPosition = 1200; // Switch height is also Cube Level 3
-				_alternateElevatorTarget = ElevatorTarget.RUNG;
-				break;
-				
-			case RUNG:
-				_targetPosition = 2100;	// Alternate Switch position is Cube Level 2
-				break;
-			case LOWER_SCALE:
-				_targetPosition = 2500;	// Default scale position is lower scale
-				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
-				break;
-			case UPPER_SCALE:
-				_targetPosition = 2700;	// Alternate scale position is upper scale
-			default:
-				// Error 
-				break;
+			if (Constants.practiceBot) {
+				switch (target) {
+				case ACQUIRE:
+					_targetPosition = 0;	// Acquire Height is Cube Level 1
+					_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+					_isAtFloor = true;
+					break;
+				case EXCHANGE:
+					_targetPosition = 500;	// Alternate Acquire position is Exchange
+					break;
+				case SWITCH:
+					_targetPosition = 1200; // Switch height is also Cube Level 3
+					_alternateElevatorTarget = ElevatorTarget.RUNG;
+					break;
+					
+				case RUNG:
+					_targetPosition = 2100;	// Alternate Switch position is Cube Level 2
+					break;
+				case LOWER_SCALE:
+					_targetPosition = 2500;	// Default scale position is lower scale
+					_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
+					break;
+				case UPPER_SCALE:
+					_targetPosition = 2700;	// Alternate scale position is upper scale
+				default:
+					// Error 
+					break;
+				}
 			}
-		}
-		else	// Competition Robot
-		{
-			switch (target) {
-			case ACQUIRE:
-				_targetPosition = 0;	// Acquire Height is Cube Level 1
-				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
-				_isAtFloor = true;
-				break;
-			case EXCHANGE:
-				_targetPosition = 216;	// Alternate Acquire position is Exchange
-				_isAtFloor = false;
-				break;
-			case RUNG:
-				_targetPosition = 1700;	// Alternate Switch position is Rung
-				_isAtFloor = false;
-				break;
-			case SWITCH:
-				_targetPosition = 900; // Switch height is also Cube Level 3
-				_alternateElevatorTarget = ElevatorTarget.RUNG;
-				_isAtFloor = false;
-				break;
-			case LOWER_SCALE:
-				_targetPosition = 1520;	// Default scale position is lower scale
-				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
-				_isAtFloor = false;
-				break;
-			case UPPER_SCALE:
-				_targetPosition = 1935;	// Alternate scale position is upper scale
-				_isAtFloor = false;
-			default:
-				// Error 
-				break;
+			else	// Competition Robot
+			{
+				switch (target) {
+				case ACQUIRE:
+					_targetPosition = 0;	// Acquire Height is Cube Level 1
+					_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+					_isAtFloor = true;
+					break;
+				case EXCHANGE:
+					_targetPosition = 170;	// Alternate Acquire position is Exchange
+					_isAtFloor = false;
+					break;
+				case RUNG:
+					_targetPosition = 1700;	// Alternate Switch position is Rung
+					_isAtFloor = false;
+					break;
+				case SWITCH:
+					_targetPosition = 900; // Switch height is also Cube Level 3
+					_alternateElevatorTarget = ElevatorTarget.RUNG;
+					_isAtFloor = false;
+					break;
+				case LOWER_SCALE:
+					_targetPosition = 1520;	// Default scale position is lower scale
+					_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
+					_isAtFloor = false;
+					break;
+				case UPPER_SCALE:
+					_targetPosition = 1935;	// Alternate scale position is upper scale
+					_isAtFloor = false;
+				default:
+					// Error 
+					break;
+				}
 			}
-		}
+			
+			double elevatorSpeed;
+			
 			_currentPosition = GetElevatorPosition();
 			
 			if (_targetPosition > _currentPosition) {
 				_direction = 1;
-				_elevatorMotor.set(ControlMode.PercentOutput , _direction * Constants.elevatorMoveSpeed);
+				elevatorSpeed = (target == ElevatorTarget.EXCHANGE) ? Constants.elevatorExchangeSpeed : Constants.elevatorMoveSpeed;
+				_elevatorMotor.set(ControlMode.PercentOutput , _direction * elevatorSpeed);
 			}
 			else {
 				_direction = -1;
-				_elevatorMotor.set(ControlMode.PercentOutput , _direction * Constants.elevatorDownMoveSpeed);
+				elevatorSpeed = (target == ElevatorTarget.EXCHANGE) ? Constants.elevatorExchangeSpeed : Constants.elevatorDownMoveSpeed;
+				_elevatorMotor.set(ControlMode.PercentOutput , _direction * elevatorSpeed);
 			}
 			
 		}
