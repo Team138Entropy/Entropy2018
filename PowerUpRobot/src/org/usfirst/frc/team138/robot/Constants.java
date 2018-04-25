@@ -47,8 +47,8 @@ public class Constants {
 		public final static boolean useClosedLoopDrivetrain = true;
 		public final static double driveWheelSpacing = (23.65 / 39.37) * 100; // Centimeters (from 22 inches)
 		// Full joystick motion equates to following actual move speeds:
-		public final static double ClosedLoopCruiseVelocity = 2.25; // meters / second
-		public final static double ClosedLoopSlowVelocity = 0.8; // M/sec
+		public final static double ClosedLoopCruiseVelocity = 2.4; // meters / second
+		public final static double ClosedLoopSlowVelocity = 1.2; // M/sec
 		// Wheel spacing ~0.5 Meters;  For zero Turn, each wheel travels
 		// on a circle of circumference of pi*0.5 or 1.57 Meters.
 		// For 180 Degree turn in 1 second (180 Degrees/sec), each
