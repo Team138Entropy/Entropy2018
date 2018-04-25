@@ -16,23 +16,16 @@ public class AutonomousCommand extends CommandGroup {
 		// Never go into test mode on competition robot
 		if (autoMode == "test" && Constants.AutoEnable) //&& Constants.practiceBot)
 		{
-			addSequential(new LowerWrist());
-			addSequential(new OpenGrasper());
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
-			addSequential(new AutoDrive(90));
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
-			addSequential(new AutoDrive(180));
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
-			addSequential(new AutoDrive(270));
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,150.0));
-			addSequential(new AutoDrive(360));
-			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor,200.0));
+			if (startPos.equals("left") || startPos.equals("right")) {
+				addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, 500));
+			}
 		}
 
 		
 		// This auto mode does the "proper action" depending on the starting position and gameData
 		// Always go into real autonomous mode for the competition robot
-		if (!Constants.practiceBot || (autoMode == "auto" && Constants.AutoEnable))
+		// if (!Constants.practiceBot || (autoMode == "auto" && Constants.AutoEnable))
+		if (autoMode == "auto" && Constants.AutoEnable)
 		{
 			Constants.AutoEnable=false;
 			SmartDashboard.putString("Auto", "auto");
@@ -139,6 +132,7 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(2,4)));
 			// Re-orient - may remove to save time
 			addSequential(new AutoDrive(Robot.autoLocations.getAngleByLocation(4)));
+			addSequential(new Wait(Constants.wristDelay));
 		}
 		// Deposit cube
 		addSequential(new StartRelease());
@@ -164,13 +158,12 @@ public class AutonomousCommand extends CommandGroup {
 			addSequential(new AutoDrive(Robot.autoLocations.getHeadingByLocations(6, 7)));
 			// Drive fwd towards scale
 			addSequential(new AutoDrive(Constants.AutoStraighLineSpeedFactor, Robot.autoLocations.getDistanceByLocations(6,7)));
+			addSequential(new Wait(Constants.wristDelay));
 			
-			// Temporarily disabled until we figure out the drive to far scale bug
-			
-//			// Deposit 1st cube on scale
-//			addSequential(new StartRelease());
-//			addSequential(new Wait(Constants.releaseDelay));
-//			addSequential(new CompleteRelease());
+			// Deposit 1st cube on scale
+			addSequential(new StartRelease());
+			addSequential(new Wait(Constants.releaseDelay));
+			addSequential(new CompleteRelease());
 //			// 
 //			// Grab 2nd cube at end of far switch
 //			// drop elevator to acquire position
