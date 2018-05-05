@@ -39,7 +39,7 @@ public class Robot extends IterativeRobot {
     public static final OI oi = new OI();
 	
     Preferences prefs = Preferences.getInstance();
-    
+	
     // Location lookup
     public static AutoLocations autoLocations;
 	
@@ -87,7 +87,7 @@ public class Robot extends IterativeRobot {
 		debugModeChooser.addObject("Debug", "debug");
 		debugModeChooser.addObject("Competition", "competition");
 		SmartDashboard.putData("Debug Mode:", debugModeChooser);
-		
+
 		SmartDashboard.putBoolean("practiceBot", isPracticeRobot());		
         Robot.accumulatedHeading = 0;
         Constants.AutoEnable=true;
@@ -107,7 +107,7 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 	}
-	
+
 	private double getWheelAngle() {
 		double wheelAngle = (AutoDrive.rightDistance() - AutoDrive.leftDistance()) / Constants.driveWheelSpacing;
 		return wheelAngle * (180 / Math.PI);
@@ -127,7 +127,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Team:", teamChooser);
 		SmartDashboard.putData("Starting Position:", startPosChooser);		
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
-		
+    	
 		if (Constants.practiceBot) {
 
 			Constants.kPRotate=prefs.getDouble("Rotate KP", Constants.kPRotate);
@@ -136,7 +136,7 @@ public class Robot extends IterativeRobot {
 
 			Constants.AutoDriveSpeed=prefs.getDouble("Auto Speed", Constants.AutoDriveSpeed);
 			Constants.AutoDriveRotateRate = prefs.getDouble("Auto Rotate", Constants.AutoDriveRotateRate);
-
+    	
 
 			Constants.kPDrive=prefs.getDouble("Drive KP", Constants.kPDrive);
 			Constants.kDDrive=prefs.getDouble("Drive KD", Constants.kDDrive);
@@ -157,7 +157,7 @@ public class Robot extends IterativeRobot {
         Sensors.resetEncoders();
         // Force wrist and gripper to known state
        	Robot.grasper.InitializeForAuto();
-    	autonomousCommand.start();
+        autonomousCommand.start();
 		Constants.IntegralError=0;
     }
 
@@ -181,7 +181,7 @@ public class Robot extends IterativeRobot {
     	elevator.StopMoving();
         Robot.accumulatedHeading = 0;
 		Robot.drivetrain.Relax();
-
+    	
 		Constants.AutoEnable=true;
 		Constants.IntegralError=0;
 
@@ -190,7 +190,7 @@ public class Robot extends IterativeRobot {
     
     public static boolean isPracticeRobot() {
     	return (! Sensors.practiceRobotJumperPin.get());
-    }
+    	}
 
     /**
      * This function is called periodically during operator control
@@ -202,14 +202,16 @@ public class Robot extends IterativeRobot {
 		
         //if (debugModeChooser.getSelected() == "debug") 
         //{
-	        Sensors.updateSmartDashboard();
-	        elevator.updateSmartDashboard();
+        Sensors.updateSmartDashboard();
+        elevator.updateSmartDashboard();
 	        climber.updateSmartDashboard();
 	        grasper.updateSmartDashboard();
 	        
 	        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
 	        SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
         //}
+        OI.updateSmartDashboard();
+        // climber.updateSmartDashboard();
     }
     
     /**

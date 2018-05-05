@@ -3,6 +3,8 @@ package org.usfirst.frc.team138.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 //import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team138.robot.commands.*;
 import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
@@ -63,8 +65,21 @@ public final class OI {
 	static final int nykoRightYAxis = 2;	// Z Axis on Driver Station
 	static final int nykoRightXAxis = 3;	// Rotate Axis on Driver Station
 	
+    // Brian's Joystick
+	static final int briansJoystick = 2;
+	
+	static final int brianEnableButton = 1;
+	static final int brianHighSpeedButton = 2;
+	
+	// Brian's axes
+	static final int brianSpeedAxis = 0;
+	static final int brianRotateAxis = 1;
+	
+	static final boolean useBriansJoy = true;
+	
     static Joystick driverStick = new Joystick(xboxController);
     static Joystick operatorStick = new Joystick(nykoController);
+    static Joystick briansStick = new Joystick(briansJoystick);
     
     // Driver Stick
     static Button winchButton 		= new JoystickButton(driverStick, xboxA);
@@ -121,21 +136,44 @@ public final class OI {
     
 	public static double getMoveSpeed()
 	{
-		// joystick values are opposite to robot directions
-		double moveSpeed=-driverStick.getRawAxis(xboxLeftYAxis);
+		double moveSpeed;
+		
+		if (briansStick.getRawButton(brianEnableButton))
+		{
+			// Pulling trigger on Brian's joystick moves forward
+			moveSpeed =  (briansStick.getRawAxis(brianSpeedAxis));
+		}
+		else
+		{
+			// joystick values are opposite to robot directions
+			moveSpeed= (-1 * driverStick.getRawAxis(xboxLeftYAxis));
+		}
+		
 		// Apply thresholds to joystick positions to eliminate
 		// creep motion due to non-zero joystick value when joysticks are 
 		// "centered"
 		if (Math.abs(moveSpeed) < Constants.CloseLoopJoystickDeadband)
 			moveSpeed=0;
+		
 		return moveSpeed;
 	}
 	
 	public static double getRotateSpeed()
 	{
-		double rotateSpeed=-driverStick.getRawAxis(xboxRightXAxis);
+		double rotateSpeed;
+		
+		if (briansStick.getRawButton(brianEnableButton))
+		{
+			rotateSpeed =  (-1 * briansStick.getRawAxis(brianRotateAxis));
+		}
+		else
+		{
+			rotateSpeed= (-1 * driverStick.getRawAxis(xboxRightXAxis));
+		}
+		
 		if (Math.abs(rotateSpeed) < Constants.CloseLoopJoystickDeadband)
 			rotateSpeed=0;
+		
 		return rotateSpeed;
 	}
 	
@@ -179,10 +217,24 @@ public final class OI {
 	}
 	
 	public static boolean isFullSpeed() {
-		return driverStick.getRawAxis(xboxRightTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
+		if (briansStick.getRawButton(brianEnableButton))
+		{
+			return briansStick.getRawButton(brianHighSpeedButton);
+		}
+		else
+		{
+			return driverStick.getRawAxis(xboxRightTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
+		}
 	}
 	
 	
+	
+	public static void updateSmartDashboard()
+	{
+		SmartDashboard.putBoolean("Brian's Joy Enabled", briansStick.getRawButton(brianEnableButton));
+		SmartDashboard.putNumber("Speed Input", getMoveSpeed());
+		SmartDashboard.putNumber("Rotation Input", getRotateSpeed());
+	}
 	    
 } // :D)))
 
