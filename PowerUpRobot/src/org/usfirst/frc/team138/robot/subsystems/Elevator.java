@@ -1,6 +1,7 @@
 package org.usfirst.frc.team138.robot.subsystems;
 
 import org.usfirst.frc.team138.robot.Constants;
+import org.usfirst.frc.team138.robot.Robot;
 import org.usfirst.frc.team138.robot.RobotMap;
 import org.usfirst.frc.team138.robot.commands.JogElevator;
 
@@ -24,10 +25,7 @@ public class Elevator extends Subsystem{
 	double _liftKf = 0.2;
 	double _liftKp = 1;
 	double _liftKi = 0;
-	double _liftKd = 5;
-	
-	double _cruiseVelocity = 90;
-	double _acceleration = 40; 
+	double _liftKd = 5; 
 	
 	// Talon SRX/ Victor SPX will support multiple (cascaded) PID loops
 	// For now we just want the primary one.
@@ -40,7 +38,7 @@ public class Elevator extends Subsystem{
 		NONE,
 		ACQUIRE,		// Acquire Cube Level 1 (Floor)
 		EXCHANGE,		// Deposit Exchange
-		CUBE_LEVEL_2,	// Acquire Cube Level 2
+		RUNG,	// Elevate To Rung For Climb
 		SWITCH,			// Deposit Switch / Acquire Cube Level 3 
 		LOWER_SCALE,	// Deposit Lower Scale
 		UPPER_SCALE		// Deposit Upper Scale
@@ -53,6 +51,7 @@ public class Elevator extends Subsystem{
 	private double _targetPosition = 0.0;
 	private double _currentPosition = 0.0;
 	private ElevatorTarget _alternateElevatorTarget = ElevatorTarget.NONE;
+	private boolean _isAtFloor = true;
 	
 	private int _currentJogDirection = 0;
 	
@@ -86,19 +85,16 @@ public class Elevator extends Subsystem{
 		// battery.  Actual motor current at stall is sqrt(Watts/R)
 		// 775 Motor resistance ~0.15 Ohms.  So 20 Amps input equates to 40 Amps in motor
 		// at Stall.
-		_elevatorMotor.configContinuousCurrentLimit(20, 5000);
-		_elevatorMotor.configPeakCurrentLimit(30, 2000);
-		_elevatorMotor.enableCurrentLimit(true);
+// Current limiting disabled as it causes the moves to operate at reduced power
+//		_elevatorMotor.configContinuousCurrentLimit(20, 5000);
+//		_elevatorMotor.configPeakCurrentLimit(30, 2000);
+//		_elevatorMotor.enableCurrentLimit(true);
 		
 		// Set brake mode to hold at position
 		_elevatorMotor.setNeutralMode(NeutralMode.Brake);		
 		
 		// Integral control only applies when the error is small; this avoids integral windup
 		_elevatorMotor.config_IntegralZone(0, 200, kElevatorTimeoutMs);
-
-		// Set cruise velocity and acceleration
-		_elevatorMotor.configMotionCruiseVelocity((int) _cruiseVelocity, kElevatorTimeoutMs);
-		_elevatorMotor.configMotionAcceleration((int) _acceleration, kElevatorTimeoutMs);
 	}
 	
 	protected void initDefaultCommand() {
@@ -116,8 +112,8 @@ public class Elevator extends Subsystem{
 		case "Exchange": 
 			elevatorTarget = ElevatorTarget.EXCHANGE;
 			break;
-		case "CubeLevel2": 
-			elevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
+		case "Rung": 
+			elevatorTarget = ElevatorTarget.RUNG;
 			break;
 		case "Switch":
 			elevatorTarget = ElevatorTarget.SWITCH;
@@ -135,41 +131,6 @@ public class Elevator extends Subsystem{
 		return elevatorTarget;
 	}
 	
-	// Convert the Elevator Target to its string representation
-	public String ConvertToString(ElevatorTarget target)
-	{
-		String elevatorTarget;
-		
-		switch (target) {
-		case NONE: 
-			elevatorTarget = "None";
-			break;
-		case ACQUIRE:
-			elevatorTarget = "Acquire";
-			break;
-		case EXCHANGE:
-			elevatorTarget = "Exchange";
-			break;
-		case CUBE_LEVEL_2:
-			elevatorTarget = "Cube Level 2";
-			break;
-		case SWITCH:
-			elevatorTarget = "Switch";
-			break;
-		case LOWER_SCALE:
-			elevatorTarget = "Scale";
-			break;
-		case UPPER_SCALE:
-			elevatorTarget = "Upper Scale";
-			break;
-		default:
-			elevatorTarget = "Invalid";
-			break;
-		}
-		return elevatorTarget;
-		
-	}
-	
 	// Start jogging the elevator
 	public void JogElevator(int jogDirection, double jogSpeed)
 	{
@@ -185,78 +146,92 @@ public class Elevator extends Subsystem{
 	
 	// Elevate to a specific target position
 	public void Elevate (ElevatorTarget target) {
+		_isAtFloor = false; 
 		if (target == ElevatorTarget.NONE)
 		{
 			StopMoving();
 		}
 		else
 		{		
-		if (Constants.practiceBot) {
-			switch (target) {
-			case ACQUIRE:
-				_targetPosition = 0;	// Acquire Height is Cube Level 1
-				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
-				break;
-			case EXCHANGE:
-				_targetPosition = 500;	// Alternate Acquire position is Exchange
-				break;
-			case SWITCH:
-				_targetPosition = 1200; // Switch height is also Cube Level 3
-				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
-				break;
-				
-			case CUBE_LEVEL_2:
-				_targetPosition = 700;	// Alternate Switch position is Cube Level 2
-				break;
-			case LOWER_SCALE:
-				_targetPosition = 2500;	// Default scale position is lower scale
-				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
-				break;
-			case UPPER_SCALE:
-				_targetPosition = 2700;	// Alternate scale position is upper scale
-			default:
-				// Error 
-				break;
+			if (Constants.practiceBot) {
+				switch (target) {
+				case ACQUIRE:
+					_targetPosition = 0;	// Acquire Height is Cube Level 1
+					_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+					_isAtFloor = true;
+					break;
+				case EXCHANGE:
+					_targetPosition = 500;	// Alternate Acquire position is Exchange
+					break;
+				case SWITCH:
+					_targetPosition = 1200; // Switch height is also Cube Level 3
+					_alternateElevatorTarget = ElevatorTarget.RUNG;
+					break;
+					
+				case RUNG:
+					_targetPosition = 2100;	// Alternate Switch position is Cube Level 2
+					break;
+				case LOWER_SCALE:
+					_targetPosition = 2500;	// Default scale position is lower scale
+					_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
+					break;
+				case UPPER_SCALE:
+					_targetPosition = 2700;	// Alternate scale position is upper scale
+				default:
+					// Error 
+					break;
+				}
 			}
-		}
-		else	// Competition Robot
-		{
-			switch (target) {
-			case ACQUIRE:
-				_targetPosition = 0;	// Acquire Height is Cube Level 1
-				_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
-				break;
-			case EXCHANGE:
-				_targetPosition = 200;	// Alternate Acquire position is Exchange
-				break;
-			case CUBE_LEVEL_2:
-				_targetPosition = 300;	// Alternate Switch position is Cube Level 2
-				break;
-			case SWITCH:
-				_targetPosition = 1000; // Switch height is also Cube Level 3
-				_alternateElevatorTarget = ElevatorTarget.CUBE_LEVEL_2;
-				break;
-			case LOWER_SCALE:
-				_targetPosition = 2000;	// Default scale position is lower scale
-				_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
-				break;
-			case UPPER_SCALE:
-				_targetPosition = 2600;	// Alternate scale position is upper scale
-			default:
-				// Error 
-				break;
+			else	// Competition Robot
+			{
+				switch (target) {
+				case ACQUIRE:
+					_targetPosition = 0;	// Acquire Height is Cube Level 1
+					_alternateElevatorTarget = ElevatorTarget.EXCHANGE;
+					_isAtFloor = true;
+					break;
+				case EXCHANGE:
+					_targetPosition = 170;	// Alternate Acquire position is Exchange
+					_isAtFloor = false;
+					break;
+				case RUNG:
+					_targetPosition = 1700;	// Alternate Switch position is Rung
+					_isAtFloor = false;
+					break;
+				case SWITCH:
+					_targetPosition = 900; // Switch height is also Cube Level 3
+					_alternateElevatorTarget = ElevatorTarget.RUNG;
+					_isAtFloor = false;
+					break;
+				case LOWER_SCALE:
+					_targetPosition = 1520;	// Default scale position is lower scale
+					_alternateElevatorTarget = ElevatorTarget.UPPER_SCALE;
+					_isAtFloor = false;
+					break;
+				case UPPER_SCALE:
+					_targetPosition = 1935;	// Alternate scale position is upper scale
+					_isAtFloor = false;
+				default:
+					// Error 
+					break;
+				}
 			}
-		}
+			
+			double elevatorSpeed;
+			
 			_currentPosition = GetElevatorPosition();
 			
 			if (_targetPosition > _currentPosition) {
 				_direction = 1;
+				elevatorSpeed = (target == ElevatorTarget.EXCHANGE) ? Constants.elevatorExchangeSpeed : Constants.elevatorMoveSpeed;
+				_elevatorMotor.set(ControlMode.PercentOutput , _direction * elevatorSpeed);
 			}
 			else {
 				_direction = -1;
+				elevatorSpeed = (target == ElevatorTarget.EXCHANGE) ? Constants.elevatorExchangeSpeed : Constants.elevatorDownMoveSpeed;
+				_elevatorMotor.set(ControlMode.PercentOutput , _direction * elevatorSpeed);
 			}
 			
-			_elevatorMotor.set(ControlMode.PercentOutput , _direction *_cruiseVelocity / 100);
 		}
 	}
 	
@@ -265,9 +240,25 @@ public class Elevator extends Subsystem{
 		Elevate(_alternateElevatorTarget);
 	}
 	
+	public ElevatorTarget getAlternateTarget()
+	{
+		return _alternateElevatorTarget;
+	}
+	
 	// Return the elevator position in encoder counts
 	public double GetElevatorPosition() {
-		 return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
+		if (Constants.isSimulated)
+		{
+			return (_targetPosition);
+		}
+		else
+		{
+			return _elevatorMotor.getSelectedSensorPosition(kElevatorPIDLoopIndex);
+		}
+	}
+	
+	public boolean IsAtFloor() {
+		return _isAtFloor;
 	}
 	
 	// Execute to move
@@ -290,7 +281,7 @@ public class Elevator extends Subsystem{
 		SmartDashboard.putNumber("Current Position", GetElevatorPosition());
 		SmartDashboard.putNumber("Target Position", _targetPosition);
 		SmartDashboard.putNumber("Direction", _direction);
-		SmartDashboard.putString("Alternate Target", ConvertToString(_alternateElevatorTarget));
+		SmartDashboard.putString("Alternate Target", _alternateElevatorTarget.toString());
 		SmartDashboard.putNumber("Jog Direction", _currentJogDirection);
 		SmartDashboard.putNumber("Elevate Output:",_elevatorMotor.getMotorOutputPercent());
 		SmartDashboard.putNumber("Count", _count);
@@ -317,7 +308,15 @@ public class Elevator extends Subsystem{
 	// Stop the current elevator move immediately
 	public void StopMoving()
 	{
-		_elevatorMotor.set(ControlMode.PercentOutput, 0);
-		_direction = 0;
+		if (!_isAtFloor)
+		{
+			_elevatorMotor.set(ControlMode.PercentOutput, Constants.elevatorHoldSpeed);
+			_direction = 0;
+		}
+		else
+		{
+			_elevatorMotor.set(ControlMode.PercentOutput, Constants.elevatorHoldSpeed);
+			_direction = 0;			
+		}
 	}
 }

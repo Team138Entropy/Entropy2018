@@ -26,18 +26,22 @@ public class Robot extends IterativeRobot {
     SendableChooser<String> teamChooser;
     SendableChooser<String> startPosChooser;
     SendableChooser<String> autoModeChooser;
-    SendableChooser<String> robotChooser;
+    SendableChooser<String> debugModeChooser;
         
     // Subsystems
     public static final Compressor compressor = new Compressor();
     public static final Drivetrain drivetrain = new Drivetrain();
     public static final Grasper grasper = new Grasper();
     public static final Elevator elevator = new Elevator();
-    // public static final Climber climber = new Climber();
+    public static final Climber climber = new Climber();
+    public static double accumulatedHeading = 0.0; // Accumulate heading angle (target)
 
     public static final OI oi = new OI();
 	
     Preferences prefs = Preferences.getInstance();
+	
+    // Location lookup
+    public static AutoLocations autoLocations;
 	
     // Commands
     AutonomousCommand autonomousCommand;
@@ -61,11 +65,6 @@ public class Robot extends IterativeRobot {
 		Sensors.updateSmartDashboard();
 		SmartDashboard.putData(Scheduler.getInstance());
 		
-		robotChooser = new SendableChooser<String>();
-		robotChooser.addDefault("Competition robot", Constants.competitionRobot);
-		robotChooser.addDefault("Practice robot", Constants.practiceRobot);
-		SmartDashboard.putData("Robot:", robotChooser);		
-		
 		teamChooser = new SendableChooser<String>();
 		teamChooser.addDefault("Red Alliance", "red");
 		teamChooser.addObject("Blue Alliance", "blue");
@@ -84,7 +83,16 @@ public class Robot extends IterativeRobot {
 		autoModeChooser.addObject("Test" , "test");
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
 					
+		debugModeChooser = new SendableChooser<String>();
+		debugModeChooser.addObject("Debug", "debug");
+		debugModeChooser.addObject("Competition", "competition");
+		SmartDashboard.putData("Debug Mode:", debugModeChooser);
 
+		SmartDashboard.putBoolean("practiceBot", isPracticeRobot());		
+        Robot.accumulatedHeading = 0;
+        Constants.AutoEnable=true;
+
+        Constants.practiceBot = isPracticeRobot();
     }
 	
 	/**
@@ -98,6 +106,11 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+	}
+
+	private double getWheelAngle() {
+		double wheelAngle = (AutoDrive.rightDistance() - AutoDrive.leftDistance()) / Constants.driveWheelSpacing;
+		return wheelAngle * (180 / Math.PI);
 	}
 
 	/**
@@ -115,22 +128,37 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Starting Position:", startPosChooser);		
 		SmartDashboard.putData("Auto Mode:", autoModeChooser);
     	
-		/*
-    	Constants.kPRotate=prefs.getDouble("Rotate KP", .02);
-    	Constants.kDRotate=prefs.getDouble("Rotate KD", .0);
-    	Constants.kIRotate=prefs.getDouble("Rotate KI", .001);
-    	Constants.AutoDriveRotateOvershoot=prefs.getDouble("AutoDrive Overshoot", 4); // Degrees
-    	*/
+		if (Constants.practiceBot) {
 
+			Constants.kPRotate=prefs.getDouble("Rotate KP", Constants.kPRotate);
+			Constants.kDRotate=prefs.getDouble("Rotate KD", Constants.kDRotate);
+			Constants.kIRotate=prefs.getDouble("Rotate KI", Constants.kIRotate);
 
+			Constants.AutoDriveSpeed=prefs.getDouble("Auto Speed", Constants.AutoDriveSpeed);
+			Constants.AutoDriveRotateRate = prefs.getDouble("Auto Rotate", Constants.AutoDriveRotateRate);
+    	
+
+			Constants.kPDrive=prefs.getDouble("Drive KP", Constants.kPDrive);
+			Constants.kDDrive=prefs.getDouble("Drive KD", Constants.kDDrive);
+			Constants.kIDrive=prefs.getDouble("Drive KI", Constants.kIDrive);
+		}
     	
     	gameData = DriverStation.getInstance().getGameSpecificMessage();
+    	   	
+    	autoLocations = new AutoLocations(startPosChooser.getSelected());
+    	
         autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
         		startPosChooser.getSelected(),
         		autoModeChooser.getSelected(),
         		gameData);
-        isPracticeRobot();
+
+        
+        Sensors.gyro.reset();
+        Sensors.resetEncoders();
+        // Force wrist and gripper to known state
+       	Robot.grasper.InitializeForAuto();
         autonomousCommand.start();
+		Constants.IntegralError=0;
     }
 
     /**
@@ -139,6 +167,8 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
         Sensors.updateSmartDashboard();
+        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
+        SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
     }
 
     public void teleopInit() {
@@ -146,20 +176,21 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) {
         	autonomousCommand.cancel();        	
         }        
-        Constants.practiceBot = isPracticeRobot();
-    	Sensors.resetEncoders();
+    //	Sensors.resetEncoders();
+        Sensors.gyro.reset();
     	elevator.StopMoving();
+        Robot.accumulatedHeading = 0;
+		Robot.drivetrain.Relax();
+    	
+		Constants.AutoEnable=true;
+		Constants.IntegralError=0;
+
     	
     }
     
-    public boolean isPracticeRobot() {
-    	if ((robotChooser.getSelected() == Constants.practiceRobot) && !Constants.competitionOverride) {
-    		return true;
+    public static boolean isPracticeRobot() {
+    	return (! Sensors.practiceRobotJumperPin.get());
     	}
-    	else {
-    		return false;
-    	}
-    }
 
     /**
      * This function is called periodically during operator control
@@ -169,8 +200,16 @@ public class Robot extends IterativeRobot {
 //		LiveWindow.run();
         
 		
+        //if (debugModeChooser.getSelected() == "debug") 
+        //{
         Sensors.updateSmartDashboard();
         elevator.updateSmartDashboard();
+	        climber.updateSmartDashboard();
+	        grasper.updateSmartDashboard();
+	        
+	        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
+	        SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
+        //}
         OI.updateSmartDashboard();
         // climber.updateSmartDashboard();
     }

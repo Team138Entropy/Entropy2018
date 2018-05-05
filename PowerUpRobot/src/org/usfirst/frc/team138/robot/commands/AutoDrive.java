@@ -20,18 +20,18 @@ public class AutoDrive extends Command {
 	boolean rotateInPlace;
 	double driveSpeed = 0.0;
 	double driveDistance = 0.0;
-	double targetAngle = 0.0;
 	boolean arcTurn = false;
 	double timer=0;
 	double MinDistance=.25*.025*Constants.AutoDriveSpeed*Constants.Meters2CM; // centimeter (limit to detect stall)
-	
-
+	double lclAngle=0;
+	boolean FirstTime=false;
+	int  turnDir=1; // 1=positive rotation, -1=negative rotation; 0 =straight
 	//*******************************************
 	
 	//Degree Tolerance
 	//within how many degrees will you be capable of turning
-	static double ToleranceDegrees = 1.0;
-	double IntegralError=0;
+	static double ToleranceDegrees = 2.0;
+
 	/**
 	 * Drives straight for the specified distance
 	 * @param speedArg The speed, from 0 to full in Meters/sec, the robot will drive. 
@@ -43,11 +43,11 @@ public class AutoDrive extends Command {
 		rotateInPlace = false;
 		driveSpeed = Math.abs(speedArg)*Constants.AutoDriveSpeed;
 		driveDistance = distanceArg;
-		IntegralError=0;
 		timer=0;
 		stallCounter=0;
-	}
-	
+		isDone=false;
+		turnDir=0;
+	}	
 	/**
 	 * Rotates to an angle
 	 * @param angle Angle, in degrees, to turn to. Negative angles turn right, positive angles turn left
@@ -56,43 +56,55 @@ public class AutoDrive extends Command {
 	public AutoDrive(double angle){
 		requires(Robot.drivetrain);
 		rotateInPlace = true;
-		IntegralError=0;
-		if (angle>0)
-			angle=angle-Constants.AutoDriveRotateOvershoot;
-		else
-			angle=angle+Constants.AutoDriveRotateOvershoot;
-		targetAngle = angle;
+		lclAngle=angle;
+		if (angle>0) {
+			turnDir=1;
+		}
+		else {
+			turnDir=-1;			
+		}
+
 		stallCounter=0;
+		isDone=false;
+		FirstTime=true;
 	}
 	
 	
-	private double leftDistance() {
+	public static double leftDistance() {
 		// Return leftDistance from left encoder in centimeters
 		// motors and encoders run opposite to robot convention
 		// Invert encoder readings here so that distance increases
 		// when robot moving forward.
-		return -1*Constants.Meters2CM*Sensors.getLeftDistance();
+		return Constants.Meters2CM*Sensors.getLeftDistance();
 	}
-	private double rightDistance() {
+	
+	public static double rightDistance() {
 		// Return rightDistance from right encoder in centimeters
-		return -1*Constants.Meters2CM*Sensors.getRightDistance();
+		return Constants.Meters2CM*Sensors.getRightDistance();
 	}
 
 	public void initialize() {
-		// reset gyro and encoders are start of every autonomous move
-		// ie: sequential moves are relative to previous position.
 		Sensors.resetEncoders();
-		Sensors.gyro.reset();	
 		timer=0;
 		stallCounter=0;
 	}
 
 	public void execute() {
-		boolean moveComplete; // true when move complete
+		boolean moveComplete=false; // true when move complete
 		double rate; // rate of rotation			
 		double avgDistance=.5*(leftDistance()+rightDistance());
+		
 		// Stalled?
 		double distanceRemaining=Math.abs(driveDistance)-Math.abs(avgDistance);
+		if (FirstTime ){
+			FirstTime=false;
+			Constants.IntegralError=0;
+			if (rotateInPlace)
+				Robot.accumulatedHeading = lclAngle;
+			else
+				Sensors.resetEncoders();
+		}
+		SmartDashboard.putNumber("Auto Angle",Robot.accumulatedHeading );
 		/*
 		if (Math.abs(lastLeftDistance-leftDistance())<MinDistance || 
 				Math.abs(lastRightDistance-rightDistance())<MinDistance ) 
@@ -111,36 +123,39 @@ public class AutoDrive extends Command {
 		
 		{
 			stallCounter = 0;
-			SmartDashboard.putString("Stall:","  ");
+			
+			// Angular difference between target and current heading
+			// diffAgnles returns "short way 'round" between 2 angles.
+			double diffAngle=Robot.accumulatedHeading-Sensors.gyro.getAngle();
+			SmartDashboard.putNumber("Diff Angle", diffAngle);
+			
 			if (rotateInPlace)
 			{
-				// Angular difference between target and current heading
-				double diffAngle=targetAngle-Sensors.gyro.getAngle();
-				if (targetAngle > 0)
-					moveComplete =(diffAngle<=0);
-				else
-					moveComplete =(diffAngle>=0);
-				IntegralError+=diffAngle*.025;
-				rate=-Constants.kPRotate*Sensors.gyro.getAngle()+IntegralError*Constants.kIRotate;
-				// Scale to Meters/second
-				rotateToAngleRate=Utility.limitValue(rate,-1,1)*Constants.AutoDriveRotateRate;	
+				moveComplete =(Math.abs(diffAngle))<=ToleranceDegrees;
 				driveSpeed=0;
 			}
 			else
 			{
-				// move straight
-				rotateToAngleRate=0;
 				// Check distance-to-go
 				// Are we there yet?
 				moveComplete = (Math.abs(driveDistance) - Math.abs(avgDistance) < Constants.AutoDriveStopTolerance);
 			}
-			if (moveComplete)
+			if (moveComplete || isDone)
 			{
 				Robot.drivetrain.drive(0.0, 0.0);
 				isDone = true;
 			}
 			else {
 				double speed;
+				Constants.IntegralError+=diffAngle*.025;
+				if (driveSpeed == 0) {
+					rate=Constants.kPRotate*diffAngle+Constants.IntegralError*Constants.kIRotate-Constants.kDRotate*Sensors.gyro.getRate();
+//					rate=-Constants.kPRotate*Sensors.gyro.getAngle()+Constants.IntegralError*Constants.kIRotate-Constants.kDRotate*Sensors.gyro.getRate();
+				} else {
+					rate=Constants.kPDrive*diffAngle-Constants.kDDrive*Sensors.gyro.getRate();
+				}
+				// Scale to Meters/second
+				rotateToAngleRate=Utility.limitValue(rate,-1,1)*Constants.AutoDriveRotateRate;	
 				// Control deceleration to stop based on AutoDriveAccel limit
 				// Approaching stop: Speed= sqrt(2*Accel*distance2Go), otherwise: driveSpeed
 				distanceRemaining=Math.max(0,Math.abs(distanceRemaining))/Constants.Meters2CM; // Meters
@@ -148,7 +163,7 @@ public class AutoDrive extends Command {
 				// speed has sign of driveDistance
 				speed=Robot.drivetrain.limitDriveAccel(Math.signum(driveDistance)*speed);
 				rotateToAngleRate=Robot.drivetrain.limitRotateAccel(rotateToAngleRate);
-
+				
 				Robot.drivetrain.drive(speed, rotateToAngleRate);
 			}
 		}
@@ -158,11 +173,9 @@ public class AutoDrive extends Command {
 	}
 
 	public boolean isFinished() {
-		// Insert delay after motion complete before command is considered completer
-		// allows time for motion to settle before resetting sensors at start of next
-		// command
-		if (isDone && (timer++>Constants.AutoDrivePause)) {
-			Robot.drivetrain.Relax();
+		if (isDone && Robot.elevator.IsMoveComplete()) {
+			Robot.drivetrain.drive(0,0);
+//			Robot.drivetrain.Relax();
 			return true;
 		}
 		else

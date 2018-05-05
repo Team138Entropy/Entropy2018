@@ -30,7 +30,7 @@ public class Drivetrain extends Subsystem{
 	double _lastMoveSpeed = 0;
 	double lastRotateSpeed=0;
 
-	int counter=0;
+	int zeroCounter=0;
 
 	public WPI_TalonSRX frontLeftTalon = new WPI_TalonSRX(RobotMap.LEFT_MOTOR_CHANNEL_FRONT);
 	WPI_TalonSRX backLeftTalon = new WPI_TalonSRX(RobotMap.LEFT_MOTOR_CHANNEL_BACK);
@@ -38,7 +38,6 @@ public class Drivetrain extends Subsystem{
 	WPI_TalonSRX backRightTalon = new WPI_TalonSRX(RobotMap.RIGHT_MOTOR_CHANNEL_BACK);
 
 	protected void initDefaultCommand() {
-		SmartDashboard.putNumber("ScaleFactor", 1.0);
 		setDefaultCommand(new TeleopDrive());
 	}
 
@@ -101,15 +100,7 @@ public class Drivetrain extends Subsystem{
 
 	public void drive(double moveSpeed, double rotateSpeed)
 	{
-		if (Constants.useClosedLoopDrivetrain)
-		{
 			Robot.drivetrain.driveCloseLoopControl(moveSpeed, rotateSpeed);
-
-		}
-		else
-		{
-			Robot.drivetrain.driveWithTable(moveSpeed, rotateSpeed);
-		}	
 	}
 
 	public void driveCloseLoopControl(double moveSpeed, double rotateSpeed)
@@ -125,11 +116,18 @@ public class Drivetrain extends Subsystem{
 		moveSpeed=-moveSpeed;
 		rotateSpeed=-rotateSpeed;
 		// Case where commands are exactly NULL
-		if (moveSpeed==0 && rotateSpeed==0)
-		{
-			Relax();
+		if (moveSpeed==0 && rotateSpeed==0) {
+			zeroCounter+=1;
+			if (zeroCounter>Constants.zeroDelay) 
+				Relax(); // set Talon VOLTAGE to 0
+			else {
+				// set Talon SPEED to 0
+				frontLeftTalon.set(ControlMode.Velocity, 0);
+				frontRightTalon.set(ControlMode.Velocity, 0);
+			}
 		}
 		else {
+			zeroCounter=0;
 			left = moveSpeed - rotateSpeed; 
 			right = moveSpeed + rotateSpeed;
 
@@ -138,8 +136,6 @@ public class Drivetrain extends Subsystem{
 			frontRightTalon.set(ControlMode.Velocity, right * Constants.SecondsTo100Milliseconds / Constants.MetersPerPulse);
 		}
 
-		SmartDashboard.putNumber("L CMD Speed (M/s)", -left);
-		SmartDashboard.putNumber("R CMD Speed (M/S)", -right);
 
 		SmartDashboard.putNumber("L PWM", -frontLeftTalon.getMotorOutputPercent());
 		SmartDashboard.putNumber("R PWM", -frontRightTalon.getMotorOutputPercent());
@@ -147,129 +143,14 @@ public class Drivetrain extends Subsystem{
 		SmartDashboard.putNumber("L Talon Vel (M/S)", -frontLeftTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 		SmartDashboard.putNumber("R Talon Vel (M/S)", -frontRightTalon.getSelectedSensorVelocity(0)*10*Constants.MetersPerPulse);
 
-		SmartDashboard.putNumber("L Position (M)", -Constants.MetersPerPulse*frontLeftTalon.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("R Position (M)",-Constants.MetersPerPulse*frontRightTalon.getSelectedSensorPosition(0));
 	}
 
 	public void Relax(){
 		frontLeftTalon.set(ControlMode.PercentOutput, 0);
 		frontRightTalon.set(ControlMode.PercentOutput, 0);
+		SmartDashboard.putNumber("L PWM", -frontLeftTalon.getMotorOutputPercent());
+		SmartDashboard.putNumber("R PWM", -frontRightTalon.getMotorOutputPercent());
 	}
-
-
-	public void driveWithTable(double moveSpeed, double rotateSpeed)
-	{
-		/* 
-		 *  moveSpeed and rotateSpeed are +/- 1 where 1=full voltage
-		 */
-		double leftMotorSpeed  = getLeftMotorSpeed(moveSpeed, rotateSpeed);
-		double rightMotorSpeed = getRightMotorSpeed(moveSpeed, rotateSpeed);
-		frontLeftTalon.set(ControlMode.PercentOutput, leftMotorSpeed);
-		frontRightTalon.set(ControlMode.PercentOutput, rightMotorSpeed);
-	}
-
-	double getLeftMotorSpeed(double moveSpeed, double rotateSpeed)
-	{
-		int[] indices = {16, 16};
-
-		indices = getIndex(moveSpeed, rotateSpeed);
-
-		return DriveTable.Drive_Matrix_2017[indices[1]][indices[0]];
-	}
-
-	double getRightMotorSpeed(double moveSpeed, double rotateSpeed)
-	{
-		int[] indices = {16, 16};
-
-		indices = getIndex(moveSpeed, rotateSpeed);
-		indices[0] = 32 - indices[0];
-
-		return DriveTable.Drive_Matrix_2017[indices[1]][indices[0]];
-	}
-
-	int[] getIndex(double moveSpeed, double rotateSpeed)
-	{		
-		double diff1 = 0;
-		double diff2 = 0;
-		// [0] is x, [1] is y
-		int[] returnIndex = {0, 0};
-
-		double[] arrayPtr = DriveTable.Drive_Lookup_X;
-		int arrayLength = DriveTable.Drive_Lookup_X.length;
-
-		double rotateValue = Utility.limitValue(rotateSpeed, arrayPtr[0], arrayPtr[arrayLength-1]);
-
-		for(int i = 0; i < arrayLength; i++) 
-		{
-			if(i+1 >= arrayLength || inRange(rotateValue, arrayPtr[i], arrayPtr[i+1]))
-			{
-				//Assume match found
-				if((i + 1) >= arrayLength)
-				{
-					returnIndex[0] = i;	
-				}
-				else
-				{
-					diff1 = Math.abs(rotateValue - arrayPtr[i]);
-					diff2 = Math.abs(rotateValue - arrayPtr[i+1]);
-
-					if(diff1 < diff2)
-					{
-						returnIndex[0] = i;
-					}
-					else
-					{
-						returnIndex[0] = i + 1;
-					}
-				}
-				break;
-			}
-		}
-
-		arrayPtr = DriveTable.Drive_Lookup_Y;
-		arrayLength = DriveTable.Drive_Lookup_Y.length;
-		double moveValue = Utility.limitValue(moveSpeed, arrayPtr[0], arrayPtr[arrayLength - 1]);
-
-		for( int i = 0; i < arrayLength; i++) 
-		{
-			if(i+1 >= arrayLength || inRange(moveValue, arrayPtr[i], arrayPtr[i+1]))
-			{
-				//Assume match found
-				if((i + 1) >= arrayLength)
-				{
-					returnIndex[1] = i;	
-				}
-				else
-				{
-					diff1 = Math.abs(moveValue - arrayPtr[i]);
-					diff2 = Math.abs(moveValue - arrayPtr[i+1]);
-
-					if(diff1 < diff2)
-					{
-						returnIndex[1] = i;
-					}
-					else
-					{
-						returnIndex[1] = i + 1;
-					}
-				}
-				break;
-			}
-		}
-
-		return returnIndex;
-	}
-
-	boolean inRange(double testValue, double bound1, double bound2) 
-	{  
-		return (((bound1 <= testValue) && (testValue <= bound2)) ||
-				((bound1 >= testValue) && (testValue >= bound2)));
-	}
-
-
-
-
-
 
 
 }

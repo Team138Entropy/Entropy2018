@@ -44,7 +44,14 @@ public class JogElevator extends Command {
 		// Command was not invoked with specific direction - use D Pad
 		else
 		{
-			Robot.elevator.JogElevator(OI.getJogDirection(), Constants.elevatorJogSpeed);
+			if (OI.getJogDirection() == 0) // && !Robot.elevator.IsAtFloor())
+			{
+				Robot.elevator.JogElevator(1, Constants.elevatorHoldSpeed);
+			}
+			else
+			{
+				Robot.elevator.JogElevator(OI.getJogDirection(), Constants.elevatorJogSpeed);
+			}
 		}
 	}
 
