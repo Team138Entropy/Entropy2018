@@ -140,8 +140,8 @@ public final class OI {
 		
 		if (briansStick.getRawButton(brianEnableButton))
 		{
-			// Xbox controller Y axis reports -1 forward, so emulate that on Brian's Joystick
-			moveSpeed =  (-1 * briansStick.getRawAxis(brianSpeedAxis));
+			// Pulling trigger on Brian's joystick moves forward
+			moveSpeed =  (briansStick.getRawAxis(brianSpeedAxis));
 		}
 		else
 		{
