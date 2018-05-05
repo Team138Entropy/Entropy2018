@@ -18,10 +18,6 @@ public class ElevateToAlternateTarget extends Command {
 	}
 	
 	protected void initialize() {
-		// Supports elevate to scale with hook interference
-		if (Robot.elevator.getAlternateTarget() == ElevatorTarget.LOWER_SCALE || Robot.elevator.getAlternateTarget() == ElevatorTarget.UPPER_SCALE) {
-			Robot.grasper.lowerWrist();
-		}
 		Robot.elevator.ElevateToAlternateTarget();
 		_currentCommandTime = 0;
 	}
@@ -45,11 +41,6 @@ public class ElevateToAlternateTarget extends Command {
 
 	protected void end() {
 		Robot.elevator.StopMoving();
-		
-		// Supports release from scale
-		if (Robot.elevator.getAlternateTarget() == ElevatorTarget.LOWER_SCALE || Robot.elevator.getAlternateTarget() == ElevatorTarget.UPPER_SCALE) {
-			Robot.grasper.raiseWrist();
-		}	
 	}
 
 	protected void interrupted() {
