@@ -136,37 +136,45 @@ public final class OI {
     
 	public static double getMoveSpeed()
 	{
+		double moveSpeed;
+		
 		if (briansStick.getRawButton(brianEnableButton))
 		{
 			// Xbox controller Y axis reports -1 forward, so emulate that on Brian's Joystick
-			return (-1 * briansStick.getRawAxis(brianSpeedAxis));
+			moveSpeed =  (-1 * briansStick.getRawAxis(brianSpeedAxis));
 		}
 		else
 		{
 			// joystick values are opposite to robot directions
-			double moveSpeed=-driverStick.getRawAxis(xboxLeftYAxis);
-			// Apply thresholds to joystick positions to eliminate
-			// creep motion due to non-zero joystick value when joysticks are 
-			// "centered"
-			if (Math.abs(moveSpeed) < Constants.CloseLoopJoystickDeadband)
-				moveSpeed=0;
-			return moveSpeed;
+			moveSpeed= (-1 * driverStick.getRawAxis(xboxLeftYAxis));
 		}
+		
+		// Apply thresholds to joystick positions to eliminate
+		// creep motion due to non-zero joystick value when joysticks are 
+		// "centered"
+		if (Math.abs(moveSpeed) < Constants.CloseLoopJoystickDeadband)
+			moveSpeed=0;
+		
+		return moveSpeed;
 	}
 	
 	public static double getRotateSpeed()
 	{
+		double rotateSpeed;
+		
 		if (briansStick.getRawButton(brianEnableButton))
 		{
-			return briansStick.getRawAxis(brianRotateAxis);
+			rotateSpeed =  (-1 * briansStick.getRawAxis(brianRotateAxis));
 		}
 		else
 		{
-			double rotateSpeed=-driverStick.getRawAxis(xboxRightXAxis);
-			if (Math.abs(rotateSpeed) < Constants.CloseLoopJoystickDeadband)
-				rotateSpeed=0;
-			return rotateSpeed;
+			rotateSpeed= (-1 * driverStick.getRawAxis(xboxRightXAxis));
 		}
+		
+		if (Math.abs(rotateSpeed) < Constants.CloseLoopJoystickDeadband)
+			rotateSpeed=0;
+		
+		return rotateSpeed;
 	}
 	
 	public static double getClimbSpeed()
