@@ -241,6 +241,7 @@ public class Grasper extends Subsystem{
 	public void StartRelease() {
 		SmartDashboard.putString("Acquire Release","Start Release");
 		releaseRollers();
+		lowerWrist();
 		_isCubeReleased = false;
 		_isCubeAcquired = false;
 	}
