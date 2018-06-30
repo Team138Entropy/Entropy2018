@@ -12,10 +12,10 @@ public class AutoLocations {
 	private static final double[][] competitionBotLocations =
 	                       //X cm   Y cm   Angle degrees
 			new double[][] {{45.0,  119.0, 0.0},    //0 Start Position - Right
-							{707.0, 157.0, 35.0},   //1 Place Near Scale
+							{695.0, 157.0, 35.0},   //1 Place Near Scale
 							{575.0, 234.0, 175.0},  //2 Pickup End Cube Near Switch
 							{575.0, 246.3, 175.0},  //3 Deposit Second Cube Near Switch
-							{675.0, 222.0, 10.0},    //4 Deposit Second Cube Near Scale
+							{675.0, 222.0, 10.0},   //4 Deposit Second Cube Near Scale
 							{611.0, 150.0, 90.0},   //5 1st Waypoint Crossfield Traverse
 							{611.0, 620.0, 0.0},    //6 2nd Waypoint Crossfield Traverse
 							{690.0, 620.0, 0.0},    //7 Deposit Scale Opp Side
