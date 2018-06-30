@@ -48,12 +48,12 @@ public class Constants {
 		public final static double driveWheelSpacing = (23.65 / 39.37) * 100; // Centimeters (from 22 inches)
 		// Full joystick motion equates to following actual move speeds:
 		public final static double ClosedLoopCruiseVelocity = 2.4; // meters / second
-		public final static double ClosedLoopSlowVelocity = 1.2; // M/sec
+		public final static double ClosedLoopSlowVelocity = 1.5; // M/sec
 		// Wheel spacing ~0.5 Meters;  For zero Turn, each wheel travels
 		// on a circle of circumference of pi*0.5 or 1.57 Meters.
 		// For 180 Degree turn in 1 second (180 Degrees/sec), each
 		// wheel travels 1/2 Circumference of .785 Meters in 1 second
-		public final static double ClosedLoopTurnSpeed = 1; // Meters/sec
+		public final static double ClosedLoopTurnSpeed = 0.8; // Meters/sec
 		// Allow for slower turn speed when in slow mode,
 		public final static double ClosedLoopSlowRotateSpeed = 0.5;
 		
@@ -93,8 +93,8 @@ public class Constants {
 
 		// Auto Cube Acquisition
 		public final static double autoDetectionSettlingTime = 0.5;	// Time to delay after turning acquisition wheels on to start detection
-		public final static int cubeDetectThresholdCount = 3;		// Consecutive readings above threshold to trigger acquire
-		public final static double cubeDetectThreshold = 3.0;		// Roller current threshold to start acquire
+		public final static int cubeDetectThresholdCount = 5;		// Consecutive readings above threshold to trigger acquire
+		public final static double cubeDetectThreshold = 5.0;		// Roller current threshold to start acquire
 		public final static int cubeAcquireThresholdCount = 10;		// Consecutive readings above threshold to trigger complete acquire
 		public final static double cubeAcquireThreshold = 7.0;		// Roller current threshold to complete acquire
 
